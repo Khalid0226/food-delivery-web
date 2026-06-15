@@ -31,7 +31,7 @@ export default function ForgotPassword() {
       setErrors(currentErrors);
     } else {
       setErrors({});
-      // Dummy OTP System (Backend aane par actual email par jayega)
+      // Dummy OTP System (MERN backend logic lagne par actual email par jayega)
       const generatedOtp = Math.floor(100000 + Math.random() * 900000); 
       console.log(`Generated OTP for ${email}:`, generatedOtp);
       
@@ -65,7 +65,7 @@ export default function ForgotPassword() {
       setErrors(currentErrors);
     } else {
       setErrors({});
-      // Yahan baad mein backend Django API hit hogi verify karne ke liye
+      // Yahan baad mein Node/Express API call handler integrate hoga
       console.log("Password updated successfully for:", email);
       alert("🎉 Password Reset Successful! Redirecting to login page...");
       navigate('/Login');
@@ -75,8 +75,8 @@ export default function ForgotPassword() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col justify-center items-center px-4 py-6 relative overflow-x-hidden">
       
-      {/* Background Soft Vibe */}
-      <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#e11d48_1.5px,transparent_1.5px)] [background-size:20px_24px] pointer-events-none"></div>
+      {/* Background Soft Vibe (Tailwind standard matching warning cleared) */}
+      <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#e11d48_1.5px,transparent_1.5px)] bg-size-[20px_24px] pointer-events-none"></div>
 
       {/* Premium Executive Card */}
       <div className="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-xl shadow-slate-200/40 w-full max-w-md relative z-10 transition-all">
