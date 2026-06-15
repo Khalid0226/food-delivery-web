@@ -99,7 +99,7 @@ export default function Login() {
                         <div className="mt-1.5 px-0.5 min-h-[18px]">
                             {errors.email && (
                                 <span className="text-[11px] text-red-500 font-bold block">
-                                    ⚠️ {errors.email}
+                                     {errors.email}
                                 </span>
                             )}
                         </div>
@@ -123,7 +123,7 @@ export default function Login() {
                             <div>
                                 {errors.password && (
                                     <span className="text-[11px] text-red-500 font-bold block">
-                                        ⚠️ {errors.password}
+                                         {errors.password}
                                     </span>
                                 )}
                             </div>

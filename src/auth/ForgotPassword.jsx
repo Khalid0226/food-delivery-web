@@ -102,7 +102,7 @@ export default function ForgotPassword() {
             <div>
               <div className="flex justify-between items-center mb-1">
                 <label className="text-xs font-black uppercase tracking-wider text-slate-500">Registered Email</label>
-                {errors.email && <span className="text-[11px] text-red-500 font-bold">⚠️ {errors.email}</span>}
+                {errors.email && <span className="text-[11px] text-red-500 font-bold"> {errors.email}</span>}
               </div>
               <input
                 type="email"
