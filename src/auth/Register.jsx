@@ -73,6 +73,12 @@ export default function Register() {
     if (validateForm()) {
       console.log("Registered Data Verified:", formData);
       alert(`Welcome ${formData.name}! Registration Successful.`);
+      
+      // 🔒 CREATE SESSION LOGIC
+      localStorage.setItem('isCustomerLoggedIn', 'true');
+      
+      // Direct redirect to customer panel
+      navigate('/login');
     }
   };
 
@@ -111,7 +117,6 @@ export default function Register() {
               placeholder="John Doe"
               className={`w-full text-sm px-4 py-3 rounded-xl border ${errors.name ? 'border-red-500 bg-red-50/10 focus:ring-red-500/10 focus:border-red-500' : 'border-slate-200 bg-slate-50/50 focus:border-amber-500 focus:ring-amber-500/10'} focus:bg-white focus:ring-4 transition-all outline-none`}
             />
-            {/* Error Area below input */}
             <div className="mt-1 px-0.5 min-h-[18px]">
               {errors.name && <span className="text-[11px] text-red-500 font-bold block"> {errors.name}</span>}
             </div>
@@ -130,7 +135,6 @@ export default function Register() {
               placeholder="example@domain.com"
               className={`w-full text-sm px-4 py-3 rounded-xl border ${errors.email ? 'border-red-500 bg-red-50/10 focus:ring-red-500/10 focus:border-red-500' : 'border-slate-200 bg-slate-50/50 focus:border-amber-500 focus:ring-amber-500/10'} focus:bg-white focus:ring-4 transition-all outline-none`}
             />
-            {/* Error Area below input */}
             <div className="mt-1 px-0.5 min-h-[18px]">
               {errors.email && <span className="text-[11px] text-red-500 font-bold block"> {errors.email}</span>}
             </div>
@@ -153,7 +157,6 @@ export default function Register() {
               placeholder="9876543210"
               className={`w-full text-sm px-4 py-3 rounded-xl border ${errors.phone ? 'border-red-500 bg-red-50/10 focus:ring-red-500/10 focus:border-red-500' : 'border-slate-200 bg-slate-50/50 focus:border-amber-500 focus:ring-amber-500/10'} focus:bg-white focus:ring-4 transition-all outline-none`}
             />
-            {/* Error Area below input */}
             <div className="mt-1 px-0.5 min-h-[18px]">
               {errors.phone && <span className="text-[11px] text-red-500 font-bold block"> {errors.phone}</span>}
             </div>
@@ -172,7 +175,6 @@ export default function Register() {
               placeholder="••••••••"
               className={`w-full text-sm px-4 py-3 rounded-xl border ${errors.password ? 'border-red-500 bg-red-50/10 focus:ring-red-500/10 focus:border-red-500' : 'border-slate-200 bg-slate-50/50 focus:border-amber-500 focus:ring-amber-500/10'} focus:bg-white focus:ring-4 transition-all outline-none`}
             />
-            {/* Error Area below input */}
             <div className="mt-1 px-0.5 min-h-[18px]">
               {errors.password && <span className="text-[11px] text-red-500 font-bold block"> {errors.password}</span>}
             </div>
@@ -182,7 +184,7 @@ export default function Register() {
           <div className="pt-2">
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-[0.98] text-white font-black text-sm py-3.5 rounded-xl shadow-lg shadow-amber-500/20 transition-all uppercase tracking-widest border border-amber-400/10"
+              className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-[0.98] text-white font-black text-sm py-3.5 rounded-xl shadow-lg shadow-amber-500/20 transition-all uppercase tracking-widest border border-amber-400/10 cursor-pointer"
             >
               Verify & Sign Up 🚀
             </button>

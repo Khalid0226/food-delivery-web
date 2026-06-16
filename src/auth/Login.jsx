@@ -56,6 +56,12 @@ export default function Login() {
         if (validateForm()) {
             console.log("Login Credentials Verified:", formData);
             alert("Authentication Successful! Redirecting to dashboard...");
+            
+            // 🔒 CREATE SESSION LOGIC
+            localStorage.setItem('isCustomerLoggedIn', 'true');
+            
+            // Redirect straight to dashboard
+            navigate('/customer/dashboard');
         }
     };
 
@@ -95,7 +101,7 @@ export default function Login() {
                             className={`w-full text-sm px-4 py-3 rounded-xl border ${errors.email ? 'border-red-500 bg-red-50/10 focus:ring-red-500/10 focus:border-red-500' : 'border-slate-200 bg-slate-50/50 focus:border-amber-500 focus:ring-amber-500/10'} focus:bg-white focus:ring-4 transition-all outline-none`}
                         />
 
-                        {/* 👀 Sub-label Section: Error shifted right below the input field just like password */}
+                        {/* 👀 Sub-label Section */}
                         <div className="mt-1.5 px-0.5 min-h-[18px]">
                             {errors.email && (
                                 <span className="text-[11px] text-red-500 font-bold block">
@@ -104,6 +110,7 @@ export default function Login() {
                             )}
                         </div>
                     </div>
+                    
                     {/* 2. Password */}
                     <div>
                         <div className="mb-1">
@@ -118,7 +125,7 @@ export default function Login() {
                             className={`w-full text-sm px-4 py-3 rounded-xl border ${errors.password ? 'border-red-500 bg-red-50/10 focus:ring-red-500/10 focus:border-red-500' : 'border-slate-200 bg-slate-50/50 focus:border-amber-500 focus:ring-amber-500/10'} focus:bg-white focus:ring-4 transition-all outline-none`}
                         />
 
-                        {/* 👀 Sub-label Section: Error on Left, Forgot Password Link on Right */}
+                        {/* 👀 Sub-label Section */}
                         <div className="flex justify-between items-start mt-1.5 px-0.5 min-h-[18px]">
                             <div>
                                 {errors.password && (
@@ -129,7 +136,7 @@ export default function Login() {
                             </div>
                             <button
                                 type="button"
-                                onClick={() => navigate('/forgot-password')} // 👀 Seedhe doosre page pr navigate kr diya
+                                onClick={() => navigate('/forgot-password')}
                                 className="text-xs font-black text-amber-600 hover:text-orange-600 transition-colors cursor-pointer select-none ml-auto"
                             >
                                 Forgot Password?
@@ -140,19 +147,19 @@ export default function Login() {
                     {/* Premium Submit Button */}
                     <button
                         type="submit"
-                        className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-[0.98] text-white font-black text-sm py-3.5 rounded-xl shadow-lg shadow-amber-500/20 transition-all uppercase tracking-widest border border-amber-400/10 mt-4"
+                        className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-[0.98] text-white font-black text-sm py-3.5 rounded-xl shadow-lg shadow-amber-500/20 transition-all uppercase tracking-widest border border-amber-400/10 mt-4 cursor-pointer"
                     >
                         Authenticate 🚀
                     </button>
                 </form>
 
-                {/* Footer Section with Smooth Navigation Triggers */}
+                {/* Footer Section */}
                 <div className="mt-6 pt-5 border-t border-slate-100 text-center space-y-2">
                     <p className="text-xs text-slate-400 font-bold tracking-wide">
                         Don't have an account?{' '}
                         <button
                             onClick={() => navigate('/Register')}
-                            className="text-amber-600 hover:text-orange-600 font-black transition-colors underline underline-offset-4"
+                            className="text-amber-600 hover:text-orange-600 font-black transition-colors underline underline-offset-4 cursor-pointer"
                         >
                             Register Here
                         </button>
@@ -161,7 +168,7 @@ export default function Login() {
                     <div>
                         <button
                             onClick={() => navigate('/')}
-                            className="text-[11px] text-slate-400 hover:text-slate-700 font-black uppercase tracking-widest transition-colors"
+                            className="text-[11px] text-slate-400 hover:text-slate-700 font-black uppercase tracking-widest transition-colors cursor-pointer"
                         >
                             ← Terminate & Back to Home
                         </button>
