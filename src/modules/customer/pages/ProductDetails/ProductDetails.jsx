@@ -22,7 +22,7 @@ export default function ProductDetails() {
 
     if (!product) return (
         <div className="min-h-screen flex items-center justify-center font-bold text-slate-600">
-            product is empty!!!
+            Product nahi mila!
         </div>
     );
 
