@@ -8,6 +8,8 @@ import ForgotPassword from './auth/ForgotPassword'
 
 import CustomerDashboard from './modules/customer/pages/CustomerDashboard';
 
+import ProductDetails from './modules/customer/pages/ProductDetails/ProductDetails'
+
 
 function App() {
   return (
@@ -22,6 +24,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
 
           <Route path="/customer/dashboard" element={<CustomerDashboard />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
         </Routes>
       </BrowserRouter>
     </div>

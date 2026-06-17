@@ -30,7 +30,7 @@ export default function App() {
       {/* 1. FRESH LIGHT NAVBAR (Responsive Fixes Applied) */}
       <nav className="bg-white/90 backdrop-blur-md text-slate-900 border-b border-slate-200/80 sticky top-0 z-50 px-3 py-3 md:px-4 md:py-4 shadow-sm">
         <div className="max-w-6xl mx-auto flex justify-between items-center gap-2">
-          
+
           {/* Logo + Brand Alignment */}
           <div className="flex items-center gap-1.5 md:gap-2 min-w-0">
             <img
@@ -50,24 +50,24 @@ export default function App() {
           </div>
 
           {/* Top Right Action Button */}
-          {/* <button
+          <button
             onClick={handleSignUpClick}
             className="bg-rose-600 hover:bg-rose-700 active:scale-95 text-white text-[10px] md:text-xs font-black px-3 py-2 md:px-6 md:py-2.5 rounded-lg md:rounded-xl transition-all uppercase tracking-wider shadow-md shadow-rose-600/20 border border-rose-500/10 flex-shrink-0"
           >
             register
-          </button> */}
+          </button>
         </div>
       </nav>
 
       {/* 2. FRESH BRIGHT HERO SECTION */}
       <main className="flex-1 flex flex-col justify-center bg-gradient-to-b from-amber-50/60 via-white to-slate-50 text-slate-800 relative py-12 px-4 md:py-24">
-        
+
         {/* Soft Radial Background Vibe (Light Pattern) */}
         <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(#e11d48_1.5px,transparent_1.5px)] [background-size:20px_24px]"></div>
 
-                {/* Brand Split Showcase Container */}
+        {/* Brand Split Showcase Container */}
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center px-4 relative z-10 w-full">
-          
+
           {/* left side */}
           <div>
             <p className='text-gray-600 mb-3 font-semibold'>Welcome to Fresh Bites</p>
@@ -110,7 +110,7 @@ export default function App() {
         </div>
 
         <div className="max-w-4xl mx-auto text-center mt-25 space-y-6 relative z-10 mb-16">
-          
+
           {/* Mini Top Banner in Light Theme */}
           <span className="inline-block bg-amber-500/10 text-amber-700 text-[9px] md:text-xs font-black uppercase tracking-widest px-3 py-1 md:px-4 md:py-1.5 rounded-full border border-amber-500/20">
             ⚡ Fast Delivery (Within 5 KM in 45 Mins)
@@ -153,6 +153,76 @@ export default function App() {
             }
           </div>
         </div>
+
+        <div className='bg-white py-16'>
+          <div className='max-w-7xl mx-auto px-4'>
+
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-14 items-center'>
+
+              <div className='w-full'>
+                <img src="footer.png" alt="Food Delivery" className='w-full h-auto rounded-2xl object-cover' />
+              </div>
+
+              <div className='w-full'>
+                <h2 className='text-3xl md:text-4xl font-bold text-gray-900 mb-6'>
+                  Why <span className='bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent drop-shadow-sm'>Fresh Bites?</span>
+                </h2>
+
+                <p className='text-gray-600 mb-10 leading-relaxed text-base md:text-lg'>
+                  At Fresh Bites, we're not just a food service — we're a culinary journey.
+                  Discover the unparalleled freshness and taste that sets us apart.
+                  From farm-fresh ingredients to expertly crafted dishes, every bite
+                  is an experience worth savoring.
+                </p>
+
+                <ul className='space-y-8'>
+                  <li className='flex gap-4'>
+                    <span className='w-6 h-6 mt-1 rounded-full bg-red-500 text-white flex items-center justify-center text-sm'>
+                      ✓
+                    </span>
+                    <div>
+                      <h4 className='text-lg font-semibold text-gray-800'>
+                        Fresh And Testy Foods
+                      </h4>
+                      <p className='text-gray-600 mt-1'>
+                        Indulge in the irresistible flavors of our fresh and tasty.
+                      </p>
+                    </div>
+                  </li>
+
+                  <li className='flex gap-4'>
+                    <span className='w-6 h-6 mt-1 rounded-full bg-red-500 text-white flex items-center justify-center text-sm'>
+                      ✓
+                    </span>
+                    <div>
+                      <h4 className='text-lg font-semibold text-gray-800'>
+                        Quality support
+                      </h4>
+                      <p className='text-gray-600 mt-1'>
+                        Outstanding customer support with every order.
+                      </p>
+                    </div>
+                  </li>
+
+                  <li className='flex gap-4'>
+                    <span className='w-6 h-6 mt-1 rounded-full bg-red-500 text-white flex items-center justify-center text-sm'>
+                      ✓
+                    </span>
+                    <div>
+                      <h4 className='text-lg font-semibold text-gray-800'>
+                        Order from any location
+                      </h4>
+                      <p className='text-gray-600 mt-1'>
+                        Delicious food is always just a tap away.
+                      </p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </main>
 
       {/* 3. LIGHT BUSINESS LOGIC STRIP (Highlights) */}
