@@ -1,9 +1,11 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { FiTrash2, FiPlus, FiMinus, FiShoppingBag } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { FiTrash2, FiShoppingBag } from 'react-icons/fi';
 import { addToCart, decrementFromCart, removeFromCart } from '../../../redux/store';
 
 export default function Cart() {
+    const navigate = useNavigate(); // Initialize navigate
     const cart = useSelector((state) => state.cart);
     const items = cart.items || [];
     const dispatch = useDispatch();
@@ -20,7 +22,7 @@ export default function Cart() {
                         <div className="text-6xl mb-4 flex justify-center text-slate-300"><FiShoppingBag /></div>
                         <p className="text-slate-500 font-bold text-lg">Aapka cart abhi khali hai!</p>
                         <button 
-                            onClick={() => window.location.href = '/customer/dashboard'} 
+                            onClick={() => navigate('/customer/dashboard')} // Use navigate instead of window.location
                             className="mt-6 px-8 py-3 bg-slate-900 text-white rounded-xl font-black hover:bg-orange-500 transition-all shadow-lg shadow-slate-200"
                         >
                             Menu par wapas jayein
@@ -28,7 +30,7 @@ export default function Cart() {
                     </div>
                 ) : (
                     <div className="flex flex-col lg:flex-row gap-8 items-start">
-                        {/* Cart Items - Dashboard ke Cards jaisa style */}
+                        {/* Cart Items */}
                         <div className="flex-1 w-full space-y-4">
                             {items.map((item) => (
                                 <div key={item.id} className="bg-white p-4 sm:p-5 rounded-2xl flex items-center gap-4 sm:gap-6 shadow-sm border border-slate-200/80 hover:shadow-md transition-all">
@@ -39,7 +41,7 @@ export default function Cart() {
                                         <p className="text-orange-600 font-bold text-sm">₹{item.price}</p>
                                     </div>
 
-                                    {/* Quantity Controls - Dashboard ke jaisa UI */}
+                                    {/* Quantity Controls */}
                                     <div className="flex items-center bg-orange-500 text-white rounded-xl shadow-sm overflow-hidden p-1">
                                         <button onClick={() => dispatch(decrementFromCart(item.id))} className="w-7 h-7 flex items-center justify-center font-black hover:bg-orange-600 rounded-lg transition-all">-</button>
                                         <span className="w-8 text-center font-black text-sm">{item.quantity}</span>
