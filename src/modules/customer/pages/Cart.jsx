@@ -73,7 +73,7 @@ export default function Cart() {
                                 </div>
                                 
                                 <button className="w-full bg-slate-900 text-white py-4 rounded-xl font-black hover:bg-orange-500 transition-all shadow-lg shadow-orange-500/20">
-                                    Proceed to Checkout
+                                    Proceed to payment
                                 </button>
                             </div>
                         </div>
