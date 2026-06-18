@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-// Importing React Icons
-import { FiSearch, FiShoppingCart, FiMenu, FiX, FiLogOut, FiUser, FiShoppingBag, FiCoffee } from 'react-icons/fi';
-
+import { useDispatch, useSelector } from 'react-redux'; // Redux hooks import kiye
+import { FiSearch } from 'react-icons/fi';
 import CustomerHeader from '../../../components/CustomerHeader';
+import { addToCart, removeFromCart,decrementFromCart } from '../../../redux/store'; // Actions import kiye
 
 // Diamond Fry Center - Premium Catalogue
 export const MENU_ITEMS = [
@@ -19,14 +19,18 @@ const CATEGORIES = ['All', 'Chicken', 'Fish', 'Seafood', 'Burgers', 'Sides', 'Pl
 
 export default function CustomerDashboard() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    
+    // Redux se cart items lo
+    const cartItems = useSelector((state) => state.cart.items);
 
     const [activeTab, setActiveTab] = useState('menu');
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [cart, setCart] = useState({});
 
-    const cartCount = Object.values(cart).reduce((total, qty) => total + qty, 0);
+    // Cart count calculate karne ke liye
+    const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
     const filteredItems = useMemo(() => {
         return MENU_ITEMS.filter(item => {
@@ -37,15 +41,10 @@ export default function CustomerDashboard() {
         });
     }, [selectedCategory, searchQuery]);
 
-    const handleQuantityChange = (id, delta) => {
-        setCart(prev => {
-            const currentQty = prev[id] || 0;
-            const newQty = currentQty + delta;
-            const updated = { ...prev };
-            if (newQty <= 0) delete updated[id];
-            else updated[id] = newQty;
-            return updated;
-        });
+    // Quantity helper
+    const getQty = (id) => {
+        const item = cartItems.find(i => i.id === id);
+        return item ? item.quantity : 0;
     };
 
     const handleLogout = () => {
@@ -56,7 +55,6 @@ export default function CustomerDashboard() {
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased">
             
-            {/* Header Component Use kiya */}
             <CustomerHeader 
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
@@ -96,7 +94,7 @@ export default function CustomerDashboard() {
                                 ) : (
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                                         {filteredItems.map((item) => {
-                                            const qty = cart[item.id] || 0;
+                                            const qty = getQty(item.id);
                                             return (
                                                 <div key={item.id} onClick={() => navigate(`/product/${item.id}`)} className="bg-white border border-slate-200/80 rounded-2xl p-3 md:p-4 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group relative cursor-pointer">
                                                     <div>
@@ -116,12 +114,12 @@ export default function CustomerDashboard() {
                                                         <span className="text-xs md:text-sm font-black text-slate-950">₹{item.price}</span>
                                                         {qty > 0 ? (
                                                             <div className="flex items-center bg-orange-500 text-white rounded-lg md:rounded-xl shadow-sm overflow-hidden p-0.5" onClick={(e) => e.stopPropagation()}>
-                                                                <button onClick={() => handleQuantityChange(item.id, -1)} className="w-5 h-5 md:w-7 md:h-7 text-[10px] md:text-xs font-black hover:bg-orange-600 rounded-md md:rounded-lg transition-all">-</button>
+                                                                <button onClick={() => dispatch(decrementFromCart(item.id))} className="w-5 h-5 md:w-7 md:h-7 text-[10px] md:text-xs font-black hover:bg-orange-600 rounded-md md:rounded-lg transition-all">-</button>
                                                                 <span className="px-1.5 md:px-2.5 text-[10px] md:text-xs font-black">{qty}</span>
-                                                                <button onClick={() => handleQuantityChange(item.id, 1)} className="w-5 h-5 md:w-7 md:h-7 text-[10px] md:text-xs font-black hover:bg-orange-600 rounded-md md:rounded-lg transition-all">+</button>
+                                                                <button onClick={() => dispatch(addToCart(item))} className="w-5 h-5 md:w-7 md:h-7 text-[10px] md:text-xs font-black hover:bg-orange-600 rounded-md md:rounded-lg transition-all">+</button>
                                                             </div>
                                                         ) : (
-                                                            <button onClick={(e) => { e.stopPropagation(); handleQuantityChange(item.id, 1); }} className="bg-white hover:bg-orange-500 border border-orange-200 hover:border-transparent text-orange-500 hover:text-white font-black text-[9px] md:text-[10px] px-2.5 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl uppercase tracking-wider transition-all active:scale-95 shadow-sm">Add +</button>
+                                                            <button onClick={(e) => { e.stopPropagation(); dispatch(addToCart(item)); }} className="bg-white hover:bg-orange-500 border border-orange-200 hover:border-transparent text-orange-500 hover:text-white font-black text-[9px] md:text-[10px] px-2.5 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl uppercase tracking-wider transition-all active:scale-95 shadow-sm">Add +</button>
                                                         )}
                                                     </div>
                                                 </div>
