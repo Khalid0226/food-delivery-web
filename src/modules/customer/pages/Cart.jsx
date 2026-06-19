@@ -72,7 +72,7 @@ export default function Cart() {
                                     </div>
                                 </div>
                                 
-                                <button className="w-full bg-slate-900 text-white py-4 rounded-xl font-black hover:bg-orange-500 transition-all shadow-lg shadow-orange-500/20">
+                                <button onClick={()=>(navigate('/checkout'))} className="w-full bg-slate-900 text-white py-4 rounded-xl font-black hover:bg-orange-500 transition-all shadow-lg shadow-orange-500/20">
                                     Proceed to Checkout
                                 </button>
                             </div>

@@ -11,6 +11,8 @@ import CustomerDashboard from './modules/customer/pages/CustomerDashboard';
 import ProductDetails from './modules/customer/pages/ProductDetails/ProductDetails'
 import Cart from './modules/customer/pages/Cart'
 
+import Checkout from './modules/customer/pages/Checkout'
+
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
           <Route path="/customer/dashboard" element={<CustomerDashboard />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path='/cart' element={<Cart />}></Route>
+
+          <Route path='/checkout' element={<Checkout />}></Route>
         </Routes>
       </BrowserRouter>
     </div>

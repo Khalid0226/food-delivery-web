@@ -31,6 +31,12 @@ export default function ProductDetails() {
         else if (tab === 'settings') navigate('/customer/account');
     };
 
+    const handleBuyNow = () =>{
+        dispatch(addToCart(product))
+
+        navigate('/checkout')
+    }
+
     if (!product) return (
         <div className="min-h-screen flex items-center justify-center font-bold text-slate-600">
             Product nahi mila!
@@ -125,7 +131,7 @@ export default function ProductDetails() {
                                     </div>
                                 )}
 
-                                <button className="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white py-4 rounded-xl font-black shadow-lg shadow-orange-200 transition-all duration-300 active:scale-[0.98]">
+                                <button onClick={handleBuyNow} className="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white py-4 rounded-xl font-black shadow-lg shadow-orange-200 transition-all duration-300 active:scale-[0.98]">
                                     Buy Now
                                 </button>
                             </div>
