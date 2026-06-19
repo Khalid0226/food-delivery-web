@@ -35,9 +35,17 @@ const cartSlice = createSlice({
     removeFromCart: (state, action) => {
       state.items = state.items.filter(item => item.id !== action.payload);
       localStorage.setItem('cart', JSON.stringify(state.items));
-    }
-  }
-});
+    },
 
-export const { addToCart, decrementFromCart, removeFromCart } = cartSlice.actions;
+    // ... aapke purane reducers
+    clearCart: (state) => {
+      state.items = []; // Cart ko empty array kar deta hai
+      localStorage.removeItem('cart')
+    },
+  }
+}
+
+);
+
+export const { addToCart, decrementFromCart, removeFromCart, clearCart } = cartSlice.actions;
 export const store = configureStore({ reducer: { cart: cartSlice.reducer } });
