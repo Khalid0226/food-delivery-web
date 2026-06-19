@@ -13,6 +13,13 @@ export const MENU_ITEMS = [
     { id: 4, name: 'Peri Peri French Fries', category: 'Sides', price: 99, rating: 4.3, image: '/p-3.jpg', tags: 'Crispy', description: 'Fluffy potato fingers tossed in our signature smoky peri-peri blend.' },
     { id: 5, name: 'Garlic Butter Prawns Fry', category: 'Seafood', price: 349, rating: 4.9, image: '/p-4.jpg', tags: 'Premium', description: 'Jumbo prawns pan-seared with exquisite garlic clarified butter and fresh herbs.' },
     { id: 6, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-5.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
+    { id: 7, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/b-1.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
+    { id: 8, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/b-2.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
+    { id: 9, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-2.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
+    { id: 10, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-3.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
+    { id: 11, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-4.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
+    { id: 12, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-5.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
+
 ];
 
 const CATEGORIES = ['All', 'Chicken', 'Fish', 'Seafood', 'Burgers', 'Sides', 'Platters'];
