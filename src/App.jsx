@@ -13,6 +13,8 @@ import Cart from './modules/customer/pages/Cart'
 
 import Checkout from './modules/customer/pages/Checkout'
 
+import Footer from './components/layout/Footer'
+
 
 function App() {
   return (
@@ -32,6 +34,7 @@ function App() {
 
           <Route path='/checkout' element={<Checkout />}></Route>
         </Routes>
+        <Footer />
       </BrowserRouter>
     </div>
   )
