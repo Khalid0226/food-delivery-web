@@ -10,6 +10,7 @@ import Cart from './modules/customer/pages/Cart';
 import Checkout from './modules/customer/pages/Checkout';
 import TrackOrders from './modules/customer/pages/TrackOrders';
 import Layout from './components/layout/Layout';
+import Account from './modules/customer/pages/Account';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path='/cart' element={<Cart />} />
           <Route path='/checkout' element={<Checkout />} />
           <Route path="/customer/orders" element={<TrackOrders />} />
+          <Route path='/customer/account' element={<Account />}></Route>
         </Routes>
       </Layout>
     </BrowserRouter>
