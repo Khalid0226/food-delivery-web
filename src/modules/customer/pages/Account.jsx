@@ -71,32 +71,32 @@ export default function Account() {
                             </div>
                         )}
 
-                        {/* History Section - Responsive Fix */}
+                        {/* History Section - Single Line Fix for Mobile */}
                         {activeSection === 'history' && (
                             <div className="space-y-6">
                                 <h2 className="text-2xl font-black text-slate-900">Payment History</h2>
 
-                                <div className="space-y-4">
+                                <div className="space-y-3">
                                     {transactions.map((txn) => (
                                         <div
                                             key={txn.id}
-                                            className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-50 border-2 border-gray-100 transition"
+                                            className="flex items-center justify-between gap-2 p-4 rounded-xl bg-slate-50 border border-slate-100"
                                         >
-                                            {/* Left Part: Icon + ID */}
-                                            <div className="flex items-center gap-4 w-full">
-                                                <div className={`p-3 rounded-2xl flex-shrink-0 ${txn.status === 'Success' ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'}`}>
-                                                    {txn.status === 'Success' ? <FiCheckCircle size={20} /> : <FiAlertCircle size={20} />}
+                                            {/* Left: Icon + ID/Date */}
+                                            <div className="flex items-center gap-3 overflow-hidden">
+                                                <div className={`p-2 rounded-lg flex-shrink-0 ${txn.status === 'Success' ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'}`}>
+                                                    {txn.status === 'Success' ? <FiCheckCircle size={16} /> : <FiAlertCircle size={16} />}
                                                 </div>
-                                                <div className="overflow-hidden">
-                                                    <p className="font-black text-slate-900 truncate">{txn.id}</p>
-                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{txn.date}</p>
+                                                <div className="min-w-0">
+                                                    <p className="text-xs font-black text-slate-900 truncate">{txn.id}</p>
+                                                    <p className="text-[9px] font-bold text-slate-400 uppercase">{txn.date}</p>
                                                 </div>
                                             </div>
 
-                                            {/* Right Part: Amount (Mobile pe ye poori width lega) */}
-                                            <div className="w-full sm:w-auto text-left sm:text-right border-t sm:border-t-0 pt-3 sm:pt-0 border-gray-200">
-                                                <p className="font-black text-slate-900 text-lg">₹{txn.amount}</p>
-                                                <p className={`text-[10px] font-black uppercase ${txn.status === 'Success' ? 'text-emerald-600' : 'text-red-600'}`}>
+                                            {/* Right: Amount (Ek hi line mein) */}
+                                            <div className="text-right flex-shrink-0">
+                                                <p className="text-sm font-black text-slate-900">₹{txn.amount}</p>
+                                                <p className={`text-[9px] font-black uppercase ${txn.status === 'Success' ? 'text-emerald-600' : 'text-red-600'}`}>
                                                     {txn.status}
                                                 </p>
                                             </div>
