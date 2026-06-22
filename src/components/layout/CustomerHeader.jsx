@@ -17,7 +17,7 @@ export default function CustomerHeader({
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="relative flex items-center h-20">
                     {/* Logo */}
-                    <div className="flex items-center gap-3 flex-shrink-0 cursor-pointer" onClick={() => navigate('/customer/dashboard')}>
+                    <div className="flex items-center gap-3 flex-shrink-0 cursor-pointer" onClick={() => { setActiveTab("menu"); navigate('/customer/dashboard'); }}>
                         <img src="/images.jpg" alt="logo" className="w-10 h-10 md:w-12 md:h-12 object-contain rounded-xl border border-slate-200 bg-white p-1 shadow-sm" />
                         <div>
                             <h1 className="text-sm md:text-xl font-black tracking-wide text-[#FF1744]">
@@ -30,9 +30,9 @@ export default function CustomerHeader({
 
                     {/* Desktop Navigation */}
                     <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-10">
-                        <button onClick={() => setActiveTab("menu")} className={`flex items-center gap-2 text-sm font-bold uppercase border-b-2 pb-1 transition ${activeTab === "menu" ? "text-orange-500 border-orange-500" : "text-slate-500 border-transparent hover:text-black"}`}><FiCoffee /> Order Food</button>
-                        <button onClick={() => setActiveTab("orders")} className={`flex items-center gap-2 text-sm font-bold uppercase border-b-2 pb-1 transition ${activeTab === "orders" ? "text-orange-500 border-orange-500" : "text-slate-500 border-transparent hover:text-black"}`}><FiShoppingBag /> Track Orders</button>
-                        <button onClick={() => setActiveTab("settings")} className={`flex items-center gap-2 text-sm font-bold uppercase border-b-2 pb-1 transition ${activeTab === "settings" ? "text-orange-500 border-orange-500" : "text-slate-500 border-transparent hover:text-black"}`}><FiUser /> My Account</button>
+                        <button onClick={() => { setActiveTab("menu"); navigate('/customer/dashboard'); }} className={`flex items-center gap-2 text-sm font-bold uppercase border-b-2 pb-1 transition ${activeTab === "menu" ? "text-orange-500 border-orange-500" : "text-slate-500 border-transparent hover:text-black"}`}><FiCoffee /> Order Food</button>
+                        <button onClick={() => { setActiveTab("orders"); navigate('/customer/orders'); }} className={`flex items-center gap-2 text-sm font-bold uppercase border-b-2 pb-1 transition ${activeTab === "orders" ? "text-orange-500 border-orange-500" : "text-slate-500 border-transparent hover:text-black"}`}><FiShoppingBag /> Track Orders</button>
+                        <button onClick={() => { setActiveTab("settings"); navigate('/customer/account'); }} className={`flex items-center gap-2 text-sm font-bold uppercase border-b-2 pb-1 transition ${activeTab === "settings" ? "text-orange-500 border-orange-500" : "text-slate-500 border-transparent hover:text-black"}`}><FiUser /> My Account</button>
                     </nav>
 
                     {/* Desktop Cart & Logout */}
@@ -68,9 +68,9 @@ export default function CustomerHeader({
             {/* Mobile Menu Dropdown Panel */}
             {isMobileMenuOpen && (
                 <div className="md:hidden bg-white border-t border-slate-200 p-4 space-y-3 animate-in slide-in-from-top-2">
-                    <button onClick={() => { setActiveTab("menu"); setIsMobileMenuOpen(false); }} className="flex w-full items-center gap-3 p-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-lg"><FiCoffee /> Order Food</button>
-                    <button onClick={() => { setActiveTab("orders"); setIsMobileMenuOpen(false); }} className="flex w-full items-center gap-3 p-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-lg"><FiShoppingBag /> Track Orders</button>
-                    <button onClick={() => { setActiveTab("settings"); setIsMobileMenuOpen(false); }} className="flex w-full items-center gap-3 p-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-lg"><FiUser /> My Account</button>
+                    <button onClick={() => { setActiveTab("menu"); navigate('/customer/dashboard'); setIsMobileMenuOpen(false); }} className="flex w-full items-center gap-3 p-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-lg"><FiCoffee /> Order Food</button>
+                    <button onClick={() => { setActiveTab("orders"); navigate('/customer/orders'); setIsMobileMenuOpen(false); }} className="flex w-full items-center gap-3 p-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-lg"><FiShoppingBag /> Track Orders</button>
+                    <button onClick={() => { setActiveTab("settings"); navigate('/customer/account'); setIsMobileMenuOpen(false); }} className="flex w-full items-center gap-3 p-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-lg"><FiUser /> My Account</button>
                     <button onClick={handleLogout} className="flex w-full items-center gap-3 p-3 text-sm font-bold text-red-600 hover:bg-red-50 rounded-lg border-t"><FiLogOut /> Logout</button>
                 </div>
             )}

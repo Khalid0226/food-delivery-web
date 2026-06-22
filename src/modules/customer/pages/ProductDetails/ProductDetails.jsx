@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux'; // useSelector import kiya
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MENU_ITEMS } from '../CustomerDashboard';
-import CustomerHeader from '../../../../components/CustomerHeader';
 import { FiMinus, FiPlus } from 'react-icons/fi';
-import { addToCart, removeFromCart,decrementFromCart } from '../../../../redux/store'; // removeFromCart import kiya
+import { addToCart, decrementFromCart } from '../../../../redux/store';
 
 export default function ProductDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     // Redux store se data fetch karein
     const cartItems = useSelector((state) => state.cart.items);
@@ -21,21 +18,10 @@ export default function ProductDetails() {
     const cartItem = cartItems.find(item => item.id === parseInt(id));
     const quantity = cartItem ? cartItem.quantity : 0;
 
-    // Header ke liye total count (sab items ka sum)
-    const totalCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-
-    // Navigation handle karne ka function
-    const handleTabChange = (tab) => {
-        if (tab === 'menu') navigate('/customer/dashboard');
-        else if (tab === 'orders') navigate('/customer/orders');
-        else if (tab === 'settings') navigate('/customer/account');
+    const handleBuyNow = () => {
+        dispatch(addToCart(product));
+        navigate('/checkout');
     };
-
-    const handleBuyNow = () =>{
-        dispatch(addToCart(product))
-
-        navigate('/checkout')
-    }
 
     if (!product) return (
         <div className="min-h-screen flex items-center justify-center font-bold text-slate-600">
@@ -45,17 +31,7 @@ export default function ProductDetails() {
 
     return (
         <div className="min-h-screen bg-slate-50">
-            {/* Header Component */}
-            <CustomerHeader
-                setActiveTab={handleTabChange}
-                cartCount={totalCartCount} // Redux se dynamic count
-                isMobileMenuOpen={isMobileMenuOpen}
-                setIsMobileMenuOpen={setIsMobileMenuOpen}
-                handleLogout={() => {
-                    localStorage.removeItem('isCustomerLoggedIn');
-                    navigate('/Login');
-                }}
-            />
+            {/* Header ko yahan se hata diya gaya hai kyunki Layout handle kar raha hai */}
 
             {/* Main Content */}
             <div className="py-10 px-4 md:px-20">

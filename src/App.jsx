@@ -1,43 +1,38 @@
-import React from 'react'
-import Landing from './Landing'
-import Register from './auth/Register'
-import { BrowserRouter,Routes,Route } from 'react-router-dom'
-import Login from './auth/Login'
-import ForgotPassword from './auth/ForgotPassword'
-
-
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Landing from './Landing';
+import Register from './auth/Register';
+import Login from './auth/Login';
+import ForgotPassword from './auth/ForgotPassword';
 import CustomerDashboard from './modules/customer/pages/CustomerDashboard';
-
-import ProductDetails from './modules/customer/pages/ProductDetails/ProductDetails'
-import Cart from './modules/customer/pages/Cart'
-
-import Checkout from './modules/customer/pages/Checkout'
-
-import Footer from './components/layout/Footer'
-
+import ProductDetails from './modules/customer/pages/ProductDetails/ProductDetails';
+import Cart from './modules/customer/pages/Cart';
+import Checkout from './modules/customer/pages/Checkout';
+import TrackOrders from './modules/customer/pages/TrackOrders';
+import Layout from './components/layout/Layout';
 
 function App() {
   return (
-    <div>
-      
-      <BrowserRouter>
-      
+    <BrowserRouter>
+      {/* Layout ko BrowserRouter ke andar rakha gaya hai taaki useLocation hook kaam kare */}
+      <Layout>
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<Landing />} />
-          <Route path='/Register' element={<Register />}></Route>
-          <Route path='/login' element={<Login />}></Route>
+          <Route path='/register' element={<Register />} />
+          <Route path='/login' element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
 
+          {/* Customer Routes */}
           <Route path="/customer/dashboard" element={<CustomerDashboard />} />
           <Route path="/product/:id" element={<ProductDetails />} />
-          <Route path='/cart' element={<Cart />}></Route>
-
-          <Route path='/checkout' element={<Checkout />}></Route>
+          <Route path='/cart' element={<Cart />} />
+          <Route path='/checkout' element={<Checkout />} />
+          <Route path="/customer/orders" element={<TrackOrders />} />
         </Routes>
-        <Footer />
-      </BrowserRouter>
-    </div>
-  )
+      </Layout>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

@@ -1,9 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux'; // Redux hooks import kiye
+import { useDispatch, useSelector } from 'react-redux'; 
 import { FiSearch } from 'react-icons/fi';
-import CustomerHeader from '../../../components/CustomerHeader';
-import { addToCart, removeFromCart,decrementFromCart } from '../../../redux/store'; // Actions import kiye
+import { addToCart, removeFromCart, decrementFromCart } from '../../../redux/store'; 
 
 // Diamond Fry Center - Premium Catalogue
 export const MENU_ITEMS = [
@@ -19,7 +18,6 @@ export const MENU_ITEMS = [
     { id: 10, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-3.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
     { id: 11, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-4.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
     { id: 12, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-5.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
-
 ];
 
 const CATEGORIES = ['All', 'Chicken', 'Fish', 'Seafood', 'Burgers', 'Sides', 'Platters'];
@@ -28,16 +26,11 @@ export default function CustomerDashboard() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     
-    // Redux se cart items lo
     const cartItems = useSelector((state) => state.cart.items);
 
     const [activeTab, setActiveTab] = useState('menu');
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-    // Cart count calculate karne ke liye
-    const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
     const filteredItems = useMemo(() => {
         return MENU_ITEMS.filter(item => {
@@ -48,29 +41,13 @@ export default function CustomerDashboard() {
         });
     }, [selectedCategory, searchQuery]);
 
-    // Quantity helper
     const getQty = (id) => {
         const item = cartItems.find(i => i.id === id);
         return item ? item.quantity : 0;
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem('isCustomerLoggedIn');
-        navigate('/Login');
-    };
-
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased">
-            
-            <CustomerHeader 
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-                cartCount={cartCount}
-                isMobileMenuOpen={isMobileMenuOpen}
-                setIsMobileMenuOpen={setIsMobileMenuOpen}
-                handleLogout={handleLogout}
-            />
-
             <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {activeTab === 'menu' && (
                     <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
