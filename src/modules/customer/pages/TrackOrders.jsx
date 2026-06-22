@@ -1,92 +1,87 @@
 import React, { useState, useMemo } from 'react';
-import { FiClock, FiCheckCircle, FiTruck, FiBox, FiSearch, FiChevronRight } from 'react-icons/fi';
+import { FiPackage, FiClock, FiCheckCircle, FiTruck, FiBox, FiArrowRight, FiSearch } from 'react-icons/fi';
 
 export default function TrackOrders() {
     const [searchTerm, setSearchTerm] = useState('');
-    const [filter, setFilter] = useState('All');
+    const [filter, setFilter] = useState('All'); // 'All', 'Active', 'Delivered'
 
     const orders = [
         { id: 'ORD-12345', status: 'Delivered', date: 'June 22, 2026', total: 1780, items: ['Executive Chicken Platter', 'Spicy Fish Fry'] },
-        { id: 'ORD-12346', status: 'In Transit', date: 'June 22, 2026', total: 1454, items: ['Diamond Double Chicken Burger'] },
-        { id: 'ORD-12347', status: 'Preparing', date: 'June 22, 2026', total: 999, items: ['Crispy Chicken Fry', 'Coca Cola'] },
+        { id: 'ORD-12346', status: 'In Transit', date: 'June 22, 2026', total: 1454, items: ['Diamond Double Chicken Burger', 'Spicy Fish Fry'] },
+        { id: 'ORD-12347', status: 'Preparing', date: 'June 22, 2026', total: 999, items: ['Crispy Chicken Fry'] },
     ];
 
+    // Filter logic
     const filteredOrders = useMemo(() => {
         return orders.filter(order => {
             const matchesSearch = order.id.toLowerCase().includes(searchTerm.toLowerCase());
-            const matchesFilter = filter === 'All' ? true : 
-                                  filter === 'Active' ? ['In Transit', 'Preparing'].includes(order.status) : 
-                                  order.status === filter;
+            const matchesFilter = filter === 'All' ? true :
+                filter === 'Active' ? ['In Transit', 'Preparing'].includes(order.status) :
+                    order.status === filter;
             return matchesSearch && matchesFilter;
         });
     }, [searchTerm, filter]);
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] py-12 px-4 md:px-20">
-            <div className="max-w-4xl mx-auto">
-                {/* Header */}
-                <div className="mb-10">
-                    <h1 className="text-4xl font-[900] text-slate-900 tracking-tighter mb-2">Order History</h1>
-                    <p className="text-slate-500 font-medium">Your recent culinary adventures.</p>
-                </div>
+        <div className="min-h-screen bg-slate-50 py-10 px-4 md:px-20">
+            <div className="max-w-3xl mx-auto">
+                <h1 className="text-3xl font-black text-slate-900 mb-6 tracking-tighter">Your Orders</h1>
 
-                {/* Controls */}
-                <div className="flex flex-col md:flex-row gap-4 mb-10">
-                    <div className="relative flex-grow group">
-                        <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-500" />
-                        <input 
-                            className="w-full pl-12 pr-6 py-4 bg-white rounded-2xl border-none shadow-[0_4px_20px_rgba(0,0,0,0.05)] focus:ring-2 focus:ring-orange-500 outline-none transition-all duration-300 font-semibold"
+                {/* Search & Filter Bar */}
+                <div className="flex flex-col md:flex-row gap-4 mb-8">
+                    <div className="relative flex-grow">
+                        <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <input
+                            type="text"
                             placeholder="Search by Order ID..."
+                            className="w-full pl-12 pr-4 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-orange-500 outline-none transition"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
-                    <select 
-                        className="px-6 py-4 bg-white rounded-2xl border-none shadow-[0_4px_20px_rgba(0,0,0,0.05)] font-bold text-slate-700 outline-none cursor-pointer hover:text-orange-600 transition-colors"
+                    <select
+                        className="px-4 py-3 rounded-2xl border border-slate-200 font-bold text-slate-700 outline-none"
                         onChange={(e) => setFilter(e.target.value)}
                     >
                         <option value="All">All Status</option>
-                        <option value="Active">Active Orders</option>
+                        <option value="Active">Active</option>
                         <option value="Delivered">Delivered</option>
                     </select>
                 </div>
 
-                {/* Orders Grid */}
+                {/* Orders List */}
                 <div className="space-y-6">
                     {filteredOrders.length > 0 ? (
                         filteredOrders.map((order) => (
-                            <div key={order.id} className="group bg-white p-6 rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(255,100,0,0.1)] transition-all duration-300 hover:-translate-y-1">
-                                <div className="flex flex-col md:flex-row gap-6 items-center">
-                                    {/* Icon Box */}
-                                    <div className={`p-4 rounded-2xl ${getStatusStyles(order.status).bg}`}>
-                                        {getStatusStyles(order.status).icon}
-                                    </div>
+                            <div key={order.id} className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300">                         <div className="flex justify-between items-start mb-6">
+                                <div>
+                                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1">Order #{order.id}</p>
+                                    <p className="text-slate-500 text-sm font-medium">{order.date}</p>
+                                </div>
+                                <StatusBadge status={order.status} />
+                            </div>
 
-                                    {/* Info */}
-                                    <div className="flex-grow text-center md:text-left">
-                                        <div className="flex flex-col md:flex-row md:items-center gap-2 mb-1">
-                                            <h3 className="text-lg font-black text-slate-900">{order.id}</h3>
-                                            <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase ${getStatusStyles(order.status).text} ${getStatusStyles(order.status).bg}`}>
-                                                {order.status}
-                                            </span>
+                                <div className="mb-6 space-y-2">
+                                    {order.items.map((item, idx) => (
+                                        <div key={idx} className="flex justify-between text-sm">
+                                            <span className="text-slate-700">{item}</span>
+                                            <span className="text-slate-400 font-medium">x1</span>
                                         </div>
-                                        <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest">{order.date} • {order.items.length} Items</p>
-                                    </div>
+                                    ))}
+                                </div>
 
-                                    {/* Price & Detail Button */}
-                                    <div className="flex items-center gap-6">
-                                        <span className="text-xl font-black text-slate-900">₹{order.total}</span>
-                                        <button className="p-3 bg-slate-50 group-hover:bg-orange-500 group-hover:text-white rounded-xl transition-all duration-300">
-                                            <FiChevronRight size={20} />
-                                        </button>
-                                    </div>
+                                <div className="flex items-center justify-between pt-6 border-t border-slate-100">
+                                    <p className="text-lg font-black text-slate-900">₹{order.total}</p>
+                                    <button className="flex items-center gap-2 text-sm font-bold text-orange-600 hover:gap-3 transition-all">
+                                        View Details <FiArrowRight />
+                                    </button>
                                 </div>
                             </div>
                         ))
                     ) : (
-                        <div className="text-center py-20">
-                            <FiBox size={60} className="mx-auto mb-4 text-slate-300" />
-                            <p className="font-bold text-slate-400">No orders found.</p>
+                        <div className="text-center py-20 text-slate-400">
+                            <FiBox size={48} className="mx-auto mb-4 opacity-50" />
+                            <p className="font-bold">No orders found matching your criteria.</p>
                         </div>
                     )}
                 </div>
@@ -95,11 +90,18 @@ export default function TrackOrders() {
     );
 }
 
-function getStatusStyles(status) {
-    const styles = {
-        'Delivered': { bg: 'bg-emerald-50', text: 'text-emerald-600', icon: <FiCheckCircle size={24} className="text-emerald-600" /> },
-        'In Transit': { bg: 'bg-blue-50', text: 'text-blue-600', icon: <FiTruck size={24} className="text-blue-600" /> },
-        'Preparing': { bg: 'bg-orange-50', text: 'text-orange-600', icon: <FiClock size={24} className="text-orange-600" /> }
+function StatusBadge({ status }) {
+    const config = {
+        'Delivered': { color: 'bg-emerald-50 text-emerald-600', icon: <FiCheckCircle /> },
+        'In Transit': { color: 'bg-blue-50 text-blue-600', icon: <FiTruck /> },
+        'Preparing': { color: 'bg-orange-50 text-orange-600', icon: <FiClock /> }
     };
-    return styles[status] || styles['Preparing'];
+    const { color, icon } = config[status] || { color: 'bg-slate-100 text-slate-600', icon: <FiPackage /> };
+    return (
+        <span className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${color}`}>
+            {icon} {status}
+        </span>
+    );
 }
+
+// isi ko kr ne
