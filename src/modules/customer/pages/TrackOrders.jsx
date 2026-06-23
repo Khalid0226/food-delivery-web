@@ -1,9 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { FiPackage, FiClock, FiCheckCircle, FiTruck, FiBox, FiArrowRight, FiSearch } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 
 export default function TrackOrders() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filter, setFilter] = useState('All'); // 'All', 'Active', 'Delivered'
+
+    const navigate = useNavigate()
 
     const orders = [
         { id: 'ORD-12345', status: 'Delivered', date: 'June 22, 2026', total: 1780, items: ['Executive Chicken Platter', 'Spicy Fish Fry'] },
@@ -72,7 +75,7 @@ export default function TrackOrders() {
 
                                 <div className="flex items-center justify-between pt-6 border-t border-slate-100">
                                     <p className="text-lg font-black text-slate-900">₹{order.total}</p>
-                                    <button className="flex items-center gap-2 text-sm font-bold text-orange-600 hover:gap-3 transition-all">
+                                    <button onClick={()=>navigate(`/order/${order.id}`)} className="flex items-center gap-2 text-sm font-bold text-orange-600 hover:gap-3 transition-all">
                                         View Details <FiArrowRight />
                                     </button>
                                 </div>

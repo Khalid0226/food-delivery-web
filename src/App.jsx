@@ -12,6 +12,8 @@ import TrackOrders from './modules/customer/pages/TrackOrders';
 import Layout from './components/layout/Layout';
 import Account from './modules/customer/pages/Account';
 
+import OrderDetails from './modules/customer/pages/OrderDetails';
+
 function App() {
   return (
     <BrowserRouter>
@@ -31,6 +33,8 @@ function App() {
           <Route path='/checkout' element={<Checkout />} />
           <Route path="/customer/orders" element={<TrackOrders />} />
           <Route path='/customer/account' element={<Account />}></Route>
+
+          <Route path='/order/:orderId' element={<OrderDetails />}></Route>
         </Routes>
       </Layout>
     </BrowserRouter>

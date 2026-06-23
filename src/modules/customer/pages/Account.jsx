@@ -109,8 +109,8 @@ export default function Account() {
                         {activeSection === 'security' && (
                             <div className="space-y-6">
                                 <h2 className="text-2xl font-black text-slate-900">Security</h2>
-                                <button className="w-full flex justify-between p-6 bg-slate-50 border-2 border-gray-100 rounded-2xl font-bold hover:bg-slate-100">Change Password <span>→</span></button>
-                                <button className="w-full flex justify-between p-6 bg-slate-50 border-2 border-gray-100 rounded-2xl font-bold hover:bg-slate-100">Two-Factor Authentication <span>→</span></button>
+                                <button className="w-full flex justify-between p-6 bg-slate-100 border-2 border-gray-100 rounded-2xl font-bold hover:bg-slate-100">Change Password <span>→</span></button>
+                                <button className="w-full flex justify-between p-6 bg-slate-100 border-2 border-gray-100 rounded-2xl font-bold hover:bg-slate-100">Two-Factor Authentication <span>→</span></button>
                             </div>
                         )}
                     </main>
