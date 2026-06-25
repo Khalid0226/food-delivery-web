@@ -15,7 +15,7 @@ const data = [
 export default function AdminDashboard() {
   return (
     <AdminLayout>
-      <AdminHeader title="Dashboard" subtitle="Welcome back, Pintu. Here is the report." />
+      <AdminHeader />
       
       {/* 1. Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 mt-10">

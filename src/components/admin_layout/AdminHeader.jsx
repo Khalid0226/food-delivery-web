@@ -19,7 +19,7 @@ export default function AdminHeader({ toggleSidebar }) {
 
             {/* Right: Actions */}
             {/* gap-4 se icons aur button ke beech acchi margin aa jayegi */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
 
                 {/* Notification Bell */}
                 <button className="p-2 bg-white border border-slate-200 text-slate-600 rounded-lg hover:bg-amber-50 transition-all relative">
