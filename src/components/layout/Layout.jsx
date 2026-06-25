@@ -14,18 +14,23 @@ export default function Layout({ children }) {
   const cartItems = useSelector((state) => state.cart.items);
   const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
+  // Path check
   const hideLayoutPaths = ['/', '/login', '/register', '/forgot-password'];
   const showLayout = !hideLayoutPaths.includes(location.pathname.toLowerCase());
 
+  // Check if current path is admin path
+  const isAdminPath = location.pathname.toLowerCase().startsWith('/admin');
+
   const handleLogout = () => {
     localStorage.removeItem('isCustomerLoggedIn');
+    localStorage.removeItem('userRole'); // Ensure role is cleared
     navigate('/login');
   };
 
   return (
-    // 'h-screen' aur 'overflow-hidden' lagane se pura page layout fix ho jata hai
     <div className="flex flex-col h-screen overflow-hidden">
-      {showLayout && (
+      {/* Sirf tab dikhaye jab path admin na ho aur layout enabled ho */}
+      {showLayout && !isAdminPath && (
         <CustomerHeader 
           activeTab={activeTab}
           setActiveTab={setActiveTab}
@@ -36,12 +41,11 @@ export default function Layout({ children }) {
         />
       )}
       
-      {/* Scroll sirf 'main' content ke andar hoga, jisse header/footer stable rahenge */}
       <main className="flex-grow overflow-y-auto scroll-smooth">
         {children}
         
-        {/* Footer ko main content ke niche rakha gaya hai taaki scroll ke saath move kare */}
-        {showLayout && <Footer />}
+        {/* Footer bhi tabhi dikhaye jab admin na ho */}
+        {showLayout && !isAdminPath && <Footer />}
       </main>
     </div>
   );

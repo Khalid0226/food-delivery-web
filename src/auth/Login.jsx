@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
 
     // 1. Form Data State
     const [formData, setFormData] = useState({
@@ -51,17 +52,29 @@ export default function Login() {
         return valid;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (validateForm()) {
-            console.log("Login Credentials Verified:", formData);
-            alert("Authentication Successful! Redirecting to dashboard...");
+            setIsLoading(true); 
             
-            // 🔒 CREATE SESSION LOGIC
+            // Simulating API latency
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+            
+            console.log("Login Credentials Verified:", formData);
+            
+            // 🔒 SESSION & ROLE LOGIC
             localStorage.setItem('isCustomerLoggedIn', 'true');
             
-            // Redirect straight to dashboard
-            navigate('/customer/dashboard');
+            // Role detection logic
+            if (formData.email.toLowerCase().includes('admin')) {
+                localStorage.setItem('userRole', 'admin');
+                navigate('/admin/dashboard');
+            } else {
+                localStorage.setItem('userRole', 'customer');
+                navigate('/customer/dashboard');
+            }
+            
+            setIsLoading(false);
         }
     };
 
@@ -101,7 +114,6 @@ export default function Login() {
                             className={`w-full text-sm px-4 py-3 rounded-xl border ${errors.email ? 'border-red-500 bg-red-50/10 focus:ring-red-500/10 focus:border-red-500' : 'border-slate-200 bg-slate-50/50 focus:border-amber-500 focus:ring-amber-500/10'} focus:bg-white focus:ring-4 transition-all outline-none`}
                         />
 
-                        {/* 👀 Sub-label Section */}
                         <div className="mt-1.5 px-0.5 min-h-[18px]">
                             {errors.email && (
                                 <span className="text-[11px] text-red-500 font-bold block">
@@ -125,7 +137,6 @@ export default function Login() {
                             className={`w-full text-sm px-4 py-3 rounded-xl border ${errors.password ? 'border-red-500 bg-red-50/10 focus:ring-red-500/10 focus:border-red-500' : 'border-slate-200 bg-slate-50/50 focus:border-amber-500 focus:ring-amber-500/10'} focus:bg-white focus:ring-4 transition-all outline-none`}
                         />
 
-                        {/* 👀 Sub-label Section */}
                         <div className="flex justify-between items-start mt-1.5 px-0.5 min-h-[18px]">
                             <div>
                                 {errors.password && (
@@ -147,9 +158,10 @@ export default function Login() {
                     {/* Premium Submit Button */}
                     <button
                         type="submit"
-                        className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-[0.98] text-white font-black text-sm py-3.5 rounded-xl shadow-lg shadow-amber-500/20 transition-all uppercase tracking-widest border border-amber-400/10 mt-4 cursor-pointer"
+                        disabled={isLoading}
+                        className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-[0.98] text-white font-black text-sm py-3.5 rounded-xl shadow-lg shadow-amber-500/20 transition-all uppercase tracking-widest border border-amber-400/10 mt-4 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
                     >
-                        Authenticate 🚀
+                        {isLoading ? 'Authenticating...' : 'Authenticate 🚀'}
                     </button>
                 </form>
 

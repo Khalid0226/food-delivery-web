@@ -40,7 +40,7 @@ export default function CustomerHeader({
                         <div onClick={() => navigate('/cart')} className="relative cursor-pointer group">
                             <FiShoppingCart className="text-2xl" />
                             {cartCount > 0 && (
-                                <span className="absolute -top-2 -right-2 bg-[#FF1744] text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full shadow-md animate-in zoom-in">
+                                <span className="absolute -top-2 -right-2 bg-[#FF1744] text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full shadow-md">
                                     {cartCount}
                                 </span>
                             )}
@@ -65,9 +65,9 @@ export default function CustomerHeader({
                 </div>
             </div>
 
-            {/* Mobile Menu Dropdown Panel */}
+            {/* Mobile Menu Dropdown */}
             {isMobileMenuOpen && (
-                <div className="md:hidden bg-white border-t border-slate-200 p-4 space-y-3 animate-in slide-in-from-top-2">
+                <div className="md:hidden bg-white border-t border-slate-200 p-4 space-y-3">
                     <button onClick={() => { setActiveTab("menu"); navigate('/customer/dashboard'); setIsMobileMenuOpen(false); }} className="flex w-full items-center gap-3 p-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-lg"><FiCoffee /> Order Food</button>
                     <button onClick={() => { setActiveTab("orders"); navigate('/customer/orders'); setIsMobileMenuOpen(false); }} className="flex w-full items-center gap-3 p-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-lg"><FiShoppingBag /> Track Orders</button>
                     <button onClick={() => { setActiveTab("settings"); navigate('/customer/account'); setIsMobileMenuOpen(false); }} className="flex w-full items-center gap-3 p-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-lg"><FiUser /> My Account</button>
