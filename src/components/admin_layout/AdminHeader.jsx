@@ -19,7 +19,7 @@ export default function AdminHeader({ toggleSidebar }) {
 
             {/* Right: Actions */}
             {/* gap-4 se icons aur button ke beech acchi margin aa jayegi */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
 
                 {/* Notification Bell */}
                 <button className="p-2 bg-white border border-slate-200 text-slate-600 rounded-lg hover:bg-amber-50 transition-all relative">
@@ -37,7 +37,7 @@ export default function AdminHeader({ toggleSidebar }) {
 
                 {/* 2. Logout Button (Desktop Only) */}
                 <button
-                    className="hidden md:flex items-center gap-2 bg-white border border-slate-200 text-slate-600 font-bold text-[10px] px-4 py-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition-all"
+                    className="hidden md:flex items-center gap-1 bg-white border border-slate-200 text-slate-600 font-bold text-[10px] px-4 py-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition-all"
                 >
                     <FiLogOut size={12} /> LOGOUT
                 </button>
