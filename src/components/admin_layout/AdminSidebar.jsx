@@ -1,10 +1,10 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { FiPackage, FiUsers, FiTrendingUp, FiSettings, FiLogOut } from 'react-icons/fi';
 
 export default function AdminSidebar() {
   return (
-    // Sidebar background ko white/light gray rakha hai taaki main layout ke saath match kare
-    <aside className="w-64 bg-white border-r border-slate-200 p-6 flex flex-col h-screen fixed top-0 left-0">
+    <aside className="w-64 bg-white border-r border-slate-200 p-6 flex flex-col h-screen fixed top-0 left-0 z-40">
       
       {/* Brand */}
       <div className="mb-10 px-2">
@@ -15,10 +15,10 @@ export default function AdminSidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 space-y-1">
-        <NavItem icon={<FiTrendingUp />} label="Overview" active />
-        <NavItem icon={<FiPackage />} label="Orders" />
-        <NavItem icon={<FiUsers />} label="Customers" />
-        <NavItem icon={<FiSettings />} label="Settings" />
+        <NavItem to="/admin/dashboard" icon={<FiTrendingUp />} label="Overview" />
+        <NavItem to="/admin/orders" icon={<FiPackage />} label="Orders" />
+        <NavItem to="/admin/customers" icon={<FiUsers />} label="Customers" />
+        <NavItem to="/admin/settings" icon={<FiSettings />} label="Settings" />
       </nav>
 
       {/* Logout Footer */}
@@ -31,15 +31,20 @@ export default function AdminSidebar() {
   );
 }
 
-function NavItem({ icon, label, active }) {
+function NavItem({ to, icon, label }) {
   return (
-    <div className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer font-bold transition-all duration-200 ${
-        active 
-          ? 'bg-amber-50 text-amber-600' 
-          : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
-      }`}>
+    <NavLink 
+      to={to}
+      className={({ isActive }) => 
+        `flex items-center gap-3 p-3 rounded-xl font-bold transition-all duration-200 text-sm ${
+          isActive 
+            ? 'bg-amber-50 text-amber-600' 
+            : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+        }`
+      }
+    >
       <span className="text-lg">{icon}</span>
-      <span className="text-sm">{label}</span>
-    </div>
+      <span>{label}</span>
+    </NavLink>
   );
 }
