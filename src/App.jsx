@@ -16,6 +16,7 @@ import OrderDetails from './modules/customer/pages/OrderDetails';
 
 import AdminDashboard from './modules/admin/AdminDashboard';
 import Orders from './modules/admin/Orders';
+import Customers from './modules/admin/Customers';
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
           {/* admin */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path='/admin/orders' element={<Orders />}></Route>
+          <Route path='/admin/customers' element={<Customers />}></Route>
         </Routes>
       </Layout>
     </BrowserRouter>

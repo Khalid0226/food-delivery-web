@@ -19,19 +19,9 @@ export default function Orders() {
         { id: '#ORD-006', customer: 'Priya Singh', total: '₹890', status: 'Completed', item: 'Chicken Biryani', time: '1 hour ago' },
         { id: '#ORD-007', customer: 'Amit Verma', total: '₹1,250', status: 'Processing', item: 'Family Combo Pack', time: '2 hours ago' },
         { id: '#ORD-008', customer: 'Suresh Rao', total: '₹320', status: 'Pending', item: 'Veg Burger', time: '3 hours ago' },
-        { id: '#ORD-009', customer: 'Rahul Kumar', total: '₹450', status: 'Pending', item: 'Double Egg Roll', time: '10 min ago' },
-        { id: '#ORD-010', customer: 'Priya Singh', total: '₹890', status: 'Completed', item: 'Chicken Biryani', time: '1 hour ago' },
-        { id: '#ORD-011', customer: 'Amit Verma', total: '₹1,250', status: 'Processing', item: 'Family Combo Pack', time: '2 hours ago' },
-        { id: '#ORD-012', customer: 'Suresh Rao', total: '₹320', status: 'Pending', item: 'Veg Burger', time: '3 hours ago' },
-        { id: '#ORD-013', customer: 'Rahul Kumar', total: '₹450', status: 'Pending', item: 'Double Egg Roll', time: '10 min ago' },
-        { id: '#ORD-014', customer: 'Priya Singh', total: '₹890', status: 'Completed', item: 'Chicken Biryani', time: '1 hour ago' },
-        { id: '#ORD-015', customer: 'Amit Verma', total: '₹1,250', status: 'Processing', item: 'Family Combo Pack', time: '2 hours ago' },
-        { id: '#ORD-016', customer: 'Suresh Rao', total: '₹320', status: 'Pending', item: 'Veg Burger', time: '3 hours ago' },
     ]);
 
-    const toggleMenu = (id) => {
-        setActiveMenuId(activeMenuId === id ? null : id);
-    };
+    const toggleMenu = (id) => setActiveMenuId(activeMenuId === id ? null : id);
 
     const updateStatus = (id, newStatus) => {
         setOrders(orders.map(order => order.id === id ? { ...order, status: newStatus } : order));
@@ -39,15 +29,12 @@ export default function Orders() {
     };
 
     const filteredOrders = orders.filter((order) => {
-        const matchesSearch = order.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            order.id.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearch = order.customer.toLowerCase().includes(searchTerm.toLowerCase()) || order.id.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesStatus = statusFilter === "All" || order.status === statusFilter;
         return matchesSearch && matchesStatus;
     });
 
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentOrders = filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
+    const currentOrders = filteredOrders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
     const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
     return (
@@ -81,49 +68,45 @@ export default function Orders() {
                     </div>
 
                     <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
+                        {/* table-fixed use kiya hai taaki columns equal space le sakein */}
+                        <table className="w-full text-left table-fixed min-w-[800px]">
                             <thead>
                                 <tr className="bg-slate-50/50">
-                                    <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Order Details</th>
-                                    <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Customer</th>
-                                    <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden md:table-cell">Amount</th>
-                                    <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                                    <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden md:table-cell">Time</th>
-                                    <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest"></th>
+                                    <th className="w-[25%] px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Order Details</th>
+                                    <th className="w-[20%] px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Customer</th>
+                                    <th className="w-[15%] px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Amount</th>
+                                    <th className="w-[15%] px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                                    <th className="w-[15%] px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Time</th>
+                                    <th className="w-[10%] px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Action</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100">
                                 {currentOrders.length > 0 ? (
                                     currentOrders.map((order) => (
                                         <tr key={order.id} className="hover:bg-amber-50/30 transition-all">
-                                            <td className="px-6 py-4">
-                                                <p className="font-bold text-slate-950 text-sm">{order.id}</p>
-                                                <p className="text-[10px] text-slate-500">{order.item}</p>
+                                            <td className="px-6 py-4 truncate">
+                                                <p className="font-bold text-slate-950 text-sm truncate">{order.id}</p>
+                                                <p className="text-[10px] text-slate-500 truncate">{order.item}</p>
                                             </td>
-                                            <td className="px-6 py-4 font-bold text-slate-700 text-sm">{order.customer}</td>
-                                            <td className="px-6 py-4 hidden md:table-cell font-bold text-slate-950">{order.total}</td>
+                                            <td className="px-6 py-4 font-bold text-slate-700 text-sm truncate">{order.customer}</td>
+                                            <td className="px-6 py-4 font-bold text-slate-950 truncate">{order.total}</td>
                                             <td className="px-6 py-4">
-                                                <span className={`px-2 py-1 rounded-lg text-[9px] font-black uppercase ${order.status === 'Pending' ? 'bg-amber-100 text-amber-700' :
-                                                        order.status === 'Completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'
-                                                    }`}>
+                                                <span className={`px-2 py-1 rounded-lg text-[9px] font-black uppercase ${order.status === 'Pending' ? 'bg-amber-100 text-amber-700' : order.status === 'Completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'}`}>
                                                     {order.status}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-4 hidden md:table-cell text-xs font-semibold text-slate-500">{order.time}</td>
-                                            <td className="px-6 py-4 text-right">
-                                                <div className="relative">
-                                                    <button onClick={() => toggleMenu(order.id)} className="p-2 hover:bg-slate-100 rounded-lg">
-                                                        <FiMoreVertical />
-                                                    </button>
-
-                                                    {activeMenuId === order.id && (
-                                                        <div className="absolute right-0 mt-2 w-40 bg-white border border-slate-100 rounded-xl shadow-xl z-10">
-                                                            <button onClick={() => updateStatus(order.id, 'Completed')} className="block w-full text-left px-4 py-2 hover:bg-slate-50 text-sm font-semibold">Mark Completed</button>
-                                                            <button onClick={() => updateStatus(order.id, 'Pending')} className="block w-full text-left px-4 py-2 hover:bg-slate-50 text-sm font-semibold">Mark Pending</button>
-                                                            <button onClick={() => updateStatus(order.id, 'Processing')} className="block w-full text-left px-4 py-2 hover:bg-slate-50 text-sm font-semibold">Mark Processing</button>
-                                                        </div>
-                                                    )}
-                                                </div>
+                                            <td className="px-6 py-4 text-xs font-semibold text-slate-500 truncate">{order.time}</td>
+                                            <td className="px-6 py-4 text-right relative">
+                                                <button onClick={() => toggleMenu(order.id)} className="p-2 hover:bg-slate-100 rounded-lg">
+                                                    <FiMoreVertical />
+                                                </button>
+                                                {activeMenuId === order.id && (
+                                                    <div className="absolute right-6 mt-2 w-40 bg-white border border-slate-100 rounded-xl shadow-xl z-20">
+                                                        <button onClick={() => updateStatus(order.id, 'Completed')} className="block w-full text-left px-4 py-2 hover:bg-slate-50 text-sm font-semibold">Mark Completed</button>
+                                                        <button onClick={() => updateStatus(order.id, 'Pending')} className="block w-full text-left px-4 py-2 hover:bg-slate-50 text-sm font-semibold">Mark Pending</button>
+                                                        <button onClick={() => updateStatus(order.id, 'Processing')} className="block w-full text-left px-4 py-2 hover:bg-slate-50 text-sm font-semibold">Mark Processing</button>
+                                                    </div>
+                                                )}
                                             </td>
                                         </tr>
                                     ))
