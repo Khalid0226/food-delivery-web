@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FiSearch, FiMoreVertical, FiTrash2, FiEye, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 import AdminLayout from "../../components/admin_layout/AdminLayout";
 import AdminHeader from "../../components/admin_layout/AdminHeader";
 
@@ -8,6 +9,8 @@ export default function Customers() {
     const [currentPage, setCurrentPage] = useState(1);
     const [activeMenuId, setActiveMenuId] = useState(null);
     const itemsPerPage = 8; // Professional layout ke liye 8 items
+
+    const navigate = useNavigate()
 
     const [customers, setCustomers] = useState([
         { id: '#CUS-001', name: 'Rahul Kumar', email: 'rahul@example.com', phone: '+91 98765 43210', orders: 12, spent: '₹5,400' },
@@ -95,7 +98,7 @@ export default function Customers() {
                                             </button>
                                             {activeMenuId === cus.id && (
                                                 <div className="absolute right-6 mt-2 w-36 bg-white border border-slate-100 rounded-xl shadow-2xl z-20 overflow-hidden">
-                                                    <button className="flex w-full items-center gap-2 px-4 py-2 hover:bg-slate-50 text-xs font-bold text-slate-700">
+                                                    <button onClick={()=>{navigate(`/admin/customer-profile/${cus.id.substring(1)}`);setActiveMenuId(null);}} className="flex w-full items-center gap-2 px-4 py-2 hover:bg-slate-50 text-xs font-bold text-slate-700">
                                                         <FiEye size={14}/> View Profile
                                                     </button>
                                                     <button onClick={() => deleteCustomer(cus.id)} className="flex w-full items-center gap-2 px-4 py-2 hover:bg-red-50 text-xs font-bold text-red-600">

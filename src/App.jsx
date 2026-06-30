@@ -17,6 +17,7 @@ import OrderDetails from './modules/customer/pages/OrderDetails';
 import AdminDashboard from './modules/admin/AdminDashboard';
 import Orders from './modules/admin/Orders';
 import Customers from './modules/admin/Customers';
+import CustomerProfile from './modules/admin/CustomerProfile';
 
 function App() {
   return (
@@ -45,6 +46,8 @@ function App() {
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path='/admin/orders' element={<Orders />}></Route>
           <Route path='/admin/customers' element={<Customers />}></Route>
+
+          <Route path='/admin/customer-profile/:id' element={<CustomerProfile />}></Route>
         </Routes>
       </Layout>
     </BrowserRouter>
