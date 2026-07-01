@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { FiPackage, FiUsers, FiTrendingUp, FiSettings, FiLogOut } from 'react-icons/fi';
+import { FiPackage, FiUsers, FiTrendingUp, FiSettings, FiLogOut,FiPlusSquare } from 'react-icons/fi';
 
 export default function AdminSidebar() {
   return (
@@ -16,9 +16,11 @@ export default function AdminSidebar() {
       {/* Navigation */}
       <nav className="flex-1 space-y-1">
         <NavItem to="/admin/dashboard" icon={<FiTrendingUp />} label="Overview" />
+        <NavItem to="/admin/add-item" icon={<FiPlusSquare />} label="add-items"/>
         <NavItem to="/admin/orders" icon={<FiPackage />} label="Orders" />
         <NavItem to="/admin/customers" icon={<FiUsers />} label="Customers" />
         <NavItem to="/admin/settings" icon={<FiSettings />} label="Settings" />
+        
       </nav>
 
       {/* Logout Footer */}

@@ -19,6 +19,7 @@ import Orders from './modules/admin/Orders';
 import Customers from './modules/admin/Customers';
 import CustomerProfile from './modules/admin/CustomerProfile';
 import Settings from './modules/admin/Settings';
+import AddItem from './modules/admin/AddItem';
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
 
           <Route path='/admin/customer-profile/:id' element={<CustomerProfile />}></Route>
           <Route path='/admin/settings' element={<Settings />}></Route>
+          <Route path='/admin/add-item' element={<AddItem />}></Route>
         </Routes>
       </Layout>
     </BrowserRouter>
