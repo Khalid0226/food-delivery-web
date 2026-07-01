@@ -20,14 +20,14 @@ export default function Orders() {
         { id: '#ORD-006', customer: 'Priya Singh', total: '₹890', status: 'Completed', item: 'Chicken Biryani', time: '1 hour ago', phone: '+91 91234 56789', address: '45, Satellite, Ahmedabad' },
         { id: '#ORD-007', customer: 'Amit Verma', total: '₹1,250', status: 'Processing', item: 'Family Combo Pack', time: '2 hours ago', phone: '+91 99887 76655', address: '78, CG Road, Ahmedabad' },
         { id: '#ORD-008', customer: 'Suresh Rao', total: '₹320', status: 'Pending', item: 'Veg Burger', time: '3 hours ago', phone: '+91 98765 12345', address: '90, Bodakdev, Ahmedabad' },
-        { id: '#ORD-001', customer: 'Rahul Kumar', total: '₹450', status: 'Pending', item: 'Double Egg Roll', time: '10 min ago', phone: '+91 98765 43210', address: '12, MG Road, Ahmedabad' },
-        { id: '#ORD-002', customer: 'Priya Singh', total: '₹890', status: 'Completed', item: 'Chicken Biryani', time: '1 hour ago', phone: '+91 91234 56789', address: '45, Satellite, Ahmedabad' },
-        { id: '#ORD-003', customer: 'Amit Verma', total: '₹1,250', status: 'Processing', item: 'Family Combo Pack', time: '2 hours ago', phone: '+91 99887 76655', address: '78, CG Road, Ahmedabad' },
-        { id: '#ORD-004', customer: 'Suresh Rao', total: '₹320', status: 'Pending', item: 'Veg Burger', time: '3 hours ago', phone: '+91 98765 12345', address: '90, Bodakdev, Ahmedabad' },
-        { id: '#ORD-005', customer: 'Rahul Kumar', total: '₹450', status: 'Pending', item: 'Double Egg Roll', time: '10 min ago', phone: '+91 98765 43210', address: '12, MG Road, Ahmedabad' },
-        { id: '#ORD-006', customer: 'Priya Singh', total: '₹890', status: 'Completed', item: 'Chicken Biryani', time: '1 hour ago', phone: '+91 91234 56789', address: '45, Satellite, Ahmedabad' },
-        { id: '#ORD-007', customer: 'Amit Verma', total: '₹1,250', status: 'Processing', item: 'Family Combo Pack', time: '2 hours ago', phone: '+91 99887 76655', address: '78, CG Road, Ahmedabad' },
-        { id: '#ORD-008', customer: 'Suresh Rao', total: '₹320', status: 'Pending', item: 'Veg Burger', time: '3 hours ago', phone: '+91 98765 12345', address: '90, Bodakdev, Ahmedabad' },
+        { id: '#ORD-009', customer: 'Rahul Kumar', total: '₹450', status: 'Pending', item: 'Double Egg Roll', time: '10 min ago', phone: '+91 98765 43210', address: '12, MG Road, Ahmedabad' },
+        { id: '#ORD-010', customer: 'Priya Singh', total: '₹890', status: 'Completed', item: 'Chicken Biryani', time: '1 hour ago', phone: '+91 91234 56789', address: '45, Satellite, Ahmedabad' },
+        { id: '#ORD-011', customer: 'Amit Verma', total: '₹1,250', status: 'Processing', item: 'Family Combo Pack', time: '2 hours ago', phone: '+91 99887 76655', address: '78, CG Road, Ahmedabad' },
+        { id: '#ORD-012', customer: 'Suresh Rao', total: '₹320', status: 'Pending', item: 'Veg Burger', time: '3 hours ago', phone: '+91 98765 12345', address: '90, Bodakdev, Ahmedabad' },
+        { id: '#ORD-013', customer: 'Rahul Kumar', total: '₹450', status: 'Pending', item: 'Double Egg Roll', time: '10 min ago', phone: '+91 98765 43210', address: '12, MG Road, Ahmedabad' },
+        { id: '#ORD-014', customer: 'Priya Singh', total: '₹890', status: 'Completed', item: 'Chicken Biryani', time: '1 hour ago', phone: '+91 91234 56789', address: '45, Satellite, Ahmedabad' },
+        { id: '#ORD-015', customer: 'Amit Verma', total: '₹1,250', status: 'Processing', item: 'Family Combo Pack', time: '2 hours ago', phone: '+91 99887 76655', address: '78, CG Road, Ahmedabad' },
+        { id: '#ORD-016', customer: 'Suresh Rao', total: '₹320', status: 'Pending', item: 'Veg Burger', time: '3 hours ago', phone: '+91 98765 12345', address: '90, Bodakdev, Ahmedabad' },
 
     ]);
 
