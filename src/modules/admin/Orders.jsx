@@ -8,24 +8,23 @@ export default function Orders() {
     const [statusFilter, setStatusFilter] = useState("All");
     const [currentPage, setCurrentPage] = useState(1);
     const [activeMenuId, setActiveMenuId] = useState(null);
+    const [selectedOrder, setSelectedOrder] = useState(null); // Modal state
     const itemsPerPage = 10;
 
     const [orders, setOrders] = useState([
-        { id: '#ORD-001', customer: 'Rahul Kumar', total: '₹450', status: 'Pending', item: 'Double Egg Roll', time: '10 min ago' },
-        { id: '#ORD-002', customer: 'Priya Singh', total: '₹890', status: 'Completed', item: 'Chicken Biryani', time: '1 hour ago' },
-        { id: '#ORD-003', customer: 'Amit Verma', total: '₹1,250', status: 'Processing', item: 'Family Combo Pack', time: '2 hours ago' },
-        { id: '#ORD-004', customer: 'Suresh Rao', total: '₹320', status: 'Pending', item: 'Veg Burger', time: '3 hours ago' },
-        { id: '#ORD-005', customer: 'Rahul Kumar', total: '₹450', status: 'Pending', item: 'Double Egg Roll', time: '10 min ago' },
-        { id: '#ORD-006', customer: 'Priya Singh', total: '₹890', status: 'Completed', item: 'Chicken Biryani', time: '1 hour ago' },
-        { id: '#ORD-007', customer: 'Amit Verma', total: '₹1,250', status: 'Processing', item: 'Family Combo Pack', time: '2 hours ago' },
-        { id: '#ORD-008', customer: 'Suresh Rao', total: '₹320', status: 'Pending', item: 'Veg Burger', time: '3 hours ago' },
+        { id: '#ORD-001', customer: 'Rahul Kumar', total: '₹450', status: 'Pending', item: 'Double Egg Roll', time: '10 min ago', phone: '+91 98765 43210', address: '12, MG Road, Ahmedabad' },
+        { id: '#ORD-002', customer: 'Priya Singh', total: '₹890', status: 'Completed', item: 'Chicken Biryani', time: '1 hour ago', phone: '+91 91234 56789', address: '45, Satellite, Ahmedabad' },
+        { id: '#ORD-003', customer: 'Amit Verma', total: '₹1,250', status: 'Processing', item: 'Family Combo Pack', time: '2 hours ago', phone: '+91 99887 76655', address: '78, CG Road, Ahmedabad' },
+        { id: '#ORD-004', customer: 'Suresh Rao', total: '₹320', status: 'Pending', item: 'Veg Burger', time: '3 hours ago', phone: '+91 98765 12345', address: '90, Bodakdev, Ahmedabad' },
+        { id: '#ORD-005', customer: 'Rahul Kumar', total: '₹450', status: 'Pending', item: 'Double Egg Roll', time: '10 min ago', phone: '+91 98765 43210', address: '12, MG Road, Ahmedabad' },
+        { id: '#ORD-006', customer: 'Priya Singh', total: '₹890', status: 'Completed', item: 'Chicken Biryani', time: '1 hour ago', phone: '+91 91234 56789', address: '45, Satellite, Ahmedabad' },
+        { id: '#ORD-007', customer: 'Amit Verma', total: '₹1,250', status: 'Processing', item: 'Family Combo Pack', time: '2 hours ago', phone: '+91 99887 76655', address: '78, CG Road, Ahmedabad' },
+        { id: '#ORD-008', customer: 'Suresh Rao', total: '₹320', status: 'Pending', item: 'Veg Burger', time: '3 hours ago', phone: '+91 98765 12345', address: '90, Bodakdev, Ahmedabad' },
     ]);
-
-    const toggleMenu = (id) => setActiveMenuId(activeMenuId === id ? null : id);
 
     const updateStatus = (id, newStatus) => {
         setOrders(orders.map(order => order.id === id ? { ...order, status: newStatus } : order));
-        setActiveMenuId(null);
+        setSelectedOrder(null); // Close modal after update
     };
 
     const filteredOrders = orders.filter((order) => {
@@ -68,7 +67,6 @@ export default function Orders() {
                     </div>
 
                     <div className="overflow-x-auto">
-                        {/* table-fixed use kiya hai taaki columns equal space le sakein */}
                         <table className="w-full text-left table-fixed min-w-[800px]">
                             <thead>
                                 <tr className="bg-slate-50/50">
@@ -81,51 +79,51 @@ export default function Orders() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100">
-                                {currentOrders.length > 0 ? (
-                                    currentOrders.map((order) => (
-                                        <tr key={order.id} className="hover:bg-amber-50/30 transition-all">
-                                            <td className="px-6 py-4 truncate">
-                                                <p className="font-bold text-slate-950 text-sm truncate">{order.id}</p>
-                                                <p className="text-[10px] text-slate-500 truncate">{order.item}</p>
-                                            </td>
-                                            <td className="px-6 py-4 font-bold text-slate-700 text-sm truncate">{order.customer}</td>
-                                            <td className="px-6 py-4 font-bold text-slate-950 truncate">{order.total}</td>
-                                            <td className="px-6 py-4">
-                                                <span className={`px-2 py-1 rounded-lg text-[9px] font-black uppercase ${order.status === 'Pending' ? 'bg-amber-100 text-amber-700' : order.status === 'Completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'}`}>
-                                                    {order.status}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 text-xs font-semibold text-slate-500 truncate">{order.time}</td>
-                                            <td className="px-6 py-4 text-right relative">
-                                                <button onClick={() => toggleMenu(order.id)} className="p-2 hover:bg-slate-100 rounded-lg">
-                                                    <FiMoreVertical />
-                                                </button>
-                                                {activeMenuId === order.id && (
-                                                    <div className="absolute right-6 mt-2 w-40 bg-white border border-slate-100 rounded-xl shadow-xl z-20">
-                                                        <button onClick={() => updateStatus(order.id, 'Completed')} className="block w-full text-left px-4 py-2 hover:bg-slate-50 text-sm font-semibold">Mark Completed</button>
-                                                        <button onClick={() => updateStatus(order.id, 'Pending')} className="block w-full text-left px-4 py-2 hover:bg-slate-50 text-sm font-semibold">Mark Pending</button>
-                                                        <button onClick={() => updateStatus(order.id, 'Processing')} className="block w-full text-left px-4 py-2 hover:bg-slate-50 text-sm font-semibold">Mark Processing</button>
-                                                    </div>
-                                                )}
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr><td colSpan="6" className="text-center py-12 text-slate-400 font-bold">No orders found.</td></tr>
-                                )}
+                                {currentOrders.map((order) => (
+                                    <tr key={order.id} className="hover:bg-amber-50/30 transition-all">
+                                        <td className="px-6 py-4 truncate">
+                                            <p className="font-bold text-slate-950 text-sm">{order.id}</p>
+                                            <p className="text-[10px] text-slate-500 truncate">{order.item}</p>
+                                        </td>
+                                        <td className="px-6 py-4 font-bold text-slate-700 text-sm truncate">{order.customer}</td>
+                                        <td className="px-6 py-4 font-bold text-slate-950 truncate">{order.total}</td>
+                                        <td className="px-6 py-4">
+                                            <span className={`px-2 py-1 rounded-lg text-[9px] font-black uppercase ${order.status === 'Pending' ? 'bg-amber-100 text-amber-700' : order.status === 'Completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'}`}>
+                                                {order.status}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-xs font-semibold text-slate-500 truncate">{order.time}</td>
+                                        <td className="px-6 py-4 text-right">
+                                            <button onClick={() => setSelectedOrder(order)} className="p-2 hover:bg-slate-100 rounded-lg">
+                                                <FiMoreVertical />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
 
-                    <div className="px-8 py-4 bg-slate-50/50 border-t border-slate-100 flex justify-between items-center">
-                        <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Page {currentPage} of {totalPages || 1}</p>
-                        <div className="flex gap-2">
-                            <button disabled={currentPage === 1} onClick={() => setCurrentPage(prev => prev - 1)} className="px-4 py-2 bg-white border rounded-xl text-xs font-bold hover:bg-slate-100 disabled:opacity-50">Prev</button>
-                            <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(prev => prev + 1)} className="px-4 py-2 bg-white border rounded-xl text-xs font-bold hover:bg-slate-100 disabled:opacity-50">Next</button>
+            {/* Modal for Order Details */}
+            {selectedOrder && (
+                <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-[100]">
+                    <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-slate-100">
+                        <h2 className="text-xl font-black mb-6">Order Details: <span className="text-indigo-600">{selectedOrder.id}</span></h2>
+                        <div className="space-y-5 mb-8">
+                            <div><p className="text-[10px] font-black text-slate-400 uppercase">Customer Name</p><p className="font-bold text-slate-900">{selectedOrder.customer}</p></div>
+                            <div><p className="text-[10px] font-black text-slate-400 uppercase">Phone No.</p><p className="font-bold text-slate-900">{selectedOrder.phone}</p></div>
+                            <div><p className="text-[10px] font-black text-slate-400 uppercase">Delivery Address</p><p className="font-semibold text-slate-700 text-sm leading-relaxed">{selectedOrder.address}</p></div>
+                        </div>
+                        <div className="grid grid-cols-1 gap-2">
+                            <button onClick={() => updateStatus(selectedOrder.id, 'Completed')} className="py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-all">Mark Completed</button>
+                            <button onClick={() => updateStatus(selectedOrder.id, 'Processing')} className="py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all">Mark Processing</button>
+                            <button onClick={() => setSelectedOrder(null)} className="py-3 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-all">Close</button>
                         </div>
                     </div>
                 </div>
-            </div>
+            )}
         </AdminLayout>
     );
 }

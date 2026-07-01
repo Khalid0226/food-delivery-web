@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AdminSidebar from './AdminSidebar';
 import { FiX } from 'react-icons/fi';
 
-export default function AdminLayout({ children }) { // toggleSidebar prop ki zarurat nahi hai
+export default function AdminLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
@@ -21,15 +21,15 @@ export default function AdminLayout({ children }) { // toggleSidebar prop ki zar
       {/* Main Content Area */}
       <main className="flex-1 w-full md:ml-64 transition-all duration-300">
         
-        {/* Header ko Padding wale DIV ke bahar rakha hai */}
-        {React.Children.map(children, child => 
-          React.cloneElement(child, { toggleSidebar: () => setIsSidebarOpen(true) })
-        )}
+        {/* Yahan valid element check add kiya gaya hai */}
+        {React.Children.map(children, (child) => {
+          if (!React.isValidElement(child)) return child;
+          return React.cloneElement(child, { toggleSidebar: () => setIsSidebarOpen(true) });
+        })}
 
-        {/* Dashboard ka baaki content isi padding mein rahega */}
+        {/* Dashboard ka baaki content */}
         <div className="p-4 md:p-8">
-           {/* Agar header alag component hai, toh wo yahan se hatt jayega */}
-           {/* Sirf dashboard ke charts/cards yahan rahenge */}
+           {/* Content here */}
         </div>
       </main>
     </div>
