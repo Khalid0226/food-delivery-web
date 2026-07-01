@@ -18,6 +18,7 @@ import AdminDashboard from './modules/admin/AdminDashboard';
 import Orders from './modules/admin/Orders';
 import Customers from './modules/admin/Customers';
 import CustomerProfile from './modules/admin/CustomerProfile';
+import Settings from './modules/admin/Settings';
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
           <Route path='/admin/customers' element={<Customers />}></Route>
 
           <Route path='/admin/customer-profile/:id' element={<CustomerProfile />}></Route>
+          <Route path='/admin/settings' element={<Settings />}></Route>
         </Routes>
       </Layout>
     </BrowserRouter>
