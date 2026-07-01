@@ -20,6 +20,15 @@ export default function Orders() {
         { id: '#ORD-006', customer: 'Priya Singh', total: '₹890', status: 'Completed', item: 'Chicken Biryani', time: '1 hour ago', phone: '+91 91234 56789', address: '45, Satellite, Ahmedabad' },
         { id: '#ORD-007', customer: 'Amit Verma', total: '₹1,250', status: 'Processing', item: 'Family Combo Pack', time: '2 hours ago', phone: '+91 99887 76655', address: '78, CG Road, Ahmedabad' },
         { id: '#ORD-008', customer: 'Suresh Rao', total: '₹320', status: 'Pending', item: 'Veg Burger', time: '3 hours ago', phone: '+91 98765 12345', address: '90, Bodakdev, Ahmedabad' },
+        { id: '#ORD-001', customer: 'Rahul Kumar', total: '₹450', status: 'Pending', item: 'Double Egg Roll', time: '10 min ago', phone: '+91 98765 43210', address: '12, MG Road, Ahmedabad' },
+        { id: '#ORD-002', customer: 'Priya Singh', total: '₹890', status: 'Completed', item: 'Chicken Biryani', time: '1 hour ago', phone: '+91 91234 56789', address: '45, Satellite, Ahmedabad' },
+        { id: '#ORD-003', customer: 'Amit Verma', total: '₹1,250', status: 'Processing', item: 'Family Combo Pack', time: '2 hours ago', phone: '+91 99887 76655', address: '78, CG Road, Ahmedabad' },
+        { id: '#ORD-004', customer: 'Suresh Rao', total: '₹320', status: 'Pending', item: 'Veg Burger', time: '3 hours ago', phone: '+91 98765 12345', address: '90, Bodakdev, Ahmedabad' },
+        { id: '#ORD-005', customer: 'Rahul Kumar', total: '₹450', status: 'Pending', item: 'Double Egg Roll', time: '10 min ago', phone: '+91 98765 43210', address: '12, MG Road, Ahmedabad' },
+        { id: '#ORD-006', customer: 'Priya Singh', total: '₹890', status: 'Completed', item: 'Chicken Biryani', time: '1 hour ago', phone: '+91 91234 56789', address: '45, Satellite, Ahmedabad' },
+        { id: '#ORD-007', customer: 'Amit Verma', total: '₹1,250', status: 'Processing', item: 'Family Combo Pack', time: '2 hours ago', phone: '+91 99887 76655', address: '78, CG Road, Ahmedabad' },
+        { id: '#ORD-008', customer: 'Suresh Rao', total: '₹320', status: 'Pending', item: 'Veg Burger', time: '3 hours ago', phone: '+91 98765 12345', address: '90, Bodakdev, Ahmedabad' },
+
     ]);
 
     const updateStatus = (id, newStatus) => {
@@ -102,6 +111,28 @@ export default function Orders() {
                                 ))}
                             </tbody>
                         </table>
+                        {/* Table ke niche pagination ka section */}
+                        <div className="px-8 py-4 bg-slate-50/50 border-t border-slate-100 flex justify-between items-center">
+                            <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">
+                                Page {currentPage} of {totalPages || 1}
+                            </p>
+                            <div className="flex gap-2">
+                                <button
+                                    disabled={currentPage === 1}
+                                    onClick={() => setCurrentPage(prev => prev - 1)}
+                                    className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-50 disabled:opacity-50 transition-all"
+                                >
+                                    Prev
+                                </button>
+                                <button
+                                    disabled={currentPage === totalPages || totalPages === 0}
+                                    onClick={() => setCurrentPage(prev => prev + 1)}
+                                    className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-50 disabled:opacity-50 transition-all"
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
