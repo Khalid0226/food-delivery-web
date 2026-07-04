@@ -5,10 +5,17 @@ import router from './routes/CustomerRoute.js'
 
 import menuRouter from  './routes/MenuRoute.js'
 
+
+
 const app = express()
 
 app.use(express.json())
 app.use(cors())
+
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/uploads', express.static('uploads'));
+
 
 app.use('/api/auth',router)
 

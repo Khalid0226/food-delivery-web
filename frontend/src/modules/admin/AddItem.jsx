@@ -20,10 +20,13 @@ export default function AddItem() {
     });
     const [image, setImage] = useState(null);
 
+    const [imageFile, setImageFile] = useState(null);
+
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) setImage(URL.createObjectURL(file));
+        setImageFile(file);
     };
 
     // const handleSubmit = async(e) =>{
@@ -44,10 +47,19 @@ export default function AddItem() {
         setLoading(true);
 
         // image ko formData mein include karein
-        const finalData = { ...formData, image: image || "default.jpg" };
+        const finalData = { ...formData, image: imageFile || "default.jpg" };
+        // const data = new FormData()
+
+        // data.append('name', formData.name),
+        // data.append('price', formData.price),
+        // data.append('category', formData.category),
+        // data.append('description', formData.description),
+        // data.append('image',imageFile)
 
         try {
-            await axios.post('http://localhost:2500/api/menu/add-item', finalData);
+            await axios.post('http://localhost:2500/api/menu/add-item', finalData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
             alert('Item added successfully!!');
             navigate('/admin/view-item');
         } catch (error) {
