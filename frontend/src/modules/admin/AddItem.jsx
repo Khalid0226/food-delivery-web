@@ -3,15 +3,59 @@ import { FiUpload, FiCheck, FiDollarSign, FiAlignLeft, FiTag, FiShoppingBag, FiI
 import { TbCurrencyRupee } from 'react-icons/tb';
 import AdminLayout from "../../components/admin_layout/AdminLayout";
 import AdminHeader from "../../components/admin_layout/AdminHeader";
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
+
 
 export default function AddItem() {
     const [loading, setLoading] = useState(false);
-    const [imagePreview, setImagePreview] = useState(null);
+
+    const navigate = useNavigate()
+
+    const [formData, setFormData] = useState({
+        name: '',
+        price: '',
+        category: 'Starters', // Default value
+        description: ''
+    });
+    const [image, setImage] = useState(null);
+
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
-        if (file) setImagePreview(URL.createObjectURL(file));
+        if (file) setImage(URL.createObjectURL(file));
     };
+
+    // const handleSubmit = async(e) =>{
+    //     e.preventDefault()
+    //     setLoading(true)
+    //     try {
+    //         const response = await axios.post('http://localhost:2500/api/menu/add-item',formData)
+    //         alert('item added successfully!!')
+    //         navigate('/admin/view-item')
+    //     } catch (error) {
+    //         console.error(error);
+    //         alert('failed to add items')
+    //     }
+    //     setLoading(false)
+    // }
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+
+        // image ko formData mein include karein
+        const finalData = { ...formData, image: image || "default.jpg" };
+
+        try {
+            await axios.post('http://localhost:2500/api/menu/add-item', finalData);
+            alert('Item added successfully!!');
+            navigate('/admin/view-item');
+        } catch (error) {
+            console.error(error);
+            alert('Failed to add items');
+        }
+        setLoading(false);
+    }
 
     return (
         <AdminLayout>
@@ -25,25 +69,28 @@ export default function AddItem() {
                     </div>
                 </div>
 
-                <form className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <form className="grid grid-cols-1 lg:grid-cols-3 gap-8" onSubmit={handleSubmit}>
                     {/* Main Form Card */}
                     <div className="lg:col-span-2 bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
                         <div className="space-y-6">
                             <div className="space-y-2">
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Dish Name</label>
-                                <input type="text" placeholder="e.g. Tandoori Chicken" className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all" />
+                                <input type="text" name='name' placeholder="e.g. Tandoori Chicken" className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all"
+                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })} value={formData.name} />
                             </div>
 
                             <div className="grid grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Price</label>
                                     {/* // ... inside your input field */}
-                                    
+
                                     <div className="relative">
                                         {/* Icon replace kar diya */}
                                         <TbCurrencyRupee className="absolute left-4 top-4 text-slate-400" size={20} />
                                         <input
+                                            onChange={(e) => setFormData({ ...formData, price: e.target.value })} value={formData.price}
                                             type="number"
+                                            name='price'
                                             placeholder="0.00"
                                             className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all"
                                         />
@@ -51,7 +98,9 @@ export default function AddItem() {
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Category</label>
-                                    <select className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all cursor-pointer">
+                                    <select
+                                        onChange={(e) => setFormData({ ...formData, category: e.target.value })} value={formData.category}
+                                        className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all cursor-pointer" name='category'>
                                         <option>Starters</option>
                                         <option>Main Course</option>
                                         <option>Desserts</option>
@@ -61,7 +110,9 @@ export default function AddItem() {
 
                             <div className="space-y-2">
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Description</label>
-                                <textarea rows="4" placeholder="Briefly describe the ingredients and flavors..." className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl font-semibold outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all"></textarea>
+                                <textarea
+                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })} value={formData.description}
+                                    name='description' rows="4" placeholder="Briefly describe the ingredients and flavors..." className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl font-semibold outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all"></textarea>
                             </div>
                         </div>
                     </div>
@@ -70,9 +121,9 @@ export default function AddItem() {
                     <div className="space-y-6">
                         <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
                             <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-4">Item Thumbnail</label>
-                            <label className={`w-full aspect-square border-2 border-dashed rounded-3xl flex flex-col items-center justify-center cursor-pointer transition-all hover:bg-slate-50 ${imagePreview ? "border-indigo-500" : "border-slate-300"}`}>
-                                {imagePreview ? (
-                                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover rounded-2xl" />
+                            <label className={`w-full aspect-square border-2 border-dashed rounded-3xl flex flex-col items-center justify-center cursor-pointer transition-all hover:bg-slate-50 ${image ? "border-indigo-500" : "border-slate-300"}`}>
+                                {image ? (
+                                    <img src={image} alt="Preview" className="w-full h-full object-cover rounded-2xl" />
                                 ) : (
                                     <div className="text-center p-4">
                                         <FiUpload size={32} className="mx-auto text-slate-400 mb-2" />
@@ -80,13 +131,13 @@ export default function AddItem() {
                                         <span className="block text-slate-400 text-xs mt-1">PNG, JPG up to 2MB</span>
                                     </div>
                                 )}
-                                <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+                                <input type="file" name='image' className="hidden" accept="image/*" onChange={handleImageChange} />
                             </label>
                         </div>
 
                         {/* Submit Button */}
                         <button
-                            onClick={() => setLoading(true)}
+                            type='submit'
                             className="w-full flex items-center justify-center gap-3 py-4 bg-slate-950 text-white rounded-2xl font-black hover:bg-slate-800 transition-all active:scale-95 shadow-xl shadow-slate-200"
                         >
                             {loading ? "Processing..." : <><FiCheck size={20} /> Add Item to Menu</>}
