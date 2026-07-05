@@ -35,7 +35,7 @@ export const getAllItems = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             message: 'try Again Later!!',
-            error: message.error
+            error: error.message
         })
     }
 }

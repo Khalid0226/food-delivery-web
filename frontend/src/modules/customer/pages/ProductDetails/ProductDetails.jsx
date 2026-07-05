@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MENU_ITEMS } from '../CustomerDashboard';
+// import { MENU_ITEMS } from '../CustomerDashboard';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { addToCart, decrementFromCart } from '../../../../redux/store';
 
@@ -14,7 +14,7 @@ export default function ProductDetails() {
     const cartItems = useSelector((state) => state.cart.items);
     
     // Product details aur Redux mein item ki quantity check karein
-    const product = MENU_ITEMS.find(item => item.id === parseInt(id));
+    // const product = MENU_ITEMS.find(item => item.id === parseInt(id));
     const cartItem = cartItems.find(item => item.id === parseInt(id));
     const quantity = cartItem ? cartItem.quantity : 0;
 

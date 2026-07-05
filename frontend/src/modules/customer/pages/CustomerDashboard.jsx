@@ -1,50 +1,71 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux'; 
+import { useDispatch, useSelector } from 'react-redux';
 import { FiSearch } from 'react-icons/fi';
-import { addToCart, removeFromCart, decrementFromCart } from '../../../redux/store'; 
+import { addToCart, removeFromCart, decrementFromCart } from '../../../redux/store';
+import { useEffect } from 'react';
+import axios from 'axios';
 
 // Diamond Fry Center - Premium Catalogue
-export const MENU_ITEMS = [
-    { id: 1, name: 'Crispy Chicken Fry', category: 'Chicken', price: 249, rating: 4.8, image: '/b-1.jpg', tags: 'Best Seller', description: 'Deep fried tender chicken pieces seasoned with premium in-house diamond spices.' },
-    { id: 2, name: 'Spicy Fish Fry', category: 'Fish', price: 299, rating: 4.7, image: '/b-2.jpg', tags: 'Chef Special', description: 'Freshwater catch coated with traditional coastal marination and golden fried.' },
-    { id: 3, name: 'Diamond Double Chicken Burger', category: 'Burgers', price: 189, rating: 4.5, image: '/p-2.jpg', tags: 'Trending', description: 'Dual stacked crispy chicken patties layered with liquid cheese and premium relish.' },
-    { id: 4, name: 'Peri Peri French Fries', category: 'Sides', price: 99, rating: 4.3, image: '/p-3.jpg', tags: 'Crispy', description: 'Fluffy potato fingers tossed in our signature smoky peri-peri blend.' },
-    { id: 5, name: 'Garlic Butter Prawns Fry', category: 'Seafood', price: 349, rating: 4.9, image: '/p-4.jpg', tags: 'Premium', description: 'Jumbo prawns pan-seared with exquisite garlic clarified butter and fresh herbs.' },
-    { id: 6, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-5.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
-    { id: 7, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/b-1.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
-    { id: 8, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/b-2.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
-    { id: 9, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-2.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
-    { id: 10, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-3.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
-    { id: 11, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-4.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
-    { id: 12, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-5.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
-];
-
-const CATEGORIES = ['All', 'Chicken', 'Fish', 'Seafood', 'Burgers', 'Sides', 'Platters'];
+// export const MENU_ITEMS = [
+//     { id: 1, name: 'Crispy Chicken Fry', category: 'Chicken', price: 249, rating: 4.8, image: '/b-1.jpg', tags: 'Best Seller', description: 'Deep fried tender chicken pieces seasoned with premium in-house diamond spices.' },
+//     { id: 2, name: 'Spicy Fish Fry', category: 'Fish', price: 299, rating: 4.7, image: '/b-2.jpg', tags: 'Chef Special', description: 'Freshwater catch coated with traditional coastal marination and golden fried.' },
+//     { id: 3, name: 'Diamond Double Chicken Burger', category: 'Burgers', price: 189, rating: 4.5, image: '/p-2.jpg', tags: 'Trending', description: 'Dual stacked crispy chicken patties layered with liquid cheese and premium relish.' },
+//     { id: 4, name: 'Peri Peri French Fries', category: 'Sides', price: 99, rating: 4.3, image: '/p-3.jpg', tags: 'Crispy', description: 'Fluffy potato fingers tossed in our signature smoky peri-peri blend.' },
+//     { id: 5, name: 'Garlic Butter Prawns Fry', category: 'Seafood', price: 349, rating: 4.9, image: '/p-4.jpg', tags: 'Premium', description: 'Jumbo prawns pan-seared with exquisite garlic clarified butter and fresh herbs.' },
+//     { id: 6, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-5.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
+//     { id: 7, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/b-1.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
+//     { id: 8, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/b-2.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
+//     { id: 9, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-2.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
+//     { id: 10, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-3.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
+//     { id: 11, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-4.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
+//     { id: 12, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-5.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
+// ];
 
 export default function CustomerDashboard() {
+
+    const CATEGORIES = ['All', 'Chicken', 'Fish', 'Seafood', 'Burgers', 'Sides', 'Platters'];
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    
+
     const cartItems = useSelector((state) => state.cart.items);
 
     const [activeTab, setActiveTab] = useState('menu');
+    const [menuItems, setMenuItems] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
 
     const filteredItems = useMemo(() => {
-        return MENU_ITEMS.filter(item => {
+        return menuItems.filter(item => {
             const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory;
             const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 item.description.toLowerCase().includes(searchQuery.toLowerCase());
             return matchesCategory && matchesSearch;
         });
-    }, [selectedCategory, searchQuery]);
+    }, [selectedCategory, searchQuery,menuItems]);
 
     const getQty = (id) => {
-        const item = cartItems.find(i => i.id === id);
+        const item = cartItems.find(i => i._id === id);
         return item ? item.quantity : 0;
     };
+
+    const fetchItems = async () => {
+        try {
+            const response = await axios.get('http://localhost:2500/api/menu/view-item')
+            setMenuItems(response.data.item)
+            console.log("Backend Data:", response.data.item);
+        } catch (error) {
+            console.error(error);
+            alert('failed to fetch items')
+
+        }
+    }
+
+    useEffect(() => {
+        fetchItems()
+    }, [])
+
 
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased">
@@ -78,17 +99,17 @@ export default function CustomerDashboard() {
                                 ) : (
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                                         {filteredItems.map((item) => {
-                                            const qty = getQty(item.id);
+                                            const qty = getQty(item._id);
                                             return (
-                                                <div key={item.id} onClick={() => navigate(`/product/${item.id}`)} className="bg-white border border-slate-200/80 rounded-2xl p-3 md:p-4 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group relative cursor-pointer">
+                                                <div key={item.id} onClick={() => navigate(`/product/${item._id}`)} className="bg-white border border-slate-200/80 rounded-2xl p-3 md:p-4 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group relative cursor-pointer">
                                                     <div>
                                                         <div className="w-full aspect-square bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-center group-hover:scale-105 transition-transform overflow-hidden relative select-none mb-3">
-                                                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                                            <img src={`http://localhost:2500/uploads/${item.image}`} alt={item.name} className="w-full h-full object-cover" />
                                                         </div>
                                                         <div className="space-y-1">
                                                             <div className="flex items-center justify-between gap-1">
-                                                                <span className="bg-amber-50 text-amber-700 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider border border-amber-100 truncate">{item.tags}</span>
-                                                                <span className="text-[10px] md:text-[11px] font-bold text-slate-500 flex items-center gap-0.5 shrink-0">⭐ {item.rating}</span>
+                                                                <span className="bg-amber-50 text-amber-700 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider border border-amber-100 truncate">{item.category}</span>
+                                                                {/* <span className="text-[10px] md:text-[11px] font-bold text-slate-500 flex items-center gap-0.5 shrink-0">⭐ {item.rating}</span> */}
                                                             </div>
                                                             <h4 className="font-black text-xs md:text-sm text-slate-900 tracking-tight line-clamp-1">{item.name}</h4>
                                                             <p className="text-[10px] md:text-[11px] text-slate-400 font-medium leading-normal line-clamp-2 min-h-[32px]">{item.description}</p>
@@ -98,7 +119,7 @@ export default function CustomerDashboard() {
                                                         <span className="text-xs md:text-sm font-black text-slate-950">₹{item.price}</span>
                                                         {qty > 0 ? (
                                                             <div className="flex items-center bg-orange-500 text-white rounded-lg md:rounded-xl shadow-sm overflow-hidden p-0.5" onClick={(e) => e.stopPropagation()}>
-                                                                <button onClick={() => dispatch(decrementFromCart(item.id))} className="w-5 h-5 md:w-7 md:h-7 text-[10px] md:text-xs font-black hover:bg-orange-600 rounded-md md:rounded-lg transition-all">-</button>
+                                                                <button onClick={() => dispatch(decrementFromCart(item._id))} className="w-5 h-5 md:w-7 md:h-7 text-[10px] md:text-xs font-black hover:bg-orange-600 rounded-md md:rounded-lg transition-all">-</button>
                                                                 <span className="px-1.5 md:px-2.5 text-[10px] md:text-xs font-black">{qty}</span>
                                                                 <button onClick={() => dispatch(addToCart(item))} className="w-5 h-5 md:w-7 md:h-7 text-[10px] md:text-xs font-black hover:bg-orange-600 rounded-md md:rounded-lg transition-all">+</button>
                                                             </div>
