@@ -4,18 +4,27 @@ import { useParams, useNavigate } from 'react-router-dom';
 // import { MENU_ITEMS } from '../CustomerDashboard';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { addToCart, decrementFromCart } from '../../../../redux/store';
+import axios from 'axios';
+import { useEffect } from 'react';
 
 export default function ProductDetails() {
-    const { id } = useParams();
+    // const { id } = useParams();
+
+    
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+
+    const [product, setProduct] = useState([])
+
+    const { id } = useParams()
+
     // Redux store se data fetch karein
     const cartItems = useSelector((state) => state.cart.items);
-    
+
     // Product details aur Redux mein item ki quantity check karein
     // const product = MENU_ITEMS.find(item => item.id === parseInt(id));
-    const cartItem = cartItems.find(item => item.id === parseInt(id));
+    const cartItem = cartItems.find(item => item._id === id);
     const quantity = cartItem ? cartItem.quantity : 0;
 
     const handleBuyNow = () => {
@@ -23,11 +32,31 @@ export default function ProductDetails() {
         navigate('/checkout');
     };
 
-    if (!product) return (
-        <div className="min-h-screen flex items-center justify-center font-bold text-slate-600">
-            Product nahi mila!
-        </div>
-    );
+    // ProductDetails.jsx mein return se pehle ye logic rakhein
+    if (!product) {
+        return (
+            <div className="min-h-screen flex items-center justify-center font-bold text-slate-600">
+                {/* Yahan aap loading spinner bhi laga sakte hain */}
+                Loading product details...
+            </div>
+        );
+    }
+
+    const getProduct = async () => {
+        try {
+            const response = await axios.get(`http://localhost:2500/api/menu/product/${id}`)
+            // console.log(response.data);
+            console.log("API Response object:", response.data);
+
+            setProduct(response.data.product)
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    useEffect(() => {
+        getProduct()
+    }, [id])
 
     return (
         <div className="min-h-screen bg-slate-50">
@@ -37,12 +66,12 @@ export default function ProductDetails() {
             <div className="py-10 px-4 md:px-20">
                 <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-sm border border-slate-100 p-6 md:p-12">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20">
-                        
+
                         {/* Product Image */}
                         <div className="relative group">
                             <div className="aspect-square bg-slate-100 rounded-2xl overflow-hidden flex items-center justify-center p-4">
                                 <img
-                                    src={product.image}
+                                    src={`http://localhost:2500/uploads/${product.image}`}
                                     alt={product.name}
                                     className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700"
                                 />
@@ -56,7 +85,7 @@ export default function ProductDetails() {
 
                                 <div className="flex items-center gap-3">
                                     <span className="bg-emerald-600 text-white px-2 py-0.5 rounded text-xs font-black flex items-center gap-1">
-                                        ★ {product.rating}
+                                        ★ {product.rating || "4.5"}
                                     </span>
                                     <span className="text-sm text-slate-400 font-medium">Verified Product</span>
                                 </div>
@@ -92,7 +121,7 @@ export default function ProductDetails() {
                                 ) : (
                                     <div className="flex items-center justify-between bg-slate-100 p-2 rounded-xl w-full">
                                         <button
-                                            onClick={() => dispatch(decrementFromCart(product.id))}
+                                            onClick={() => dispatch(decrementFromCart(product._id))}
                                             className="p-4 bg-white rounded-lg shadow-sm hover:text-red-600 transition-all active:scale-95"
                                         >
                                             <FiMinus />

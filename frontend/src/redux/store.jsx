@@ -8,7 +8,7 @@ const cartSlice = createSlice({
   reducers: {
     // Add to Cart (Increment)
     addToCart: (state, action) => {
-      const existingItem = state.items.find(item => item.id === action.payload.id);
+      const existingItem = state.items.find(item => item._id === action.payload._id);
       if (existingItem) {
         existingItem.quantity += 1;
       } else {
@@ -19,13 +19,13 @@ const cartSlice = createSlice({
 
     // Decrement item quantity
     decrementFromCart: (state, action) => {
-      const existingItem = state.items.find(item => item.id === action.payload);
+      const existingItem = state.items.find(item => item._id === action.payload);
       if (existingItem) {
         if (existingItem.quantity > 1) {
           existingItem.quantity -= 1;
         } else {
           // Agar quantity 1 hai toh list se remove kar dein
-          state.items = state.items.filter(item => item.id !== action.payload);
+          state.items = state.items.filter(item => item._id !== action.payload);
         }
       }
       localStorage.setItem('cart', JSON.stringify(state.items));
@@ -33,7 +33,7 @@ const cartSlice = createSlice({
 
     // Remove item completely
     removeFromCart: (state, action) => {
-      state.items = state.items.filter(item => item.id !== action.payload);
+      state.items = state.items.filter(item => item._id !== action.payload);
       localStorage.setItem('cart', JSON.stringify(state.items));
     },
 
