@@ -39,3 +39,25 @@ export const getAllItems = async (req, res) => {
         })
     }
 }
+
+
+export const getProduct  = async(req,res)=>{
+    try {
+        const product = await menuItem.findById(req.params.id)
+
+        if (!product) {
+            res.status(404).json({
+                message:'product not found!!'
+            })
+        }
+        res.status(200).json({
+            message:'success!!',
+            product:product
+        })
+    } catch (error) {
+        res.status(500).json({
+            message:'failed',
+            error:error.message
+        })   
+    }
+}
