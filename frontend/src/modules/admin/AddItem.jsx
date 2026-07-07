@@ -13,10 +13,7 @@ export default function AddItem() {
     const navigate = useNavigate()
 
     const [formData, setFormData] = useState({
-        name: '',
-        price: '',
-        category: 'Starters', // Default value
-        description: ''
+       
     });
     const [image, setImage] = useState(null);
 

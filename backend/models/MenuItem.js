@@ -21,6 +21,11 @@ const menuItemSchema = new mongoose.Schema({
     description:{
         type:String,
         required:true
+    },
+    status: {
+        type: String,
+        enum: ['Available', 'Unavailable'],
+        default: 'Available'
     }
 })
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FiEdit3, FiTrash2, FiPlus, FiChevronLeft, FiChevronRight, FiSearch, FiFilter } from 'react-icons/fi';
 import AdminLayout from "../../components/admin_layout/AdminLayout";
 import AdminHeader from "../../components/admin_layout/AdminHeader";
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import EditItemModal from './EditItemModal';
 import axios from 'axios'
 import { useEffect } from 'react';
@@ -28,20 +28,24 @@ export default function ManageItems() {
     const currentItems = menuItems.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(menuItems.length / itemsPerPage);
 
+    // const {id} = useParams()
+
     const openEditModal = (item) => {
         setSelectedItem(item);
         setIsModalOpen(true);
     };
 
-    const handleSaveItem = (updatedData) => {
-        setMenuItems(menuItems.map(item =>
-            item.id === selectedItem.id ? {
-                ...item,
-                ...updatedData,
-                price: `₹${updatedData.price}`,
-                status: updatedData.status
-            } : item
-        ));
+    const handleSaveItem = async() => {
+        // setMenuItems(menuItems.map(item =>
+        //     item.id === selectedItem._id ? {
+        //         ...item,
+        //         ...updatedData,
+        //         price: `₹${updatedData.price}`,
+        //         status: updatedData.status
+        //     } : item
+        // ));
+        await fetchItems()
+        setIsModalOpen(false)
     };
 
     const fetchItems = async () => {
@@ -55,9 +59,21 @@ export default function ManageItems() {
         }
     }
 
+
     useEffect(() => {
         fetchItems()
     }, [])
+
+      const handleDelete = async (id) => {
+        try {
+            const response = await axios.delete(`http://localhost:2500/api/menu/product/${id}`)
+            // setFormData(formData.filter((item) => item._id !== id))
+            alert('item delete successfully!!!')
+            fetchItems()
+        } catch (error) {
+            alert('failed to delete product!!!')
+        }
+    }
 
     return (
         <AdminLayout>
@@ -113,7 +129,7 @@ export default function ManageItems() {
                                             <button onClick={() => openEditModal(item)} className="p-3 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-2xl transition-all">
                                                 <FiEdit3 size={18} />
                                             </button>
-                                            <button className="p-3 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all">
+                                            <button onClick={()=>handleDelete(item._id)} className="p-3 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all">
                                                 <FiTrash2 size={18} />
                                             </button>
                                         </td>
