@@ -27,6 +27,8 @@ export default function EditItemModal({ isOpen, onClose, item, onSave }) {
 
     const [image, setImage] = useState(null)
 
+    // const [imageFile, setImageFile] = useState(null);
+
     const handleImageChange = (e) => {
         setImage(e.target.files[0])
     }

@@ -109,7 +109,7 @@ export default function CustomerDashboard() {
                                                         <div className="space-y-1">
                                                             <div className="flex items-center justify-between gap-1">
                                                                 <span className="bg-amber-50 text-amber-700 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider border border-amber-100 truncate">{item.category}</span>
-                                                                {/* <span className="text-[10px] md:text-[11px] font-bold text-slate-500 flex items-center gap-0.5 shrink-0">⭐ {item.rating}</span> */}
+                                                                <span className="text-[10px] md:text-[11px] font-bold text-slate-500 flex items-center gap-0.5 shrink-0">⭐ {item.rating || 4.3}</span>
                                                             </div>
                                                             <h4 className="font-black text-xs md:text-sm text-slate-900 tracking-tight line-clamp-1">{item.name}</h4>
                                                             <p className="text-[10px] md:text-[11px] text-slate-400 font-medium leading-normal line-clamp-2 min-h-[32px]">{item.description}</p>
