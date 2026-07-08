@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import router from './routes/CustomerRoute.js'
 
 import menuRouter from  './routes/MenuRoute.js'
+import orderRouter from './routes/OrderRoute.js'
 
 
 
@@ -20,6 +21,8 @@ app.use('/uploads', express.static('uploads'));
 app.use('/api/auth',router)
 
 app.use('/api/menu',menuRouter)
+
+app.use('/api',orderRouter)
 
 mongoose.connect('mongodb://localhost:27017/food-delivery')
 .then(()=>{

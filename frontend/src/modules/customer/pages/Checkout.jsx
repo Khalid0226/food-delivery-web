@@ -4,13 +4,14 @@ import { FiMapPin, FiCreditCard, FiUser, FiSmartphone, FiCheckCircle, FiChevronR
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { clearCart } from '../../../redux/store';
+import axios from 'axios';
 
 export default function Checkout() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const { items } = useSelector((state) => state.cart);
-    
+
     // Form State
     const [formData, setFormData] = useState({
         fullName: '',
@@ -29,19 +30,55 @@ export default function Checkout() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handlePlaceOrder = () => {
+    const handlePlaceOrder = async () => {
         if (!formData.fullName || !formData.address || !formData.mobile) {
             alert("Kripya sabhi zaroori details bharein!");
             return;
         }
-        
-        // Yahan aap apna backend API call (axios.post) perform kar sakte hain
-        console.log("Order Data:", { items, total, ...formData });
-        
-        alert("Order Successfully Placed!");
-        
-        dispatch(clearCart())
-        navigate('/customer/dashboard'); // Success ke baad dashboard pe redirect
+
+        const userData = JSON.parse(localStorage.getItem('user'))
+
+        if (!userData) {
+            alert('please login first')
+            navigate('/login')
+        }
+
+        const orderData = {
+            fullName: formData.fullName,
+            email: userData.email,
+            id: userData._id,
+            mobile: formData.mobile,
+            address: formData.address,
+            pincode: formData.pincode,
+            city: formData.city,
+            paymentMethod: formData.paymentMethod,
+            items: items,               // Redux se aaye hue items
+            totalAmount: total
+        };
+
+        try {
+            const response = await axios.post('http://localhost:2500/api/orders',orderData)
+
+            if (response.status === 201 || response.status === 200) {
+                alert("Order Successfully Placed!");
+
+                dispatch(clearCart())
+                navigate('/customer/dashboard')
+            }
+        } catch (error) {
+            console.error("Order error:", error);
+            alert('failed to place order!!!')
+        }
+
+        // // Yahan aap apna backend API call (axios.post) perform kar sakte hain
+        // console.log("Order Data:", { items, total, ...formData });
+
+        // alert("Order Successfully Placed!");
+
+        // dispatch(clearCart())
+        // navigate('/customer/dashboard'); // Success ke baad dashboard pe redirect
+
+
     };
 
     const inputStyle = "w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all";
@@ -51,12 +88,12 @@ export default function Checkout() {
         <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto">
                 <h1 className="text-2xl font-black text-slate-900 mb-8 uppercase tracking-tight">Secure Checkout</h1>
-                
+
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2 space-y-6">
                         {/* 1. Contact Details */}
                         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                            <h2 className={sectionTitle}><FiUser className="text-orange-500"/> Contact Details</h2>
+                            <h2 className={sectionTitle}><FiUser className="text-orange-500" /> Contact Details</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="relative">
                                     <FiUser className="absolute left-4 top-3.5 text-slate-400" />
@@ -71,7 +108,7 @@ export default function Checkout() {
 
                         {/* 2. Delivery Address */}
                         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                            <h2 className={sectionTitle}><FiMapPin className="text-orange-500"/> Delivery Address</h2>
+                            <h2 className={sectionTitle}><FiMapPin className="text-orange-500" /> Delivery Address</h2>
                             <div className="space-y-4">
                                 <textarea name="address" onChange={handleInputChange} placeholder="Complete Delivery Address (Area, Street, Flat)" className={`${inputStyle} h-24 pt-3`}></textarea>
                                 <div className="grid grid-cols-2 gap-4">
@@ -83,7 +120,7 @@ export default function Checkout() {
 
                         {/* 3. Payment Method */}
                         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                            <h2 className={sectionTitle}><FiCreditCard className="text-orange-500"/> Payment Method</h2>
+                            <h2 className={sectionTitle}><FiCreditCard className="text-orange-500" /> Payment Method</h2>
                             <div className="grid grid-cols-1 gap-3">
                                 {['Cash on Delivery', 'Credit/Debit Card', 'UPI / Net Banking'].map((method) => (
                                     <label key={method} className="flex items-center p-4 border border-slate-200 rounded-xl cursor-pointer hover:border-orange-500 transition-all group">
@@ -101,13 +138,13 @@ export default function Checkout() {
                             <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-5 border-b pb-3">Order Review</h2>
                             <div className="space-y-4 mb-6">
                                 {items.map(item => (
-                                    <div key={item.id} className="flex justify-between items-center text-sm">
+                                    <div key={item._id} className="flex justify-between items-center text-sm">
                                         <span className="text-slate-600 font-medium">{item.name} <span className="text-slate-400">x{item.quantity}</span></span>
                                         <span className="font-bold text-slate-900">₹{item.price * item.quantity}</span>
                                     </div>
                                 ))}
                             </div>
-                            
+
                             <div className="border-t border-slate-100 pt-4 space-y-3 text-sm">
                                 <div className="flex justify-between text-slate-500 font-medium"><span>Subtotal</span> <span>₹{subtotal}</span></div>
                                 <div className="flex justify-between text-slate-500 font-medium"><span>GST (5%)</span> <span>₹{tax}</span></div>
