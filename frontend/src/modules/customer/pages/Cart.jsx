@@ -34,7 +34,7 @@ export default function Cart() {
                         <div className="flex-1 w-full space-y-4">
                             {items.map((item) => (
                                 <div key={item.id} className="bg-white p-4 sm:p-5 rounded-2xl flex items-center gap-4 sm:gap-6 shadow-sm border border-slate-200/80 hover:shadow-md transition-all">
-                                    <img src={item.image} alt={item.name} className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl object-cover border border-slate-100" />
+                                    <img src={`http://localhost:2500/uploads/${item.image}`} alt={item.name} className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl object-cover border border-slate-100" />
                                     
                                     <div className="flex-1">
                                         <h3 className="font-black text-slate-900 text-sm md:text-lg">{item.name}</h3>
@@ -43,12 +43,12 @@ export default function Cart() {
 
                                     {/* Quantity Controls */}
                                     <div className="flex items-center bg-orange-500 text-white rounded-xl shadow-sm overflow-hidden p-1">
-                                        <button onClick={() => dispatch(decrementFromCart(item.id))} className="w-7 h-7 flex items-center justify-center font-black hover:bg-orange-600 rounded-lg transition-all">-</button>
+                                        <button onClick={() => dispatch(decrementFromCart(item._id))} className="w-7 h-7 flex items-center justify-center font-black hover:bg-orange-600 rounded-lg transition-all">-</button>
                                         <span className="w-8 text-center font-black text-sm">{item.quantity}</span>
                                         <button onClick={() => dispatch(addToCart(item))} className="w-7 h-7 flex items-center justify-center font-black hover:bg-orange-600 rounded-lg transition-all">+</button>
                                     </div>
 
-                                    <button onClick={() => dispatch(removeFromCart(item.id))} className="text-slate-400 p-2 hover:text-red-500 transition-colors"><FiTrash2 /></button>
+                                    <button onClick={() => dispatch(removeFromCart(item._id))} className="text-slate-400 p-2 hover:text-red-500 transition-colors"><FiTrash2 /></button>
                                 </div>
                             ))}
                         </div>
