@@ -22,8 +22,8 @@ export default function Layout({ children }) {
   const isAdminPath = location.pathname.toLowerCase().startsWith('/admin');
 
   const handleLogout = () => {
-    localStorage.removeItem('isCustomerLoggedIn');
-    localStorage.removeItem('userRole'); // Ensure role is cleared
+    localStorage.removeItem('token');
+    localStorage.removeItem('user'); // Ensure role is cleared
     navigate('/login');
   };
 
