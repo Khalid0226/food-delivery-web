@@ -20,3 +20,19 @@ export const order = async (req, res) => {
         })
     }
 }
+
+export const getAllOrder = async(req,res) =>{
+    try {
+        const allOrder = await orderModel.find().sort({createdAt:-1})
+        res.status(200).json({
+            message:'successfully fetch orders',
+            order:allOrder
+        })
+    } catch (error) {
+        res.status(500).json({
+            message:'failed to fetch orders!!',
+            error:error.message
+        })
+    }
+
+}
