@@ -2,7 +2,7 @@ import orderModel from "../models/Order.js";
 
 export const order = async (req, res) => {
     try {
-        console.log("Request body:", req.body);
+        // console.log("Request body:", req.body);
         const newOrder = new orderModel(
             req.body
             // totalAmount: Number(req.body.totalAmount), // Yahan explicit convert karein
@@ -34,5 +34,22 @@ export const getAllOrder = async(req,res) =>{
             error:error.message
         })
     }
+}
 
+export const updateOrder = async (req,res) => {
+    try {
+        const {orderId,status} = req.body
+        // console.log("Updating:", orderId, status);
+        await orderModel.findByIdAndUpdate(orderId,{status:status},{ new: true })
+        res.status(201).json({
+            success:true,
+            message:'success',
+
+        })
+    } catch (error) {
+        res.status(500).json({
+            success:false,
+            message:'failed'
+        })
+    }
 }
