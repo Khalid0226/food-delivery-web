@@ -1,9 +1,33 @@
-import React from 'react';
-import { FiCheckCircle, FiTruck, FiPhone, FiArrowLeft, FiMoreVertical } from 'react-icons/fi';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { FiCheckCircle, FiPhone, FiArrowLeft, FiPackage } from 'react-icons/fi';
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 export default function OrderDetails() {
   const navigate = useNavigate();
+  const [order, setOrder] = useState(null);
+  const { orderId } = useParams();
+  const [loading, setLoading] = useState(true);
+
+  const fetchOrderDetail = async () => {
+    try {
+      const response = await axios.get(`http://localhost:2500/api/user-order/${orderId}`);
+      if (response.data.message === 'success!!') {
+        setOrder(response.data.order);
+      }
+    } catch (error) {
+      console.error('failed to fetch orders', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrderDetail();
+  }, [orderId]);
+
+  if (loading) return <div className="text-center py-20">Loading Order Details...</div>;
+  if (!order) return <div className="text-center py-20">Order not found!</div>;
 
   return (
     <div className="min-h-screen bg-slate-50/50 py-8 px-4 md:px-8">
@@ -14,19 +38,18 @@ export default function OrderDetails() {
           <FiArrowLeft /> Back to Orders
         </button>
 
-        {/* 1. Progress Status (Premium Stepper) */}
+        {/* 1. Progress Status */}
         <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] mb-6">
           <div className="flex justify-between items-center mb-10">
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Order #ORD-12345</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Order #{order._id?.slice(-6)}</p>
               <h3 className="font-black text-2xl text-slate-900 tracking-tight">Track Delivery</h3>
             </div>
             <span className="bg-emerald-50 text-emerald-600 px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-100">
-              In Transit
+              {order.status}
             </span>
           </div>
 
-          {/* Stepper with Glowing Active State */}
           <div className="relative flex justify-between items-center px-2">
             <div className="absolute top-1/2 left-0 w-full h-1 bg-slate-100 -z-0"></div>
             <div className="absolute top-1/2 left-0 w-3/4 h-1 bg-emerald-500 z-0 transition-all duration-700"></div>
@@ -51,29 +74,23 @@ export default function OrderDetails() {
           <div className="md:col-span-2 bg-white p-8 rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
             <h4 className="font-black text-slate-900 mb-6 flex items-center justify-between">
               Order Summary
-              <span className="text-slate-400 font-bold text-xs">2 Items</span>
+              <span className="text-slate-400 font-bold text-xs">{order.items?.length || 0} Items</span>
             </h4>
             <div className="space-y-6">
-              <div className="flex justify-between items-center">
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 bg-slate-50 rounded-xl"></div>
-                  <div>
-                    <p className="font-black text-slate-900 text-sm">Executive Chicken Platter</p>
-                    <p className="text-slate-400 text-[11px] font-bold uppercase">Qty: 1</p>
+              {order.items?.map((item, index) => (
+                <div key={index} className="flex justify-between items-center">
+                  <div className="flex gap-4">
+                    <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center">
+                      <FiPackage className="text-slate-400" />
+                    </div>
+                    <div>
+                      <p className="font-black text-slate-900 text-sm">{item.name}</p>
+                      <p className="text-slate-400 text-[11px] font-bold uppercase">Qty: {item.quantity || 1}</p>
+                    </div>
                   </div>
+                  <p className="font-black text-slate-900">₹{item.price}</p>
                 </div>
-                <p className="font-black text-slate-900">₹890</p>
-              </div>
-              <div className="border-t border-slate-50 pt-6 flex justify-between items-center">
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 bg-slate-50 rounded-xl"></div>
-                  <div>
-                    <p className="font-black text-slate-900 text-sm">Spicy Fish Fry</p>
-                    <p className="text-slate-400 text-[11px] font-bold uppercase">Qty: 1</p>
-                  </div>
-                </div>
-                <p className="font-black text-slate-900">₹890</p>
-              </div>
+              ))}
             </div>
           </div>
 
