@@ -122,12 +122,20 @@ export default function TrackOrders() {
 }
 
 function StatusBadge({ status }) {
+    // 1. Status ko lowercase mein convert karein taki comparison asan ho
+    const normalizedStatus = status ? status.toLowerCase() : '';
+
     const config = {
-        'Delivered': { color: 'bg-emerald-50 text-emerald-600', icon: <FiCheckCircle /> },
-        'In Transit': { color: 'bg-blue-50 text-blue-600', icon: <FiTruck /> },
-        'Preparing': { color: 'bg-orange-50 text-orange-600', icon: <FiClock /> }
+        'delivered': { color: 'bg-emerald-50 text-emerald-600', icon: <FiCheckCircle /> },
+        'completed': { color: 'bg-emerald-50 text-emerald-600', icon: <FiCheckCircle /> }, // 'Completed' ko handle karne ke liye
+        'in transit': { color: 'bg-blue-50 text-blue-600', icon: <FiTruck /> },
+        'preparing': { color: 'bg-orange-50 text-orange-600', icon: <FiClock /> },
+        'pending': { color: 'bg-slate-100 text-slate-600', icon: <FiPackage /> } // 'Pending' add kiya
     };
-    const { color, icon } = config[status] || { color: 'bg-slate-100 text-slate-600', icon: <FiPackage /> };
+
+    // 2. Lookup mein normalizedStatus use karein
+    const { color, icon } = config[normalizedStatus] || { color: 'bg-slate-100 text-slate-600', icon: <FiPackage /> };
+
     return (
         <span className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${color}`}>
             {icon} {status}

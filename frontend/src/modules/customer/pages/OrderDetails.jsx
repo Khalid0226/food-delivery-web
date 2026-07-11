@@ -29,6 +29,19 @@ export default function OrderDetails() {
   if (loading) return <div className="text-center py-20">Loading Order Details...</div>;
   if (!order) return <div className="text-center py-20">Order not found!</div>;
 
+  // Improved Progress logic (Case insensitive and handles 'Completed')
+  const getStepIndex = (status) => {
+    const s = status ? status.toLowerCase() : "";
+    if (s.includes('placed')) return 0;
+    if (s.includes('preparing')) return 1;
+    if (s.includes('transit')) return 2;
+    if (s.includes('delivered') || s.includes('completed')) return 3;
+    return 0;
+  };
+
+  const currentStepIndex = getStepIndex(order.status);
+  const steps = ['Placed', 'Preparing', 'In Transit', 'Delivered'];
+
   return (
     <div className="min-h-screen bg-slate-50/50 py-8 px-4 md:px-8">
       <div className="max-w-5xl mx-auto">
@@ -52,14 +65,14 @@ export default function OrderDetails() {
 
           <div className="relative flex justify-between items-center px-2">
             <div className="absolute top-1/2 left-0 w-full h-1 bg-slate-100 -z-0"></div>
-            <div className="absolute top-1/2 left-0 w-3/4 h-1 bg-emerald-500 z-0 transition-all duration-700"></div>
+            <div className="absolute top-1/2 left-0 h-1 bg-emerald-500 z-0 transition-all duration-700" style={{ width: `${(currentStepIndex / (steps.length - 1)) * 100}%` }}></div>
             
-            {['Placed', 'Preparing', 'In Transit', 'Delivered'].map((step, i) => (
+            {steps.map((step, i) => (
               <div key={step} className="flex flex-col items-center gap-4 relative z-10">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center border-4 border-white transition-all duration-300 ${i <= 2 ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200' : 'bg-slate-200 text-slate-400'}`}>
-                  {i <= 2 ? <FiCheckCircle size={18} /> : <div className="w-2.5 h-2.5 bg-slate-400 rounded-full"></div>}
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center border-4 border-white transition-all duration-300 ${i <= currentStepIndex ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200' : 'bg-slate-200 text-slate-400'}`}>
+                  {i <= currentStepIndex ? <FiCheckCircle size={18} /> : <div className="w-2.5 h-2.5 bg-slate-400 rounded-full"></div>}
                 </div>
-                <span className={`text-[10px] font-black uppercase tracking-widest ${i <= 2 ? 'text-emerald-600' : 'text-slate-400'}`}>
+                <span className={`text-[10px] font-black uppercase tracking-widest ${i <= currentStepIndex ? 'text-emerald-600' : 'text-slate-400'}`}>
                   {step}
                 </span>
               </div>
@@ -91,6 +104,10 @@ export default function OrderDetails() {
                   <p className="font-black text-slate-900">₹{item.price}</p>
                 </div>
               ))}
+            </div>
+            {/* Total Amount Added */}
+            <div className="mt-6 pt-6 border-t border-slate-100 text-right">
+                <p className="text-lg font-black text-slate-900">Total: ₹{order.totalAmount}</p>
             </div>
           </div>
 
