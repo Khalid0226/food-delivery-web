@@ -51,7 +51,9 @@ export default function Dashboard() {
   const fetchDashboardStats = async () => {
     try {
       const response = await axios.get('http://localhost:2500/api/dashboard-stats')
-      if (response.data.success) {
+      console.log(response.data);
+      
+      if (response.data.data) {        
         setStats(response.data.data)
       }
       else {
