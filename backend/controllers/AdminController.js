@@ -5,7 +5,7 @@ import userModel from "../models/User.js";
 export const getDashboardStats = async (req, res) => {
     try {
         const revenueData = await orderModel.aggregate([
-            { $match: { status: { $ne: 'cancelled' } } },
+            { $match: { status: { $ne: 'Cancelled' } } },
             { $group: { _id: null, total: { $sum: '$totalAmount' } } }
         ])
 

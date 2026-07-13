@@ -21,22 +21,15 @@ export default function AdminLayout({ children }) {
       {/* Main Content Area */}
       <main className="flex-1 w-full md:ml-64 transition-all duration-300">
         
-        {/* Updated Mapping logic: Sirf AdminHeader ko prop pass hoga */}
+        {/* Yahan valid element check add kiya gaya hai */}
         {React.Children.map(children, (child) => {
           if (!React.isValidElement(child)) return child;
-          
-          // Check karein ki kya ye AdminHeader component hai? 
-          // Agar aapne component ka naam 'AdminHeader' rakha hai toh ye kaam karega
-          if (child.type.name === 'AdminHeader') {
-            return React.cloneElement(child, { toggleSidebar: () => setIsSidebarOpen(true) });
-          }
-          
-          return child;
+          return React.cloneElement(child, { toggleSidebar: () => setIsSidebarOpen(true) });
         })}
 
-        {/* Content Render */}
+        {/* Dashboard ka baaki content */}
         <div className="p-4 md:p-8">
-           {children}
+           {/* Content here */}
         </div>
       </main>
     </div>
