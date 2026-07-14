@@ -1,40 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FiSearch, FiMoreVertical, FiTrash2, FiEye, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import AdminLayout from "../../components/admin_layout/AdminLayout";
 import AdminHeader from "../../components/admin_layout/AdminHeader";
+import axios from 'axios'
 
 export default function Customers() {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [activeMenuId, setActiveMenuId] = useState(null);
+    const [customers, setCustomers] = useState([]);
+    const [loading,setLoading] = useState(true)
     const itemsPerPage = 8; // Professional layout ke liye 8 items
 
     const navigate = useNavigate()
 
-    const [customers, setCustomers] = useState([
-        { id: '#CUS-001', name: 'Rahul Kumar', email: 'rahul@example.com', phone: '+91 98765 43210', orders: 12, spent: '₹5,400' },
-        { id: '#CUS-002', name: 'Priya Singh', email: 'priya@example.com', phone: '+91 91234 56789', orders: 8, spent: '₹3,200' },
-        { id: '#CUS-003', name: 'Amit Verma', email: 'amit@example.com', phone: '+91 99887 76655', orders: 25, spent: '₹12,800' },
-        { id: '#CUS-004', name: 'Suresh Rao', email: 'suresh@example.com', phone: '+91 98765 12345', orders: 5, spent: '₹1,500' },
-         { id: '#CUS-005', name: 'Rahul Kumar', email: 'rahul@example.com', phone: '+91 98765 43210', orders: 12, spent: '₹5,400' },
-        { id: '#CUS-006', name: 'Priya Singh', email: 'priya@example.com', phone: '+91 91234 56789', orders: 8, spent: '₹3,200' },
-        { id: '#CUS-007', name: 'Amit Verma', email: 'amit@example.com', phone: '+91 99887 76655', orders: 25, spent: '₹12,800' },
-        { id: '#CUS-008', name: 'Suresh Rao', email: 'suresh@example.com', phone: '+91 98765 12345', orders: 5, spent: '₹1,500' },
-         { id: '#CUS-009', name: 'Rahul Kumar', email: 'rahul@example.com', phone: '+91 98765 43210', orders: 12, spent: '₹5,400' },
-        { id: '#CUS-010', name: 'Priya Singh', email: 'priya@example.com', phone: '+91 91234 56789', orders: 8, spent: '₹3,200' },
-        { id: '#CUS-011', name: 'Amit Verma', email: 'amit@example.com', phone: '+91 99887 76655', orders: 25, spent: '₹12,800' },
-        { id: '#CUS-012', name: 'Suresh Rao', email: 'suresh@example.com', phone: '+91 98765 12345', orders: 5, spent: '₹1,500' },
-    ]);
+    const fetchData = async()=>{
+        try {
+            const response = await axios.get('http://localhost:2500/api/customers')
+            console.log(response.data.data);
+            
+            setCustomers(response.data.data)
+            setLoading(false)
+        } catch (error) {
+            console.error('failed to fetch data',error);
+            setLoading(false)
+        }
+    }
+
+    useEffect(()=>{
+        fetchData()
+    },[])
 
     const toggleMenu = (id) => setActiveMenuId(activeMenuId === id ? null : id);
-    
+
     const deleteCustomer = (id) => {
         setCustomers(customers.filter(c => c.id !== id));
         setActiveMenuId(null);
     };
 
-    const filteredCustomers = customers.filter((cus) => 
+    const filteredCustomers = customers.filter((cus) =>
         cus.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         cus.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -83,26 +88,26 @@ export default function Customers() {
                                             </div>
                                             <div>
                                                 <p className="font-bold text-slate-950 text-sm">{cus.name}</p>
-                                                <p className="text-[10px] text-slate-400 font-bold">{cus.id}</p>
+                                                <p className="text-[10px] text-slate-400 uppercase font-bold">order #{cus.id.slice(-6)}</p>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
                                             <p className="text-sm font-semibold text-slate-700">{cus.email}</p>
-                                            <p className="text-xs text-slate-400">{cus.phone}</p>
+                                            <p className="text-xs text-slate-400">{cus.mobile}</p>
                                         </td>
-                                        <td className="px-6 py-4 text-center font-bold text-slate-900">{cus.orders}</td>
-                                        <td className="px-6 py-4 font-black text-amber-600">{cus.spent}</td>
+                                        <td className="px-6 py-4 text-center font-bold text-slate-900">{cus.totalOrders}</td>
+                                        <td className="px-6 py-4 font-black text-amber-600">{cus.totalSpent.toLocaleString()}</td>
                                         <td className="px-6 py-4 text-right relative">
                                             <button onClick={() => toggleMenu(cus.id)} className="p-2 hover:bg-slate-200 rounded-lg transition-all">
                                                 <FiMoreVertical className="text-slate-500" />
                                             </button>
                                             {activeMenuId === cus.id && (
                                                 <div className="absolute right-6 mt-2 w-36 bg-white border border-slate-100 rounded-xl shadow-2xl z-20 overflow-hidden">
-                                                    <button onClick={()=>{navigate(`/admin/customer-profile/${cus.id.substring(1)}`);setActiveMenuId(null);}} className="flex w-full items-center gap-2 px-4 py-2 hover:bg-slate-50 text-xs font-bold text-slate-700">
-                                                        <FiEye size={14}/> View Profile
+                                                    <button onClick={() => { navigate(`/admin/customer-profile/${cus.email.substring(1)}`); setActiveMenuId(null); }} className="flex w-full items-center gap-2 px-4 py-2 hover:bg-slate-50 text-xs font-bold text-slate-700">
+                                                        <FiEye size={14} /> View Profile
                                                     </button>
-                                                    <button onClick={() => deleteCustomer(cus.id)} className="flex w-full items-center gap-2 px-4 py-2 hover:bg-red-50 text-xs font-bold text-red-600">
-                                                        <FiTrash2 size={14}/> Delete
+                                                    <button onClick={() => deleteCustomer(cus.email)} className="flex w-full items-center gap-2 px-4 py-2 hover:bg-red-50 text-xs font-bold text-red-600">
+                                                        <FiTrash2 size={14} /> Delete
                                                     </button>
                                                 </div>
                                             )}

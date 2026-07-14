@@ -46,6 +46,7 @@ export const getAllCustomers = async (req, res) => {
             {
                 $group: {
                     _id: '$email',
+                    doc: { $first: "$$ROOT" },
                     name: { $first: '$fullName' },
                     mobile: { $first: '$mobile' },
                     totalOrders: { $sum: 1 },
@@ -57,6 +58,7 @@ export const getAllCustomers = async (req, res) => {
             {
                 $project: {
                     _id: 0,
+                    id: "$doc._id",
                     name: 1,
                     email: "$_id",
                     mobile: 1,
