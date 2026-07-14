@@ -1,12 +1,15 @@
 import React from 'react';
 import { FiBell, FiMenu, FiLogOut } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 
 export default function AdminHeader({ toggleSidebar }) {
+
+    const navigate = useNavigate()
     return (
         // px-4 aur py-2 se charo taraf margin/padding mil jayegi
         <header className=" flex items-center justify-between px-4 md:px-6 py-5 border-b border-slate-200 bg-white">
             {/* Left: Title */}
-            <div className="flex items-center gap-1 flex-shrink-0 cursor-pointer">
+            <div className="flex items-center gap-1 flex-shrink-0 cursor-pointer"onClick={() =>navigate('/admin/dashboard')}>
                 <img src="/images.jpg" alt="logo" className="w-10 h-10 object-contain rounded-xl border border-slate-200 bg-white p-1 shadow-sm" />
                 <div>
                     <h1 className="text-sm md:text-xl font-black tracking-wide text-[#FF1744]">
