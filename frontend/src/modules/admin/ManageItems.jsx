@@ -114,7 +114,7 @@ export default function ManageItems() {
                                         </td>
                                         <td className="px-4 py-5">
                                             <p className="font-bold text-slate-900 text-lg">{item.name}</p>
-                                            <p className="text-xs text-slate-400 font-medium">ID: #{item._id}</p>
+                                            <p className="text-xs text-slate-400 font-medium">ID: #{item._id.slice(-6)}</p>
                                         </td>
                                         <td className="px-4 py-5 font-semibold text-slate-600">{item.category}</td>
                                         <td className="px-4 py-5 font-black text-[#FF1744] text-lg">{item.price}</td>
