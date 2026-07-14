@@ -103,10 +103,10 @@ export default function Customers() {
                                             </button>
                                             {activeMenuId === cus.id && (
                                                 <div className="absolute right-6 mt-2 w-36 bg-white border border-slate-100 rounded-xl shadow-2xl z-20 overflow-hidden">
-                                                    <button onClick={() => { navigate(`/admin/customer-profile/${cus.email.substring(1)}`); setActiveMenuId(null); }} className="flex w-full items-center gap-2 px-4 py-2 hover:bg-slate-50 text-xs font-bold text-slate-700">
+                                                    <button onClick={() => { navigate(`/admin/customer-profile/${cus.id}`); setActiveMenuId(null); }} className="flex w-full items-center gap-2 px-4 py-2 hover:bg-slate-50 text-xs font-bold text-slate-700">
                                                         <FiEye size={14} /> View Profile
                                                     </button>
-                                                    <button onClick={() => deleteCustomer(cus.email)} className="flex w-full items-center gap-2 px-4 py-2 hover:bg-red-50 text-xs font-bold text-red-600">
+                                                    <button onClick={() => deleteCustomer(cus.id)} className="flex w-full items-center gap-2 px-4 py-2 hover:bg-red-50 text-xs font-bold text-red-600">
                                                         <FiTrash2 size={14} /> Delete
                                                     </button>
                                                 </div>
