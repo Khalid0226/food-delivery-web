@@ -2,13 +2,13 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiShoppingCart, FiMenu, FiX, FiLogOut, FiUser, FiShoppingBag, FiCoffee } from 'react-icons/fi';
 
-export default function CustomerHeader({
-    activeTab,
-    setActiveTab,
-    cartCount,
-    isMobileMenuOpen,
-    setIsMobileMenuOpen,
-    handleLogout
+export default function CustomerHeader({ 
+    activeTab, 
+    setActiveTab, 
+    cartCount, 
+    isMobileMenuOpen, 
+    setIsMobileMenuOpen, 
+    handleLogout 
 }) {
     const navigate = useNavigate();
 
@@ -16,9 +16,19 @@ export default function CustomerHeader({
         <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
                 <div className="flex items-center justify-between h-20">
-
+                    
                     {/* Logo - Flex shrink prevent */}
-                    {/* Logo Section - Updated */}
+                    {/* <div className="flex items-center gap-2 md:gap-3 cursor-pointer flex-shrink-0" onClick={() => { setActiveTab("menu"); navigate('/customer/dashboard'); }}>
+                        <img src="/images.jpg" alt="logo" className="w-10 h-10 md:w-12 md:h-12 object-contain rounded-xl border border-slate-200 bg-white p-1" />
+                        <div className="hidden sm:block">
+                            <h1 className="text-sm md:text-xl font-black tracking-wide text-[#FF1744]">
+                                DIAMOND<span className="text-[8px] md:text-[10px] text-slate-500 align-super">®</span>
+                                <span className="text-green-700 ml-1">FRY CENTER</span>
+                            </h1>
+                            <p className="text-[8px] md:text-[10px] uppercase tracking-[3px] text-slate-500 font-bold">Taste That Rules</p>
+                        </div>
+                    </div> */}
+
                     <div className="flex items-center gap-2 cursor-pointer flex-shrink-0" onClick={() => { setActiveTab("menu"); navigate('/customer/dashboard'); }}>
                         <img src="/images.jpg" alt="logo" className="w-8 h-8 md:w-12 md:h-12 object-contain rounded-xl border border-slate-200 bg-white p-1" />
 
