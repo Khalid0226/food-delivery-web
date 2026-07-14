@@ -38,3 +38,42 @@ export const getDashboardStats = async (req, res) => {
         })
     }
 }
+
+
+export const getAllCustomers = async (req, res) => {
+    try {
+        const customerReport = await orderModel.aggregate([
+            {
+                $group: {
+                    _id: '$email',
+                    name: { $first: '$fullName' },
+                    mobile: { $first: '$mobile' },
+                    totalOrders: { $sum: 1 },
+                    // totalSpent: { $sum: { $sum: "$totalAmount" } }
+                    totalSpent: { $sum: "$totalAmount" }
+                }
+            },
+
+            {
+                $project: {
+                    _id: 0,
+                    name: 1,
+                    email: "$_id",
+                    mobile: 1,
+                    totalOrders: 1,
+                    totalSpent: 1
+                }
+            }
+        ])
+
+        res.status(200).json({
+            message:'success',
+            data:customerReport
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: 'failed',
+            error: error.message
+        })
+    }
+}
