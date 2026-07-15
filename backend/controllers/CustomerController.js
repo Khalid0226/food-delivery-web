@@ -2,6 +2,7 @@ import userModel from "../models/User.js";
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose'; // import zaroor karein
+import orderModel from "../models/Order.js";
 
 
 export const register = async (req,res) =>{
@@ -77,29 +78,54 @@ export const login = async (req,res) =>{
     }
 }
 
-export const deleteCustomer = async (req,res) => {
-    try {
-        // console.log(req.params.id);
-        // const {id} = req.params
+// export const deleteCustomer = async (req,res) => {
+//     try {
+//         // console.log(req.params.id);
+//         // const {id} = req.params
 
-        const {email} = req.params
+//         const {email} = req.params
         
-        const customerDelete = await userModel.findOneAndDelete({email:email})
-        if (!customerDelete) {
-            return res.status(404).json({
-                message:'no user found!!'
-            })
+//         const customerDelete = await userModel.findOneAndDelete({email:email})
+//         if (!customerDelete) {
+//             return res.status(404).json({
+//                 message:'no user found!!'
+//             })
+//         }
+//         return res.status(200).json({
+//             message:'success',
+//             data:customerDelete
+//         })
+        
+//     } catch (error) {
+//         res.status(500).json({
+//             message:'failed to Delete Customer',
+//             error:error.message
+//         })
+//     }
+// }
+
+export const deleteCustomer = async (req, res) => {
+    try {
+        const { email } = req.params;
+
+        // 1. Pehle userModel se user ko delete karein
+        const userDeleted = await userModel.findOneAndDelete({ email: email });
+
+        // 2. Ab orderModel se uske saare orders delete karein
+        const ordersDeleted = await orderModel.deleteMany({ email: email });
+
+        // Check karein ki kya user exist karta tha
+        if (!userDeleted) {
+            return res.status(404).json({ message: 'Customer not found in system!' });
         }
-        return res.status(200).json({
-            message:'success',
-            data:customerDelete
-        })
+        
+        return res.status(200).json({ 
+            message: 'Customer and their orders deleted successfully', 
+            userDeleted, 
+            ordersDeleted 
+        });
         
     } catch (error) {
-        res.status(500).json({
-            message:'failed to Delete Customer',
-            error:error.message
-        })
+        res.status(500).json({ message: 'Failed to delete customer', error: error.message });
     }
 }
-

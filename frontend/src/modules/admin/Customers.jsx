@@ -10,44 +10,46 @@ export default function Customers() {
     const [currentPage, setCurrentPage] = useState(1);
     const [activeMenuId, setActiveMenuId] = useState(null);
     const [customers, setCustomers] = useState([]);
-    const [loading,setLoading] = useState(true)
+    const [loading, setLoading] = useState(true)
     const itemsPerPage = 8; // Professional layout ke liye 8 items
 
     const navigate = useNavigate()
 
-    const fetchData = async()=>{
+    const fetchData = async () => {
         try {
             const response = await axios.get('http://localhost:2500/api/customers')
             console.log(response.data.data);
-            
+
             setCustomers(response.data.data)
             setLoading(false)
         } catch (error) {
-            console.error('failed to fetch data',error);
+            console.error('failed to fetch data', error);
             setLoading(false)
         }
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchData()
-    },[])
+    }, [])
 
     const deleteCustomer = async (email) => {
-        console.log(email);
-        
         try {
-            const confirmDelete = window.confirm('are you sure!!')
+            const confirmDelete = window.confirm('Are you sure you want to delete this customer?');
 
             if (confirmDelete) {
-                await axios.delete(`http://localhost:2500/api/auth/customer/${email}`)
+                // URL encode karein taaki @ aur . safe rahein
+                const safeEmail = encodeURIComponent(email);
 
-                setCustomers(customers.filter(c=> c._id !== id))
-                setActiveMenuId(null)
+                // Ab URL banega: http://localhost:2500/api/auth/customer/imran%40gmail.com
+                await axios.delete(`http://localhost:2500/api/auth/customer/${safeEmail}`);
 
+                setCustomers(customers.filter(c => c.email !== email));
+                setActiveMenuId(null);
                 alert("Customer deleted successfully!");
             }
         } catch (error) {
-            console.error('faild to delete customers',error);
+            console.error('Failed to delete', error);
+            alert("Delete failed! Check the browser console.");
         }
     }
 
