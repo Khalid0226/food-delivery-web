@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import mongoose from 'mongoose'
-import router from './routes/CustomerRoute.js'
+import customerRouter from './routes/CustomerRoute.js'
 
 import menuRouter from './routes/MenuRoute.js'
 import orderRouter from './routes/OrderRoute.js'
@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
 
 
-app.use('/api/auth', router)
+app.use('/api/auth', customerRouter)
 
 app.use('/api/menu', menuRouter)
 

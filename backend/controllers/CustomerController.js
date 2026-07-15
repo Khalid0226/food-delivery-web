@@ -1,6 +1,7 @@
 import userModel from "../models/User.js";
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import mongoose from 'mongoose'; // import zaroor karein
 
 
 export const register = async (req,res) =>{
@@ -75,3 +76,28 @@ export const login = async (req,res) =>{
         })
     }
 }
+
+export const deleteCustomer = async (req,res) => {
+    try {
+        // console.log(req.params.id);
+        // const {id} = req.params
+        
+        const customerDelete = await userModel.findByIdAndDelete(req.params.id)
+        if (!customerDelete) {
+            return res.status(404).json({
+                message:'no user found!!'
+            })
+        }
+        return res.status(200).json({
+            message:'success',
+            data:customerDelete
+        })
+        
+    } catch (error) {
+        res.status(500).json({
+            message:'failed to Delete Customer',
+            error:error.message
+        })
+    }
+}
+
