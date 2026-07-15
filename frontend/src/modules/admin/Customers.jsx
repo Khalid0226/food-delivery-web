@@ -32,12 +32,31 @@ export default function Customers() {
         fetchData()
     },[])
 
+    const deleteCustomer = async (email) => {
+        console.log(email);
+        
+        try {
+            const confirmDelete = window.confirm('are you sure!!')
+
+            if (confirmDelete) {
+                await axios.delete(`http://localhost:2500/api/auth/customer/${email}`)
+
+                setCustomers(customers.filter(c=> c._id !== id))
+                setActiveMenuId(null)
+
+                alert("Customer deleted successfully!");
+            }
+        } catch (error) {
+            console.error('faild to delete customers',error);
+        }
+    }
+
     const toggleMenu = (id) => setActiveMenuId(activeMenuId === id ? null : id);
 
-    const deleteCustomer = (id) => {
-        setCustomers(customers.filter(c => c.id !== id));
-        setActiveMenuId(null);
-    };
+    // const deleteCustomer = (id) => {
+    //     setCustomers(customers.filter(c => c.id !== id));
+    //     setActiveMenuId(null);
+    // };
 
     const filteredCustomers = customers.filter((cus) =>
         cus.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -106,7 +125,7 @@ export default function Customers() {
                                                     <button onClick={() => { navigate(`/admin/customer-profile/${cus.id}`); setActiveMenuId(null); }} className="flex w-full items-center gap-2 px-4 py-2 hover:bg-slate-50 text-xs font-bold text-slate-700">
                                                         <FiEye size={14} /> View Profile
                                                     </button>
-                                                    <button onClick={() => deleteCustomer(cus.id)} className="flex w-full items-center gap-2 px-4 py-2 hover:bg-red-50 text-xs font-bold text-red-600">
+                                                    <button onClick={() => deleteCustomer(cus.email)} className="flex w-full items-center gap-2 px-4 py-2 hover:bg-red-50 text-xs font-bold text-red-600">
                                                         <FiTrash2 size={14} /> Delete
                                                     </button>
                                                 </div>

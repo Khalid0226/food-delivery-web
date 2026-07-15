@@ -11,7 +11,7 @@ router.post('/register',register)
 
 router.post('/login',login)
 
-router.delete('/customer/:id',deleteCustomer)
+router.delete('/customer/:email',deleteCustomer)
 
 
 export default router

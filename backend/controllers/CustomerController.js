@@ -81,8 +81,10 @@ export const deleteCustomer = async (req,res) => {
     try {
         // console.log(req.params.id);
         // const {id} = req.params
+
+        const {email} = req.params
         
-        const customerDelete = await userModel.findByIdAndDelete(req.params.id)
+        const customerDelete = await userModel.findOneAndDelete({email:email})
         if (!customerDelete) {
             return res.status(404).json({
                 message:'no user found!!'
