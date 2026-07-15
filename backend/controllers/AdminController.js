@@ -103,7 +103,7 @@ export const getAllCustomers = async (req, res) => {
                     id: "$_id", // User ID
                     name: 1,
                     email: 1,
-                    mobile: 1,
+                    mobile: "$phone",
                     totalOrders: { $size: "$orders" },
                     totalSpent: { $sum: "$orders.totalAmount" }
                 }
