@@ -207,7 +207,7 @@ export default function Orders() {
                             <button onClick={() => updateStatus(selectedOrder._id, 'Completed')} className="py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-all">Mark Completed</button>
                             <button onClick={() => updateStatus(selectedOrder._id, 'Preparing')} className="py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all">Mark Preparing</button>
                             <button onClick={() => updateStatus(selectedOrder._id, 'In Transit')} className="py-3 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition-all">Mark In Transit</button>
-                            <button onClick={() => updateStatus(selectedOrder._id, 'Cancelled')} className="py-3 bg-orange-600 text-white rounded-xl font-bold hover:bg-orange-700 transition-all">Mark In Cancelled</button>
+                            <button onClick={() => updateStatus(selectedOrder._id, 'Cancelled')} className="py-3 bg-orange-600 text-white rounded-xl font-bold hover:bg-orange-700 transition-all">Mark Cancelled</button>
                             <button onClick={() => setSelectedOrder(null)} className="py-3 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-all">Close</button>
                         </div>
                     </div>
