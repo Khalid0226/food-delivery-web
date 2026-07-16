@@ -102,7 +102,7 @@ export default function CustomerProfile() {
                                         <div className="flex items-center gap-4">
                                             <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500"><FiShoppingBag /></div>
                                             <div>
-                                                <p className="font-black text-slate-900">Order #{order._id.slice(-6)}</p>
+                                                <p className="font-black uppercase text-slate-900">Order #{order._id.slice(-6)}</p>
                                                 <p className="text-xs font-bold text-slate-400 mt-0.5">{new Date(order.createdAt).toLocaleDateString()} • {order.status}</p>
                                             </div>
                                         </div>
