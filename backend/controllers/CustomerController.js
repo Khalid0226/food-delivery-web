@@ -135,7 +135,7 @@ export const getCustomerById = async (req, res) => {
     const { id } = req.params
     const user = await userModel.findById(id)
 
-    const orders = await orderModel.find({ email: user.email })
+    const orders = await orderModel.find({ email: user.email }).sort({ createdAt: -1 });
 
     // if (!Array.isArray(orders)) orders = [];
 
