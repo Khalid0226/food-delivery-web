@@ -7,16 +7,16 @@ import { useState } from 'react';
 import axios from 'axios'
 import { useEffect } from 'react';
 
-// Pro Analytics Data
-const chartData = [
-  { name: 'Mon', revenue: 40000 },
-  { name: 'Tue', revenue: 30000 },
-  { name: 'Wed', revenue: 60000 },
-  { name: 'Thu', revenue: 20780 },
-  { name: 'Fri', revenue: 80000 },
-  { name: 'Sat', revenue: 50000 },
-  { name: 'Sun', revenue: 90000 }
-];
+// // Pro Analytics Data
+// const chartData = [
+//   { name: 'Mon', revenue: 40000 },
+//   { name: 'Tue', revenue: 30000 },
+//   { name: 'Wed', revenue: 60000 },
+//   { name: 'Thu', revenue: 20780 },
+//   { name: 'Fri', revenue: 80000 },
+//   { name: 'Sat', revenue: 50000 },
+//   { name: 'Sun', revenue: 90000 }
+// ];
 
 export default function Dashboard() {
   // const stats = [
@@ -34,6 +34,10 @@ export default function Dashboard() {
   })
 
   const [loading, setLoading] = useState(true);
+
+  const [chartData,setChartData] = useState([])
+
+  const [filter,setFilter] = useState('week')
 
 
   const formatRevenue = (nums) => {
@@ -66,8 +70,25 @@ export default function Dashboard() {
     }
   }
 
+  const fetchGraphData = async (selectedFilter) => {
+    try {
+      const response = await axios.get(`http://localhost:2500/api/graph?filter=${selectedFilter}`)
+
+      const formattedData = response.data.data.map((item)=>({
+        name:item._id,
+        revenue: item.revenue
+    }))
+      setChartData(formattedData)
+
+    } catch (error) {
+      alert('graph data not found!!!')
+      console.error(error);
+    }
+  }
+
   useEffect(() => {
     fetchDashboardStats()
+    fetchGraphData()
   }, [])
 
 
@@ -122,7 +143,9 @@ export default function Dashboard() {
           <div className="lg:col-span-2 bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-xl font-black text-slate-950">Revenue Analytics</h2>
-              <select className="bg-slate-50 border-none rounded-xl text-xs font-bold text-slate-600 px-4 py-2 cursor-pointer outline-none">
+              <select
+              value={filter} onChange={(e)=>setFilter(e.target.value);fetchGraphData(e.target.value)}
+               className="bg-slate-50 border-none rounded-xl text-xs font-bold text-slate-600 px-4 py-2 cursor-pointer outline-none">
                 <option>This Week</option>
                 <option>This Month</option>
               </select>
