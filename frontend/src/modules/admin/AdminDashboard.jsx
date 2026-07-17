@@ -144,7 +144,7 @@ export default function Dashboard() {
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-xl font-black text-slate-950">Revenue Analytics</h2>
               <select
-              value={filter} onChange={(e)=>setFilter(e.target.value);fetchGraphData(e.target.value)}
+              value={filter} onChange={(e)=>{setFilter(e.target.value);fetchGraphData(e.target.value)}}
                className="bg-slate-50 border-none rounded-xl text-xs font-bold text-slate-600 px-4 py-2 cursor-pointer outline-none">
                 <option>This Week</option>
                 <option>This Month</option>
