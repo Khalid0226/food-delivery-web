@@ -7,16 +7,16 @@ import { useState } from 'react';
 import axios from 'axios'
 import { useEffect } from 'react';
 
-// Pro Analytics Data
-const chartData = [
-  { name: 'Mon', revenue: 40000 },
-  { name: 'Tue', revenue: 30000 },
-  { name: 'Wed', revenue: 60000 },
-  { name: 'Thu', revenue: 20780 },
-  { name: 'Fri', revenue: 80000 },
-  { name: 'Sat', revenue: 50000 },
-  { name: 'Sun', revenue: 90000 }
-];
+// // Pro Analytics Data
+// const chartData = [
+//   { name: 'Mon', revenue: 40000 },
+//   { name: 'Tue', revenue: 30000 },
+//   { name: 'Wed', revenue: 60000 },
+//   { name: 'Thu', revenue: 20780 },
+//   { name: 'Fri', revenue: 80000 },
+//   { name: 'Sat', revenue: 50000 },
+//   { name: 'Sun', revenue: 90000 }
+// ];
 
 export default function Dashboard() {
   // const stats = [
