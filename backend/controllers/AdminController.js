@@ -121,3 +121,34 @@ export const getAllCustomers = async (req, res) => {
         });
     }
 }
+
+
+export const getGraphRevenue = async (req, res) => {
+    try {
+
+        const { filter } = req.query
+        const days = filter === 'days' ? 7 : 30
+
+        const data = await orderModel.aggregate([
+            { $match: { createdAt: { $gte: new Date(new Date() - days * 24 * 60 * 60 * 1000) } } },
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                    revenue: { $sum: "$totalAmount" }
+                }
+            },
+            {$sort:{_id:1}}
+        ])
+
+        res.status(200).json({
+            message:'success',
+            data:data
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            message: 'failed to fetch revenue!!',
+            error: error.message
+        })
+    }
+}
