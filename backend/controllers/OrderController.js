@@ -93,3 +93,20 @@ export const getUserOrderById = async (req,res) => {
         })
     }
 }
+
+
+export const getPendingCount = async (req,res) => {
+    try {
+        const count = await orderModel.countDocuments({status:'pending'})
+        res.status(200).json({
+            message:'success',
+            count:count
+        })
+        
+    } catch (error) {
+        res.status(500).json({
+            message:'failed to fetch new orders',
+            error:error.message
+        })
+    }
+}
