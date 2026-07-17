@@ -35,17 +35,17 @@ export default function Dashboard() {
 
   const [loading, setLoading] = useState(true);
 
-  const [chartData,setChartData] = useState([])
+  const [chartData, setChartData] = useState([])
 
-  const [filter,setFilter] = useState('week')
+  const [filter, setFilter] = useState('week')
 
 
   const formatRevenue = (nums) => {
     if (nums >= 100000) {
       return '₹' + (nums / 100000).toFixed(1) + 'L';
     }
-    else if (nums >= 10000) {
-      return '₹' + (nums / 10000).toFixed(1) + 'K';
+    else if (nums >= 1000) { // 1000 se upar K mein dikhayein
+      return '₹' + (nums / 1000).toFixed(1) + 'K';
     }
     else {
       return '₹' + nums
@@ -56,8 +56,8 @@ export default function Dashboard() {
     try {
       const response = await axios.get('http://localhost:2500/api/dashboard-stats')
       console.log(response.data);
-      
-      if (response.data.data) {        
+
+      if (response.data.data) {
         setStats(response.data.data)
       }
       else {
@@ -74,10 +74,10 @@ export default function Dashboard() {
     try {
       const response = await axios.get(`http://localhost:2500/api/graph?filter=${selectedFilter}`)
 
-      const formattedData = response.data.data.map((item)=>({
-        name:item._id,
+      const formattedData = response.data.data.map((item) => ({
+        name: item._id,
         revenue: item.revenue
-    }))
+      }))
       setChartData(formattedData)
 
     } catch (error) {
@@ -144,8 +144,8 @@ export default function Dashboard() {
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-xl font-black text-slate-950">Revenue Analytics</h2>
               <select
-              value={filter} onChange={(e)=>{setFilter(e.target.value);fetchGraphData(e.target.value)}}
-               className="bg-slate-50 border-none rounded-xl text-xs font-bold text-slate-600 px-4 py-2 cursor-pointer outline-none">
+                value={filter} onChange={(e) => { setFilter(e.target.value); fetchGraphData(e.target.value) }}
+                className="bg-slate-50 border-none rounded-xl text-xs font-bold text-slate-600 px-4 py-2 cursor-pointer outline-none">
                 <option>This Week</option>
                 <option>This Month</option>
               </select>
@@ -153,7 +153,7 @@ export default function Dashboard() {
 
             <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.2} />
@@ -167,11 +167,21 @@ export default function Dashboard() {
                     tickLine={false}
                     tick={{ fill: '#94a3b8', fontSize: 11 }}
                   />
+                  {/* <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#94a3b8', fontSize: 11 }}
+                    tickMargin={10}
+                  /> */}
+
                   <YAxis
                     axisLine={false}
                     tickLine={false}
                     tick={{ fill: '#94a3b8', fontSize: 11 }}
                     tickMargin={10}
+                    // Niche wali line add karein:
+                    domain={[0, 'auto']}
+                    allowDecimals={false}
                   />
                   <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} />
                   <Area type="monotone" dataKey="revenue" stroke="#f59e0b" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" />
@@ -193,6 +203,11 @@ export default function Dashboard() {
                 <p className="text-3xl font-black text-emerald-400 mt-1">
                   {stats.totalOrders > 0 ? formatRevenue(Math.round(stats.totalRevenue / stats.totalOrders)) : '₹0'}
                 </p>
+                {/* <p className="text-3xl font-black text-emerald-400 mt-1">
+                  {stats.totalOrders > 0
+                    ? '₹' + Math.round(stats.totalRevenue / stats.totalOrders).toLocaleString()
+                    : '₹0'}
+                </p> */}
               </div>
             </div>
             {/* Background design element */}
