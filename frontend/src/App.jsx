@@ -22,40 +22,51 @@ import Settings from './modules/admin/Settings';
 import AddItem from './modules/admin/AddItem';
 import ManageItems from './modules/admin/ManageItems';
 
+import DeliveryLayout from './components/delivery_layout/DeliveryLayout';
+import DeliveryDashboard from './modules/delivery/DeliveryDashboard';
+
 function App() {
   return (
     <BrowserRouter>
-      {/* Layout ko BrowserRouter ke andar rakha gaya hai taaki useLocation hook kaam kare */}
-      <Layout>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Landing />} />
-          <Route path='/register' element={<Register />} />
-          <Route path='/login' element={<Login />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Routes>
+        {/* 1. Public Routes */}
+        <Route path="/" element={<Landing />} />
+        <Route path='/register' element={<Register />} />
+        <Route path='/login' element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
-          {/* Customer Routes */}
-          <Route path="/customer/dashboard" element={<CustomerDashboard />} />
-          <Route path="/product/:id" element={<ProductDetails />} />
-          <Route path='/cart' element={<Cart />} />
-          <Route path='/checkout' element={<Checkout />} />
-          <Route path="/customer/orders" element={<TrackOrders />} />
-          <Route path='/customer/account' element={<Account />}></Route>
+        {/* 2. Delivery Boy Routes (Isme Customer Layout bilkul nahi aayega) */}
+        <Route path="/delivery/dashboard" element={
+          <DeliveryLayout>
+            <DeliveryDashboard />
+          </DeliveryLayout>
+        } />
 
-          <Route path='/order/:orderId' element={<OrderDetails />}></Route>
+        {/* 3. Customer & Admin Routes (Yeh sab apne global Layout ke andar rahenge) */}
+        <Route path="/*" element={
+          <Layout>
+            <Routes>
+              {/* Customer Routes */}
+              <Route path="/customer/dashboard" element={<CustomerDashboard />} />
+              <Route path="/product/:id" element={<ProductDetails />} />
+              <Route path='/cart' element={<Cart />} />
+              <Route path='/checkout' element={<Checkout />} />
+              <Route path="/customer/orders" element={<TrackOrders />} />
+              <Route path='/customer/account' element={<Account />} />
+              <Route path='/order/:orderId' element={<OrderDetails />} />
 
-
-          {/* admin */}
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path='/admin/orders' element={<Orders />}></Route>
-          <Route path='/admin/customers' element={<Customers />}></Route>
-
-          <Route path='/admin/customer-profile/:id' element={<CustomerProfile />}></Route>
-          <Route path='/admin/settings' element={<Settings />}></Route>
-          <Route path='/admin/add-item' element={<AddItem />}></Route>
-          <Route path='/admin/view-item' element={<ManageItems />}></Route>
-        </Routes>
-      </Layout>
+              {/* Admin Routes */}
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path='/admin/orders' element={<Orders />} />
+              <Route path='/admin/customers' element={<Customers />} />
+              <Route path='/admin/customer-profile/:id' element={<CustomerProfile />} />
+              <Route path='/admin/settings' element={<Settings />} />
+              <Route path='/admin/add-item' element={<AddItem />} />
+              <Route path='/admin/view-item' element={<ManageItems />} />
+            </Routes>
+          </Layout>
+        } />
+      </Routes>
     </BrowserRouter>
   );
 }

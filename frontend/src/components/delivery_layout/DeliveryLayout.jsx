@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import DeliverySidebar from './DeliverySidebar';
+import DeliveryHeader from './DeliveryHeader';
 import { FiX } from 'react-icons/fi';
 
 export default function DeliveryLayout({ children }) {
@@ -19,17 +20,17 @@ export default function DeliveryLayout({ children }) {
       </div>
 
       {/* Main Content Area */}
-      <main className="flex-1 w-full md:ml-64 transition-all duration-300">
+      <main className="flex-1 w-full md:ml-64 transition-all duration-300 flex flex-col min-h-screen">
         
-        {/* Yahan valid element check add kiya gaya hai */}
-        {React.Children.map(children, (child) => {
-          if (!React.isValidElement(child)) return child;
-          return React.cloneElement(child, { toggleSidebar: () => setIsSidebarOpen(true) });
-        })}
+        {/* Header with Sidebar Toggle */}
+        <DeliveryHeader toggleSidebar={() => setIsSidebarOpen(true)} />
 
-        {/* Dashboard ka baaki content */}
-        <div className="p-4 md:p-8">
-           {/* Content here */}
+        {/* Dynamic Page Content Wrapper */}
+        <div className="flex-1 p-4 md:p-8">
+          {React.Children.map(children, (child) => {
+            if (!React.isValidElement(child)) return child;
+            return React.cloneElement(child, { toggleSidebar: () => setIsSidebarOpen(true) });
+          })}
         </div>
       </main>
     </div>
