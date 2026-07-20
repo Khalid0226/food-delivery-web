@@ -69,7 +69,11 @@ export default function Login() {
 
                 if (response.data.user.role === 'admin') {
                     navigate('/admin/dashboard')
-                } else {
+                }
+                else if (response.data.user.role === 'delivery') {
+                    navigate('/delivery/dashboard')
+                }
+                else {
                     navigate('/customer/dashboard')
                 }
             } catch (error) {

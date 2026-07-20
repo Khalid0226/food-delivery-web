@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export default function AdminHeader({ toggleSidebar }) {
+export default function DeliveryHeader({ toggleSidebar }) {
 
     const [ notifCount, setNotifCount] = useState(0);
 
