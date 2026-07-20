@@ -45,7 +45,7 @@ export default function DeliveryHeader({ toggleSidebar }) {
 
                 {/* Notification Bell */}
                 <button
-                    onClick={() => navigate('/admin/orders')}
+                    onClick={() => navigate('/delivery/orders')}
                     className="p-2 bg-white border border-slate-200 text-slate-600 rounded-lg hover:bg-amber-50 transition-all relative"
                 >
                     <FiBell className="text-base" />
