@@ -24,6 +24,7 @@ import ManageItems from './modules/admin/ManageItems';
 
 import DeliveryLayout from './components/delivery_layout/DeliveryLayout';
 import DeliveryDashboard from './modules/delivery/DeliveryDashboard';
+import DeliveryOrders from './modules/delivery/DeliveryOrders';
 
 function App() {
   return (
@@ -36,9 +37,13 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* 2. Delivery Boy Routes (Isme Customer Layout bilkul nahi aayega) */}
-        <Route path="/delivery/dashboard" element={
+        {/* Delivery Boy Routes (Nested Routes) */}
+        <Route path="/delivery/*" element={
           <DeliveryLayout>
-            <DeliveryDashboard />
+            <Routes>
+              <Route path="dashboard" element={<DeliveryDashboard />} />
+              <Route path="orders" element={<DeliveryOrders />} />
+            </Routes>
           </DeliveryLayout>
         } />
 
