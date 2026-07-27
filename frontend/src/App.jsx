@@ -25,6 +25,7 @@ import ManageItems from './modules/admin/ManageItems';
 import DeliveryLayout from './components/delivery_layout/DeliveryLayout';
 import DeliveryDashboard from './modules/delivery/DeliveryDashboard';
 import DeliveryOrders from './modules/delivery/DeliveryOrders';
+import DeliveryHistory from './modules/delivery/DeliveryHistory'
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
             <Routes>
               <Route path="dashboard" element={<DeliveryDashboard />} />
               <Route path="orders" element={<DeliveryOrders />} />
+              <Route path='history' element={<DeliveryHistory />} />
             </Routes>
           </DeliveryLayout>
         } />
