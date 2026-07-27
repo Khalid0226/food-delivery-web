@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { FiTrendingUp, FiPackage, FiCheckCircle, FiDollarSign, FiLogOut } from 'react-icons/fi';
+import { FiTrendingUp, FiPackage, FiCheckCircle, FiDollarSign, FiLogOut,FiSettings } from 'react-icons/fi';
 
 export default function DeliverySidebar() {
   return (
@@ -16,6 +16,8 @@ export default function DeliverySidebar() {
         <NavItem to="/delivery/orders" icon={<FiPackage />} label="Live Orders" />
         <NavItem to="/delivery/history" icon={<FiCheckCircle />} label="History" />
         <NavItem to="/delivery/earnings" icon={<FiDollarSign />} label="Earnings" />
+        <NavItem to='/delivery/settings' icon={<FiSettings />} label='settings' />
+      
       </nav>
 
       <div className="pt-6 border-t border-slate-100">
