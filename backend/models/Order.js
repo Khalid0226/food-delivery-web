@@ -4,7 +4,7 @@ const orderSchema = new mongoose.Schema({
     fullName: String,
     email: String,
     mobile: String,
-     status:{type:String,default:'pending'},
+    status:{type:String,default:'pending'},
     address: String,
     pincode: String,
     city: String,

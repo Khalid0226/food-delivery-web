@@ -2,34 +2,37 @@ import React, { useState } from 'react';
 import { FiDollarSign, FiCalendar, FiClock, FiCheckCircle, FiArrowUpRight, FiTrendingUp } from 'react-icons/fi';
 
 const DeliveryEarnings = () => {
-  // Mock data for earnings stats and recent delivery payouts (excluding tips)
+  // Mock data for earnings stats and recent delivery payouts
   const [timeRange, setTimeRange] = useState('today'); // 'today', 'week', 'month'
 
   const earningsData = {
     today: {
-      total: 530,
+      total: 650,
       deliveries: 8,
       hoursWorked: '5.5 hrs',
+      tips: 120,
     },
     week: {
-      total: 3600,
+      total: 4250,
       deliveries: 52,
       hoursWorked: '38 hrs',
+      tips: 650,
     },
     month: {
-      total: 16000,
+      total: 18400,
       deliveries: 215,
       hoursWorked: '150 hrs',
+      tips: 2400,
     }
   };
 
   const currentStats = earningsData[timeRange];
 
   const recentTransactions = [
-    { id: 'ord_101', orderNo: '#101', time: 'Today, 02:45 PM', amount: 70, type: 'Delivery Earning' },
-    { id: 'ord_102', orderNo: '#102', time: 'Today, 01:15 PM', amount: 70, type: 'Delivery Earning' },
-    { id: 'ord_103', orderNo: '#103', time: 'Today, 12:30 PM', amount: 65, type: 'Delivery Earning' },
-    { id: 'ord_104', orderNo: '#104', time: 'Yesterday, 09:20 PM', amount: 80, type: 'Delivery Earning' },
+    { id: 'ord_101', orderNo: '#101', time: 'Today, 02:45 PM', amount: 85, type: 'Delivery + Tip' },
+    { id: 'ord_102', orderNo: '#102', time: 'Today, 01:15 PM', amount: 70, type: 'Delivery' },
+    { id: 'ord_103', orderNo: '#103', time: 'Today, 12:30 PM', amount: 95, type: 'Delivery + Tip' },
+    { id: 'ord_104', orderNo: '#104', time: 'Yesterday, 09:20 PM', amount: 80, type: 'Delivery' },
   ];
 
   return (
@@ -65,7 +68,7 @@ const DeliveryEarnings = () => {
         </div>
       </div>
 
-      {/* Main Earnings Highlight Card (2 columns now since tip is removed) */}
+      {/* Main Earnings Highlight Card */}
       <div className="bg-gradient-to-r from-orange-500 to-amber-600 rounded-2xl p-6 text-white shadow-lg">
         <div className="flex justify-between items-start">
           <div>
@@ -77,7 +80,7 @@ const DeliveryEarnings = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-orange-400/40 text-center sm:text-left">
+        <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-orange-400/40 text-center sm:text-left">
           <div>
             <p className="text-orange-100 text-xs">Completed Orders</p>
             <p className="text-lg font-bold mt-0.5">{currentStats.deliveries}</p>
@@ -85,6 +88,10 @@ const DeliveryEarnings = () => {
           <div>
             <p className="text-orange-100 text-xs">Online Hours</p>
             <p className="text-lg font-bold mt-0.5">{currentStats.hoursWorked}</p>
+          </div>
+          <div>
+            <p className="text-orange-100 text-xs">Tips Earned</p>
+            <p className="text-lg font-bold mt-0.5">₹{currentStats.tips}</p>
           </div>
         </div>
       </div>
