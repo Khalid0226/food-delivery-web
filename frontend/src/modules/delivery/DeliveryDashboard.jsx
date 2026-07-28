@@ -2,34 +2,35 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FiPackage, FiCheckCircle, FiDollarSign, FiClock, FiMapPin, FiPhone, FiCheck } from 'react-icons/fi';
 
+
 export default function DeliveryDashboard() {
     const [stats, setStats] = useState({
-        totalDeliveries: 12,
-        pendingOrders: 3,
-        todayEarnings: 850
+        totalDeliveries:0|| 12,
+        pendingOrders: 0 || 3,
+        todayEarnings: 0 || 850
     });
 
     const [isOnline, setIsOnline] = useState(true);
-    const [availableOrders, setAvailableOrders] = useState([
-        {
-            _id: 'ord_001',
-            customerName: 'Aman Sharma',
-            phone: '9876543210',
-            address: 'Shop No. 4, MG Road, Ahmedabad',
-            items: ['Chicken Fry x2', 'Cold Drink x1'],
-            totalAmount: 450
-        },
-        {
-            _id: 'ord_002',
-            customerName: 'Priya Patel',
-            phone: '9123456789',
-            address: 'B-12, Satellite Heights, Ahmedabad',
-            items: ['Special Fish Fry x1', 'French Fries x2'],
-            totalAmount: 620
-        }
-    ]);
+    const [availableOrders, setAvailableOrders] = useState([]);
 
     const [activeOrder, setActiveOrder] = useState(null);
+
+    const fetchDashboardData = async () => {
+        try {
+            const response = await axios.get('http://localhost:2500/api/delivery/dashboard-data')
+            if (response.data.message === 'success') {
+                setAvailableOrders(response.data.availableOrders)
+                setStats(response.data.states)
+            }
+
+        } catch (error) {
+            console.error('failed to fetch data',error);
+        }
+    }
+
+    useEffect(()=>{
+        fetchDashboardData()
+    },[])
 
     // Order Accept karne ka function
     const handleAcceptOrder = (order) => {
@@ -124,12 +125,12 @@ export default function DeliveryDashboard() {
                     </div>
 
                     <div className="bg-white/10 p-4 rounded-xl backdrop-blur-sm space-y-2 mb-4">
-                        <h2 className="text-lg font-black">{activeOrder.customerName}</h2>
+                        <h2 className="text-lg font-black">{activeOrder.fullName}</h2>
                         <p className="text-xs flex items-center gap-2 font-medium opacity-90">
                             <FiMapPin /> {activeOrder.address}
                         </p>
                         <p className="text-xs flex items-center gap-2 font-medium opacity-90">
-                            <FiPhone /> {activeOrder.phone}
+                            <FiPhone /> {activeOrder.mobile}
                         </p>
                         <div className="pt-2 text-xs font-bold border-t border-white/20">
                             Items: {activeOrder.items.join(', ')}
@@ -162,8 +163,8 @@ export default function DeliveryDashboard() {
                                 <div>
                                     <div className="flex justify-between items-start mb-3">
                                         <div>
-                                            <h4 className="font-black text-slate-900 text-sm">{order.customerName}</h4>
-                                            <p className="text-[11px] text-slate-400 font-semibold">{order.phone}</p>
+                                            <h4 className="font-black text-slate-900 text-sm">{order.fullName}</h4>
+                                            <p className="text-[11px] text-slate-400 font-semibold">{order.mobile}</p>
                                         </div>
                                         <span className="text-xs font-black bg-green-50 text-green-700 px-2.5 py-1 rounded-lg border border-green-200">
                                             ₹{order.totalAmount}
@@ -173,7 +174,7 @@ export default function DeliveryDashboard() {
                                         <FiMapPin className="mt-0.5 text-slate-400 flex-shrink-0" /> {order.address}
                                     </p>
                                     <div className="bg-slate-50 p-2.5 rounded-lg text-xs font-bold text-slate-700 mb-4">
-                                        {order.items.join(', ')}
+                                        {order.items.map(item => item.name || item).join(', ')}
                                     </div>
                                 </div>
 
