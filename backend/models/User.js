@@ -22,6 +22,10 @@ const userSchema = new mongoose.Schema({
         type:String,
         enum:['customer','admin','delivery'],
         default:'customer'
+    },
+    isOnline:{
+        type:Boolean,
+        default:false
     }
 },{timestamps:true})
 
