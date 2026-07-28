@@ -5,7 +5,7 @@ import { FiPackage, FiCheckCircle, FiDollarSign, FiClock, FiMapPin, FiPhone, FiC
 
 export default function DeliveryDashboard() {
     const [stats, setStats] = useState({
-        totalDeliveries:0|| 12,
+        totalDeliveries: 0 || 12,
         pendingOrders: 0 || 3,
         todayEarnings: 0 || 850
     });
@@ -17,24 +17,28 @@ export default function DeliveryDashboard() {
 
     const fetchDashboardData = async () => {
         try {
+
+            const storedUser = JSON.parse(localStorage.getItem('user'));
+            const userId = storedUser?._id;
+
             const response = await axios.get('http://localhost:2500/api/delivery/dashboard-data')
             if (response.data.message === 'success') {
                 setAvailableOrders(response.data.availableOrders)
                 setStats(response.data.states)
             }
 
-            // if (response.data.isOnline !== undefined) {
-            //     setIsOnline(response.data.isOnline)
-            // }
+            if (response.data.states.isOnline !== undefined) {
+                setIsOnline(response.data.states.isOnline);
+            }
 
         } catch (error) {
-            console.error('failed to fetch data',error);
+            console.error('failed to fetch data', error);
         }
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchDashboardData()
-    },[])
+    }, [])
 
     const handleToggleOnline = async () => {
         try {
@@ -42,19 +46,19 @@ export default function DeliveryDashboard() {
             const storedUser = JSON.parse(localStorage.getItem('user'))
             const userId = storedUser?._id
 
-            const response = await axios.patch('http://localhost:2500/api/delivery/update-status',{
+            const response = await axios.patch('http://localhost:2500/api/delivery/update-status', {
                 userId,
-                isOnline:newStatus
-               
-                
+                isOnline: newStatus
+
+
             })
-            
+
             if (response.status === 200) {
                 setIsOnline(newStatus)
-                
+
             }
         } catch (error) {
-            console.error('failed to toggle',error);
+            console.error('failed to toggle', error);
             alert(error.response?.data?.message || 'Could not change status on server');
         }
     }
@@ -79,7 +83,7 @@ export default function DeliveryDashboard() {
 
     return (
         <div className="space-y-6">
-            
+
             {/* Top Banner & Status Toggle */}
             <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
@@ -97,11 +101,10 @@ export default function DeliveryDashboard() {
                     <span className="text-xs font-black uppercase text-slate-600">
                         {isOnline ? 'You are Online' : 'You are Offline'}
                     </span>
-                    <button 
+                    <button
                         onClick={handleToggleOnline}
-                        className={`ml-2 px-3 py-1 text-[11px] font-black rounded-lg transition-all ${
-                            isOnline ? 'bg-red-100 text-red-600 hover:bg-red-200' : 'bg-green-100 text-green-700 hover:bg-green-200'
-                        }`}
+                        className={`ml-2 px-3 py-1 text-[11px] font-black rounded-lg transition-all ${isOnline ? 'bg-red-100 text-red-600 hover:bg-red-200' : 'bg-green-100 text-green-700 hover:bg-green-200'
+                            }`}
                     >
                         {isOnline ? 'Go Offline' : 'Go Online'}
                     </button>
@@ -164,7 +167,7 @@ export default function DeliveryDashboard() {
                         </div>
                     </div>
 
-                    <button 
+                    <button
                         onClick={handleCompleteOrder}
                         className="w-full bg-white text-slate-900 font-black text-sm py-3 rounded-xl shadow hover:bg-slate-100 transition-all uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer"
                     >
@@ -205,7 +208,7 @@ export default function DeliveryDashboard() {
                                     </div>
                                 </div>
 
-                                <button 
+                                <button
                                     disabled={activeOrder !== null}
                                     onClick={() => handleAcceptOrder(order)}
                                     className="w-full bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white font-black text-xs py-2.5 rounded-xl transition-all uppercase tracking-wider cursor-pointer"

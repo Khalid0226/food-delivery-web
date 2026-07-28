@@ -6,6 +6,12 @@ export const deliveryDashboardData = async (req,res) => {
         const availableOrder = await orderModel.find({
             status:{$in:['pending']}
         }).sort({createdAt:-1})
+
+        const { userId } = req.query;
+        let deliveryUser = null;
+        if (userId) {
+            deliveryUser = await userModel.findById(userId);
+        }
         
 
         const totalDeliveries = await orderModel.countDocuments({status:'Completed'})
@@ -17,6 +23,7 @@ export const deliveryDashboardData = async (req,res) => {
                 totalDeliveries,
                 pendingOrders:availableOrder.length,
                 todayEarnings:totalDeliveries*50,
+                isOnline: deliveryUser ? deliveryUser.isOnline : false
             }
         })
     } catch (error) {
@@ -39,8 +46,7 @@ export const toggleOnlineStatus = async (req,res) => {
         )
 
         if (!updateUser) {
-            return 
-            res.status(404).json({
+            return res.status(404).json({
                 message:'delivery boy not found!!'
             })
         }
