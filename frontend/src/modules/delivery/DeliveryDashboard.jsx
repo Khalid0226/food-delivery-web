@@ -10,7 +10,7 @@ export default function DeliveryDashboard() {
         todayEarnings: 0 || 850
     });
 
-    const [isOnline, setIsOnline] = useState(true);
+    const [isOnline, setIsOnline] = useState(false);
     const [availableOrders, setAvailableOrders] = useState([]);
 
     const [activeOrder, setActiveOrder] = useState(null);
@@ -23,6 +23,10 @@ export default function DeliveryDashboard() {
                 setStats(response.data.states)
             }
 
+            // if (response.data.isOnline !== undefined) {
+            //     setIsOnline(response.data.isOnline)
+            // }
+
         } catch (error) {
             console.error('failed to fetch data',error);
         }
@@ -31,6 +35,29 @@ export default function DeliveryDashboard() {
     useEffect(()=>{
         fetchDashboardData()
     },[])
+
+    const handleToggleOnline = async () => {
+        try {
+            const newStatus = !isOnline
+            const storedUser = JSON.parse(localStorage.getItem('user'))
+            const userId = storedUser?._id
+
+            const response = await axios.patch('http://localhost:2500/api/delivery/update-status',{
+                userId,
+                isOnline:newStatus
+               
+                
+            })
+            
+            if (response.status === 200) {
+                setIsOnline(newStatus)
+                
+            }
+        } catch (error) {
+            console.error('failed to toggle',error);
+            alert(error.response?.data?.message || 'Could not change status on server');
+        }
+    }
 
     // Order Accept karne ka function
     const handleAcceptOrder = (order) => {
@@ -71,7 +98,7 @@ export default function DeliveryDashboard() {
                         {isOnline ? 'You are Online' : 'You are Offline'}
                     </span>
                     <button 
-                        onClick={() => setIsOnline(!isOnline)}
+                        onClick={handleToggleOnline}
                         className={`ml-2 px-3 py-1 text-[11px] font-black rounded-lg transition-all ${
                             isOnline ? 'bg-red-100 text-red-600 hover:bg-red-200' : 'bg-green-100 text-green-700 hover:bg-green-200'
                         }`}

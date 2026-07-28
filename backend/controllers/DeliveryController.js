@@ -16,7 +16,7 @@ export const deliveryDashboardData = async (req,res) => {
             states:{
                 totalDeliveries,
                 pendingOrders:availableOrder.length,
-                todayEarnings:totalDeliveries*50
+                todayEarnings:totalDeliveries*50,
             }
         })
     } catch (error) {
