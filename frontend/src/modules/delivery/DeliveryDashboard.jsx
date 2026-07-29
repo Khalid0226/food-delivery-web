@@ -95,15 +95,31 @@ export default function DeliveryDashboard() {
     };
 
     // Order Deliver (Complete) karne ka function
-    const handleCompleteOrder = () => {
-        alert('Order delivered successfully! 🎉');
-        setActiveOrder(null);
-        setStats(prev => ({
-            ...prev,
-            totalDeliveries: prev.totalDeliveries + 1,
-            todayEarnings: prev.todayEarnings + 150
-        }));
-    };
+    const handleCompleteOrder = async () => {
+        try {
+            if (!activeOrder || !activeOrder._id) {
+                return
+            }
+
+            const response = await axios.patch("http://localhost:2500/api/delivery/complete-order",{
+                orderId:activeOrder._id
+            })
+
+            if (response.status === 200) {
+                alert('Order delivered successfully! 🎉');
+                setActiveOrder(null)
+                setStats((prev)=>({
+                    ...prev,
+                    totalDeliveries:prev.totalDeliveries + 1,
+                    todayEarnings:prev.todayEarnings + 50
+
+                }))
+            }
+        } catch (error) {
+            console.error('Failed to complete order', error);
+            alert(error.response?.data?.message || 'Could not complete order on server');
+        }
+    }
 
     return (
         <div className="space-y-6">
