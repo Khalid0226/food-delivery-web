@@ -21,7 +21,7 @@ export default function DeliveryDashboard() {
             const storedUser = JSON.parse(localStorage.getItem('user'));
             const userId = storedUser?._id;
 
-            const response = await axios.get('http://localhost:2500/api/delivery/dashboard-data')
+            const response = await axios.get(`http://localhost:2500/api/delivery/dashboard-data?userId=${userId}`)
             if (response.data.message === 'success') {
                 setAvailableOrders(response.data.availableOrders)
                 setStats(response.data.states)
@@ -49,7 +49,6 @@ export default function DeliveryDashboard() {
             const response = await axios.patch('http://localhost:2500/api/delivery/update-status', {
                 userId,
                 isOnline: newStatus
-
 
             })
 
