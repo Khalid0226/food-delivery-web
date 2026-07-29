@@ -4,7 +4,7 @@ import userModel from "../models/User.js";
 export const deliveryDashboardData = async (req,res) => {
     try {
         const { userId } = req.query;
-        
+
         const availableOrder = await orderModel.find({
             status:{$in:['pending']}
         }).sort({createdAt:-1})
@@ -102,6 +102,35 @@ export const acceptOrder = async (req,res) => {
     } catch (error) {
         res.status(500).json({
             message:'failed to accept order!!',
+            error:error.message
+        })
+    }
+}
+
+
+export const completeOrder = async (req,res) => {
+    try {
+        const {orderId} = req.body
+        const updateOrder = await orderModel.findByIdAndUpdate(
+            orderId,
+            {status:'Completed'},
+            {new:true}
+        )
+
+        if (!updateOrder) {
+            res.status(404).json({
+                message:"order not found"
+            })
+        }
+        
+        res.status(200).json({
+            message:'order complete successfully!!',
+            updateOrder
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            message:"failed to complete order",
             error:error.message
         })
     }

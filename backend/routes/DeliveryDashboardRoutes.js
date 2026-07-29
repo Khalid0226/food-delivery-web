@@ -1,4 +1,4 @@
-import { deliveryDashboardData,toggleOnlineStatus,acceptOrder } from "../controllers/DeliveryController.js";
+import { deliveryDashboardData,toggleOnlineStatus,acceptOrder, completeOrder } from "../controllers/DeliveryController.js";
 
 import express from 'express'
 
@@ -10,4 +10,5 @@ router.patch('/update-status',toggleOnlineStatus)
 
 router.patch('/accept-order',acceptOrder)
 
+router.patch('/complete-order',completeOrder)
 export default router
