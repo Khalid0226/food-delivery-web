@@ -64,3 +64,35 @@ export const toggleOnlineStatus = async (req,res) => {
         })
     }
 }
+
+
+export const acceptOrder = async (req,res) => {
+    try {
+        const {orderId,deliveryBoyId} = req.body
+
+        const updateOrder = await orderModel.findByIdAndUpdate(
+            orderId,
+            {
+                status:'Preparing',
+                deliveryBoy:deliveryBoyId
+            },
+            {new:true}
+        )
+
+        if (!updateOrder) {
+            return res.status(404).json({
+                message:'order not found!!'
+            })
+        }
+
+        res.status(200).json({
+            message:'order accepted successfully!!!',
+            order:updateOrder
+        })
+    } catch (error) {
+        res.status(500).json({
+            message:'failed to accept order!!',
+            error:error.message
+        })
+    }
+}
