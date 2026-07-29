@@ -3,11 +3,20 @@ import userModel from "../models/User.js";
 
 export const deliveryDashboardData = async (req,res) => {
     try {
+        const { userId } = req.query;
+        
         const availableOrder = await orderModel.find({
             status:{$in:['pending']}
         }).sort({createdAt:-1})
+        
 
-        const { userId } = req.query;
+        const activeOrder = await orderModel.findOne({
+            deliveryBoy:userId,
+            status: {$nin: ['pending', 'Pending', 'Completed', 'In Transit', 'Cancelled'] }
+        })
+
+
+        
         let deliveryUser = null;
         if (userId) {
             deliveryUser = await userModel.findById(userId);
@@ -19,6 +28,7 @@ export const deliveryDashboardData = async (req,res) => {
         res.status(200).json({
             message:'success',
             availableOrders: availableOrder,
+            activeOrder,
             states:{
                 totalDeliveries,
                 pendingOrders:availableOrder.length,

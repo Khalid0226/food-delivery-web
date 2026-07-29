@@ -24,7 +24,11 @@ export default function DeliveryDashboard() {
             const response = await axios.get(`http://localhost:2500/api/delivery/dashboard-data?userId=${userId}`)
             if (response.data.message === 'success') {
                 setAvailableOrders(response.data.availableOrders)
-                setStats(response.data.states)
+                setStats(response.data.states);
+
+                if (response.data.activeOrder) {
+                    setActiveOrder(response.data.activeOrder)
+                }
             }
 
             if (response.data.states.isOnline !== undefined) {
@@ -63,10 +67,31 @@ export default function DeliveryDashboard() {
     }
 
     // Order Accept karne ka function
-    const handleAcceptOrder = (order) => {
-        setActiveOrder(order);
-        // List se hata kar active mein daal diya
-        setAvailableOrders(availableOrders.filter(o => o._id !== order._id));
+    const handleAcceptOrder = async(order) => {
+        try {
+             const storedUser = JSON.parse(localStorage.getItem('user'))
+            const deliveryBoyId = storedUser?._id
+
+            if (!deliveryBoyId) {
+                alert("Delivery boy ID not found. Please login again.");
+                return
+            }
+
+            const response = await axios.patch('http://localhost:2500/api/delivery/accept-order',{
+                orderId:order._id,
+                deliveryBoyId
+            })
+
+            if (response.status === 200) {
+                setActiveOrder(response.data.order)
+                setAvailableOrders(availableOrders.filter((o)=>o._id !== order._id))
+                alert('order accepted successfully!!')
+            }
+
+        } catch (error) {
+            console.error('Failed to accept order', error);
+            alert(error.response?.data?.message || 'Could not accept order');
+        }
     };
 
     // Order Deliver (Complete) karne ka function
@@ -162,7 +187,7 @@ export default function DeliveryDashboard() {
                             <FiPhone /> {activeOrder.mobile}
                         </p>
                         <div className="pt-2 text-xs font-bold border-t border-white/20">
-                            Items: {activeOrder.items.join(', ')}
+                            Items: {activeOrder.items.map(item => item.name || item).join(', ')}
                         </div>
                     </div>
 
