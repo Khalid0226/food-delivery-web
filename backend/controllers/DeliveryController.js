@@ -135,3 +135,22 @@ export const completeOrder = async (req,res) => {
         })
     }
 }
+
+
+export const getAssignedOrders = async (req,res) => {
+    try {
+        const {deliveryBoyId} = req.query
+
+        const orders = await orderModel.find({deliveryBoy : deliveryBoyId}).sort({createdAt: -1})
+
+        res.status(200).json({
+            message:"success",
+            orders
+        })
+    } catch (error) {
+        res.status(500).json({
+            message:'failed',
+            error:error.message
+        })
+    }
+}

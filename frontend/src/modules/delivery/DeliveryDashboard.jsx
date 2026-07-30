@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FiPackage, FiCheckCircle, FiDollarSign, FiClock, FiMapPin, FiPhone, FiCheck } from 'react-icons/fi';
+import { FiPackage, FiCheckCircle, FiDollarSign, FiClock, FiMapPin, FiPhone, FiCheck,FiCreditCard } from 'react-icons/fi';
 
 
 export default function DeliveryDashboard() {
@@ -240,6 +240,9 @@ export default function DeliveryDashboard() {
                                             ₹{order.totalAmount}
                                         </span>
                                     </div>
+                                    <p className="text-xs text-slate-600 flex items-start gap-1.5 mb-3">
+                                        <FiCreditCard className="mt-0.5 text-slate-400 flex-shrink-0" /> {order.paymentMethod}
+                                    </p>
                                     <p className="text-xs text-slate-600 flex items-start gap-1.5 mb-3">
                                         <FiMapPin className="mt-0.5 text-slate-400 flex-shrink-0" /> {order.address}
                                     </p>
