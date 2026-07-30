@@ -1,47 +1,35 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { FiPackage, FiMapPin, FiPhone, FiCheck, FiUser } from 'react-icons/fi';
 
 export default function DeliveryOrders() {
-    const [orders, setOrders] = useState([
-        {
-            _id: 'ord_101',
-            customerName: 'Rahul Verma',
-            phone: '9876543210',
-            address: 'Flat 302, Shivalik Plaza, Ambawadi, Ahmedabad',
-            items: 'Paneer Tikka x1, Butter Naan x3',
-            totalAmount: 580,
-            status: 'Out for Delivery'
-        },
-        {
-            _id: 'ord_102',
-            customerName: 'Sneha Shah',
-            phone: '9123456789',
-            address: 'B-402, Titanium City Center, Prahlad Nagar, Ahmedabad',
-            items: 'Chicken Biryani x2, Coke x2',
-            totalAmount: 750,
-            status: 'Ready for Pickup'
-        },
-        {
-            _id: 'ord_103',
-            customerName: 'Amit Patel',
-            phone: '9988776655',
-            address: '10, Swastik Society, Navrangpura, Ahmedabad',
-            items: 'Veg Fried Rice x1, Manchurian x1',
-            totalAmount: 420,
-            status: 'Delivered'
-        }
-    ]);
+    const [orders, setOrders] = useState([]);
 
     const [filter, setFilter] = useState('All');
 
-    const handleUpdateStatus = (orderId, newStatus) => {
-        setOrders(prevOrders => 
-            prevOrders.map(order => 
-                order._id === orderId ? { ...order, status: newStatus } : order
-            )
-        );
-        alert(`Order status updated to: ${newStatus} 🚀`);
-    };
+    const [loading,setLoading] = useState(true)
+
+    const fetchAssignedOrders = async () => {
+        try {
+            const response = await axios.get(`http://localhost:2500/api/delivery/assigned-orders?deliveryBoyId=${deliveryBoyId}`)
+            if (response.data.message === 'success') {
+                setOrders(response.data.orders)
+            }
+        } catch (error) {
+            console.error('failed to fetch orders',error);
+        }finally{
+            setLoading(false)
+        }
+    }
+
+    useEffect(()=>{
+        if (deliveryBoyId) {
+            fetchAssignedOrders()
+        }
+    },[deliveryBoyId])
+
+
+    
 
     const filteredOrders = filter === 'All' 
         ? orders 
