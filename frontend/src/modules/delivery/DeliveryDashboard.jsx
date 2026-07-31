@@ -5,9 +5,9 @@ import { FiPackage, FiCheckCircle, FiDollarSign, FiClock, FiMapPin, FiPhone, FiC
 
 export default function DeliveryDashboard() {
     const [stats, setStats] = useState({
-        totalDeliveries: 0 || 12,
-        pendingOrders: 0 || 3,
-        todayEarnings: 0 || 850
+        totalDeliveries: 0,
+        pendingOrders: 0,
+        todayEarnings: 0,
     });
 
     const [isOnline, setIsOnline] = useState(false);

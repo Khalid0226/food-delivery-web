@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { FiPackage, FiMapPin, FiPhone, FiCheck, FiUser } from 'react-icons/fi';
+import { FiPackage, FiMapPin, FiPhone, FiCheck, FiUser, FiCreditCard } from 'react-icons/fi';
 
 export default function DeliveryOrders() {
     const [orders, setOrders] = useState([]);
@@ -95,8 +95,8 @@ export default function DeliveryOrders() {
                             key={tab}
                             onClick={() => setFilter(tab)}
                             className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer flex-1 sm:flex-none text-center ${filter === tab
-                                    ? 'bg-slate-900 text-white shadow-sm'
-                                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                ? 'bg-slate-900 text-white shadow-sm'
+                                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                                 }`}
                         >
                             {tab}
@@ -119,7 +119,7 @@ export default function DeliveryOrders() {
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
                                 <div>
                                     <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Order ID</span>
-                                    <h3 className="text-xs sm:text-sm font-black text-slate-900 mt-0.5">{order._id}</h3>
+                                    <h3 className="text-xs sm:text-sm font-black text-slate-900 mt-0.5">{order._id.slice(-6)}</h3>
                                 </div>
                                 <span className={`text-[10px] sm:text-[11px] font-black px-3 py-1 rounded-full uppercase tracking-wider border text-center self-start sm:self-auto ${getStatusBadge(order.status)}`}>
                                     {order.status}
@@ -138,6 +138,20 @@ export default function DeliveryOrders() {
                                     </div>
                                 </div>
 
+                                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="p-2 bg-white rounded-lg border border-slate-200 text-slate-600 shadow-sm">
+                                            <FiCreditCard size={15} />
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Payment Method</p>
+                                            <span className="text-xs font-black text-slate-800 uppercase tracking-wide">
+                                                {order.paymentMethod || 'COD'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs text-slate-600 font-medium">
                                     <div className="flex items-start gap-2.5 bg-slate-50 p-3 rounded-xl border border-slate-100">
                                         <FiMapPin className="mt-0.5 text-slate-400 flex-shrink-0" size={15} />
@@ -147,6 +161,8 @@ export default function DeliveryOrders() {
                                         <FiPhone className="flex-shrink-0" size={15} />
                                         <span className="font-black truncate">{order.mobile}</span>
                                     </a>
+
+
                                 </div>
 
                                 <div className="bg-slate-50 p-3 sm:p-4 rounded-xl border border-slate-100">
@@ -181,7 +197,7 @@ export default function DeliveryOrders() {
                                             onClick={() => handleUpdateStatus(order._id, 'In Transit')}
                                             className="w-full xs:w-auto bg-amber-500 hover:bg-amber-600 text-white font-black text-xs px-4 py-2.5 rounded-xl transition-all uppercase tracking-wider cursor-pointer shadow-sm text-center"
                                         >
-                                             mark In Transit
+                                            mark In Transit
                                         </button>
                                     )}
 
