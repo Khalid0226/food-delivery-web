@@ -1,63 +1,63 @@
 import orderModel from "../models/Order.js";
 import userModel from "../models/User.js";
 
-export const deliveryDashboardData = async (req,res) => {
+export const deliveryDashboardData = async (req, res) => {
     try {
         const { userId } = req.query;
 
         const availableOrder = await orderModel.find({
-            status:{$in:['pending']}
-        }).sort({createdAt:-1})
-        
+            status: { $in: ['pending'] }
+        }).sort({ createdAt: -1 })
+
 
         const activeOrder = await orderModel.findOne({
-            deliveryBoy:userId,
-            status: {$nin: ['pending', 'Pending', 'Completed', 'In Transit', 'Cancelled'] }
+            deliveryBoy: userId,
+            status: { $nin: ['pending', 'Pending', 'Completed', 'In Transit', 'Cancelled'] }
         })
 
 
-        
+
         let deliveryUser = null;
         if (userId) {
             deliveryUser = await userModel.findById(userId);
         }
-        
 
-        const totalDeliveries = await orderModel.countDocuments({status:'Completed'})
+
+        const totalDeliveries = await orderModel.countDocuments({deliveryBoy:userId, status: 'Completed' })
 
         res.status(200).json({
-            message:'success',
+            message: 'success',
             availableOrders: availableOrder,
             activeOrder,
-            states:{
+            states: {
                 totalDeliveries,
-                pendingOrders:availableOrder.length,
-                todayEarnings:totalDeliveries*50,
+                pendingOrders: availableOrder.length,
+                todayEarnings: totalDeliveries * 50,
                 isOnline: deliveryUser ? deliveryUser.isOnline : false
             }
         })
     } catch (error) {
         res.status(500).json({
-            message:'failed',
-            error:error.message
+            message: 'failed',
+            error: error.message
         })
     }
 }
 
 
-export const toggleOnlineStatus = async (req,res) => {
+export const toggleOnlineStatus = async (req, res) => {
     try {
-        const {userId,isOnline} = req.body
+        const { userId, isOnline } = req.body
 
         const updateUser = await userModel.findByIdAndUpdate(
             userId,
-            {isOnline},
-            {new:true}
+            { isOnline },
+            { new: true }
         )
 
         if (!updateUser) {
             return res.status(404).json({
-                message:'delivery boy not found!!'
+                message: 'delivery boy not found!!'
             })
         }
 
@@ -66,146 +66,150 @@ export const toggleOnlineStatus = async (req,res) => {
             isOnline: updateUser.isOnline
 
         })
-        
+
     } catch (error) {
         res.status(500).json({
-            message:'failed',
-            error:error.message
+            message: 'failed',
+            error: error.message
         })
     }
 }
 
 
-export const acceptOrder = async (req,res) => {
+export const acceptOrder = async (req, res) => {
     try {
-        const {orderId,deliveryBoyId} = req.body
+        const { orderId, deliveryBoyId } = req.body
 
         const updateOrder = await orderModel.findByIdAndUpdate(
             orderId,
             {
-                status:'Preparing',
-                deliveryBoy:deliveryBoyId
+                status: 'Preparing',
+                deliveryBoy: deliveryBoyId
             },
-            {new:true}
+            { new: true }
         )
 
         if (!updateOrder) {
             return res.status(404).json({
-                message:'order not found!!'
+                message: 'order not found!!'
             })
         }
 
         res.status(200).json({
-            message:'order accepted successfully!!!',
-            order:updateOrder
+            message: 'order accepted successfully!!!',
+            order: updateOrder
         })
     } catch (error) {
         res.status(500).json({
-            message:'failed to accept order!!',
-            error:error.message
+            message: 'failed to accept order!!',
+            error: error.message
         })
     }
 }
 
-export const updateTOInTransit = async (req,res) => {
+export const updateTOInTransit = async (req, res) => {
     try {
-        const {orderId} = req.body
+        const { orderId } = req.body
         const updateOrder = await orderModel.findByIdAndUpdate(
             orderId,
-            {status:"In Transit"},
-            {new:true}
+            { status: "In Transit" },
+            { new: true }
         )
 
         if (!updateOrder) {
             return res.status(404).json({
-                message:'order not found'
+                message: 'order not found'
             })
         }
 
         res.status(200).json({
-            message:'success!!!',
+            message: 'success!!!',
             updateOrder
-            
+
         })
     } catch (error) {
         res.status(500).json({
-            message:'failed',
-            error:error.message
+            message: 'failed',
+            error: error.message
         })
     }
 }
 
-export const completeOrder = async (req,res) => {
+export const completeOrder = async (req, res) => {
     try {
-        const {orderId} = req.body
+        const { orderId, deliveryBoyId } = req.body
         const updateOrder = await orderModel.findByIdAndUpdate(
             orderId,
-            {status:'Completed'},
-            {new:true}
+            {
+                deliveryEarnings: 50,
+                status: 'Completed',
+                deliveryBoy:deliveryBoyId,deliveredAt: new Date()
+            },
+            { new: true }
         )
 
         if (!updateOrder) {
             res.status(404).json({
-                message:"order not found"
+                message: "order not found"
             })
         }
-        
+
         res.status(200).json({
-            message:'order complete successfully!!',
+            message: 'order complete successfully!!',
             updateOrder
         })
 
     } catch (error) {
         res.status(500).json({
-            message:"failed to complete order",
-            error:error.message
+            message: "failed to complete order",
+            error: error.message
         })
     }
 }
 
 
-export const getAssignedOrders = async (req,res) => {
+export const getAssignedOrders = async (req, res) => {
     try {
-        const {deliveryBoyId} = req.query
+        const { deliveryBoyId } = req.query
 
-        const orders = await orderModel.find({deliveryBoy : deliveryBoyId}).sort({createdAt: -1})
+        const orders = await orderModel.find({ deliveryBoy: deliveryBoyId }).sort({ createdAt: -1 })
 
         res.status(200).json({
-            message:"success",
+            message: "success",
             orders
         })
     } catch (error) {
         res.status(500).json({
-            message:'failed',
-            error:error.message
+            message: 'failed',
+            error: error.message
         })
     }
 }
 
 
-export const getDeliveryHistory = async (req,res) => {
+export const getDeliveryHistory = async (req, res) => {
     try {
-        const {deliveryBoyId} = req.query
+        const { deliveryBoyId } = req.query
 
         const deliveryHistory = await orderModel.find({
-            deliveryBoy:deliveryBoyId,
-            status:'Completed'
-        }).sort({createdAt: - 1})
+            deliveryBoy: deliveryBoyId,
+            status: 'Completed'
+        }).sort({ createdAt: - 1 })
 
         if (!deliveryHistory) {
             return res.status(404).json({
-                message:"history not found!!"
+                message: "history not found!!"
             })
         }
 
         res.status(200).json({
-            message:'history fetched successfully',
+            message: 'history fetched successfully',
             deliveryHistory
         })
     } catch (error) {
         res.status(500).json({
-            message:'failed to fetch order history',
-            error:error.message
+            message: 'failed to fetch order history',
+            error: error.message
         })
     }
 }

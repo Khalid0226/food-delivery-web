@@ -16,6 +16,13 @@ const orderSchema = new mongoose.Schema({
         ref: 'User', // ya jo bhi tera User model ka naam ho
         default: null
     },
+    deliveryEarnings: {
+        type: Number,
+        default: 50 // Default delivery commission
+    },
+    deliveredAt: {
+        type: Date
+    },
     createdAt: { type: Date, default: Date.now }
 })
 

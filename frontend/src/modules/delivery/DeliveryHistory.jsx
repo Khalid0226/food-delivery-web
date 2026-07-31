@@ -123,7 +123,18 @@ export default function DeliveryHistory() {
                                     <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider flex items-center gap-1">
                                         <FiCalendar size={12} /> Delivered On
                                     </span>
-                                    <p className="text-xs font-bold text-slate-700 mt-0.5">{order.deliveredAt}</p>
+                                    <p className="text-xs font-bold text-slate-700 mt-0.5">
+                                        {order.deliveredAt
+                                            ? new Date(order.deliveredAt).toLocaleString('en-IN', {
+                                                day: 'numeric',
+                                                month: 'short',
+                                                year: 'numeric',
+                                                hour: 'numeric',
+                                                minute: 'numeric',
+                                                hour12: true
+                                            })
+                                            : 'N/A'}
+                                    </p>
                                 </div>
 
                                 <div className="text-left xs:text-right">
