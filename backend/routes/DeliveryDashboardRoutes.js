@@ -1,4 +1,4 @@
-import { deliveryDashboardData,toggleOnlineStatus,acceptOrder, completeOrder,getAssignedOrders, updateTOInTransit } from "../controllers/DeliveryController.js";
+import { deliveryDashboardData,toggleOnlineStatus,acceptOrder, completeOrder,getAssignedOrders, updateTOInTransit, getDeliveryHistory } from "../controllers/DeliveryController.js";
 
 import express from 'express'
 
@@ -15,5 +15,7 @@ router.patch('/in-transit',updateTOInTransit)
 router.patch('/complete-order',completeOrder)
 
 router.get('/assigned-orders',getAssignedOrders)
+
+router.get('/delivery-history',getDeliveryHistory)
 
 export default router

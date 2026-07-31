@@ -181,3 +181,31 @@ export const getAssignedOrders = async (req,res) => {
         })
     }
 }
+
+
+export const getDeliveryHistory = async (req,res) => {
+    try {
+        const {deliveryBoyId} = req.query
+
+        const deliveryHistory = await orderModel.find({
+            deliveryBoy:deliveryBoyId,
+            status:'Completed'
+        }).sort({createdAt: - 1})
+
+        if (!deliveryHistory) {
+            return res.status(404).json({
+                message:"history not found!!"
+            })
+        }
+
+        res.status(200).json({
+            message:'history fetched successfully',
+            deliveryHistory
+        })
+    } catch (error) {
+        res.status(500).json({
+            message:'failed to fetch order history',
+            error:error.message
+        })
+    }
+}

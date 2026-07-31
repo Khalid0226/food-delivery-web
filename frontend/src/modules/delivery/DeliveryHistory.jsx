@@ -1,41 +1,39 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { FiCheckCircle, FiCalendar, FiDollarSign, FiPackage, FiUser, FiMapPin } from 'react-icons/fi';
 
 export default function DeliveryHistory() {
     // Static / Sample history data (Aap ise API se bhi fetch kar sakte hain)
-    const [historyOrders] = useState([
-        {
-            _id: 'ord_103',
-            customerName: 'Amit Patel',
-            phone: '9988776655',
-            address: '10, Swastik Society, Navrangpura, Ahmedabad',
-            items: 'Veg Fried Rice x1, Manchurian x1',
-            totalAmount: 420,
-            deliveryEarnings: 45,
-            deliveredAt: '26 July 2026, 02:30 PM'
-        },
-        {
-            _id: 'ord_098',
-            customerName: 'Priya Sharma',
-            phone: '9876501234',
-            address: 'Flat 104, Orchid Heights, Satellite, Ahmedabad',
-            items: 'Paneer Butter Masala x2, Roti x5',
-            totalAmount: 680,
-            deliveryEarnings: 60,
-            deliveredAt: '25 July 2026, 09:15 PM'
-        },
-        {
-            _id: 'ord_095',
-            customerName: 'Rajesh Kumar',
-            phone: '9123498765',
-            address: '3, Nilkanth Residency, Bopal, Ahmedabad',
-            items: 'Chicken Biryani x1, Thums Up x1',
-            totalAmount: 350,
-            deliveryEarnings: 40,
-            deliveredAt: '24 July 2026, 01:45 PM'
-        }
-    ]);
+    const [historyOrders,setHistoryOrders] = useState([]);
+    const [loading,setLoading] = useState(true)
 
+    const storedUser = JSON.parse(localStorage.getItem('user'))
+    const deliveryBoyId = storedUser?._id
+
+
+    const getDeliveryHistory = async () => {
+        try {
+            const response = await axios.get(`http://localhost:2500/api/delivery/delivery-history?deliveryBoyId=${deliveryBoyId}`)
+            if (response.data.status === 200) {
+                setHistoryOrders(response.data.deliveryHistory)
+                console.log(response.data.deliveryHistory);
+                
+            }
+        } catch (error) {
+            error('failed to fetch history',error)
+        }
+        finally{
+            setLoading(false)
+        }
+    }
+
+    useEffect(()=>{
+        if (deliveryBoyId) {
+            getDeliveryHistory()
+        }
+    },[deliveryBoyId])
+
+    
     // Calculate total stats
     const totalCompleted = historyOrders.length;
     const totalEarningsCollected = historyOrders.reduce((acc, order) => acc + order.deliveryEarnings, 0);
