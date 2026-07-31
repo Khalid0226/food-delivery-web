@@ -4,8 +4,8 @@ import { FiCheckCircle, FiCalendar, FiDollarSign, FiPackage, FiUser, FiMapPin } 
 
 export default function DeliveryHistory() {
     // Static / Sample history data (Aap ise API se bhi fetch kar sakte hain)
-    const [historyOrders,setHistoryOrders] = useState([]);
-    const [loading,setLoading] = useState(true)
+    const [historyOrders, setHistoryOrders] = useState([]);
+    const [loading, setLoading] = useState(true)
 
     const storedUser = JSON.parse(localStorage.getItem('user'))
     const deliveryBoyId = storedUser?._id
@@ -14,33 +14,33 @@ export default function DeliveryHistory() {
     const getDeliveryHistory = async () => {
         try {
             const response = await axios.get(`http://localhost:2500/api/delivery/delivery-history?deliveryBoyId=${deliveryBoyId}`)
-            if (response.data.status === 200) {
+            if (response.status === 200) {
                 setHistoryOrders(response.data.deliveryHistory)
                 console.log(response.data.deliveryHistory);
-                
+
             }
         } catch (error) {
-            error('failed to fetch history',error)
+            console.error('failed to fetch history', error)
         }
-        finally{
+        finally {
             setLoading(false)
         }
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         if (deliveryBoyId) {
             getDeliveryHistory()
         }
-    },[deliveryBoyId])
+    }, [deliveryBoyId])
 
-    
+
     // Calculate total stats
     const totalCompleted = historyOrders.length;
     const totalEarningsCollected = historyOrders.reduce((acc, order) => acc + order.deliveryEarnings, 0);
 
     return (
         <div className="w-full max-w-7xl mx-auto space-y-4 md:space-y-6">
-            
+
             {/* Page Header */}
             <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
@@ -74,7 +74,7 @@ export default function DeliveryHistory() {
                 ) : (
                     historyOrders.map((order) => (
                         <div key={order._id} className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 shadow-sm flex flex-col justify-between hover:border-slate-300 transition-all gap-4">
-                            
+
                             {/* Card Top: Order ID & Completion Timestamp */}
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
                                 <div>
@@ -94,18 +94,23 @@ export default function DeliveryHistory() {
                                     </div>
                                     <div className="min-w-0 flex-1">
                                         <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Customer</p>
-                                        <p className="text-xs sm:text-sm font-bold text-slate-800 truncate">{order.customerName} ({order.phone})</p>
+                                        <p className="text-xs sm:text-sm font-bold text-slate-800 truncate">{order.fullName} ({order.mobile})</p>
                                     </div>
                                 </div>
 
                                 <div className="flex items-start gap-2.5 bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs text-slate-600 font-medium">
-                                    <FiMapPin className="mt-0.5 text-slate-400 flex-shrink-0" size={15} /> 
+                                    <FiMapPin className="mt-0.5 text-slate-400 flex-shrink-0" size={15} />
                                     <span className="leading-snug">{order.address}</span>
                                 </div>
 
                                 <div className="bg-slate-50 p-3 sm:p-4 rounded-xl border border-slate-100">
                                     <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider mb-1">Delivered Items</p>
-                                    <p className="text-xs font-bold text-slate-800 leading-relaxed">{order.items}</p>
+                                    <p className="text-xs font-bold text-slate-800 leading-relaxed">
+                                        {/* Yahan hum check kar rahe hain ki items array hai ya nahi, aur uske naam/quantity print kar rahe hain */}
+                                        {Array.isArray(order.items)
+                                            ? order.items.map(item => `${item.name || 'Item'} (x${item.quantity || 1})`).join(', ')
+                                            : order.items}
+                                    </p>
                                 </div>
                             </div>
 
