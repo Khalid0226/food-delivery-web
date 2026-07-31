@@ -36,7 +36,10 @@ export default function DeliveryHistory() {
 
     // Calculate total stats
     const totalCompleted = historyOrders.length;
-    const totalEarningsCollected = historyOrders.reduce((acc, order) => acc + order.deliveryEarnings, 0);
+    const totalEarningsCollected = historyOrders.reduce((acc, order) => {
+        const earnings = Number(order.deliveryEarnings) || 0;
+        return acc + earnings;
+    }, 0);
 
     return (
         <div className="w-full max-w-7xl mx-auto space-y-4 md:space-y-6">
@@ -79,7 +82,7 @@ export default function DeliveryHistory() {
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
                                 <div>
                                     <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Order ID</span>
-                                    <h3 className="text-xs sm:text-sm font-black text-slate-900 mt-0.5">{order._id}</h3>
+                                    <h3 className="text-xs sm:text-sm font-black text-slate-900 mt-0.5">{order._id.slice(-6)}</h3>
                                 </div>
                                 <span className="text-[10px] sm:text-[11px] font-black px-3 py-1 rounded-full uppercase tracking-wider border bg-green-50 text-green-700 border-green-200 flex items-center gap-1.5 self-start sm:self-auto">
                                     <FiCheckCircle size={13} /> Delivered Successfully
