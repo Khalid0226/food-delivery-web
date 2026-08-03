@@ -190,12 +190,15 @@ export const getAssignedOrders = async (req, res) => {
 export const getDeliveryHistory = async (req, res) => {
     try {
         const { deliveryBoyId } = req.query
+        console.log("Searching for deliveryBoyId:", deliveryBoyId);
 
         const deliveryHistory = await orderModel.find({
             deliveryBoy: deliveryBoyId,
             status: 'Completed'
-        }).sort({ createdAt: - 1 })
+        }).sort({ deliveredAt: - 1 })
 
+        console.log("2. Database se kitne orders mile:", deliveryHistory.length);
+        console.log("3. Orders ka data:", deliveryHistory); // Ye terminal me print karega
         if (!deliveryHistory) {
             return res.status(404).json({
                 message: "history not found!!"
