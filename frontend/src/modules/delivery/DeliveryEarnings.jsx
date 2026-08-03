@@ -3,7 +3,7 @@ import { FiCheckCircle, FiTrendingUp } from 'react-icons/fi';
 import axios from 'axios';
 
 const DeliveryEarnings = () => {
-  const [timeRange, setTimeRange] = useState('month'); // Default ko 'month' kar diya taaki saare purane orders bhi dikhein
+  const [timeRange, setTimeRange] = useState('today'); // Default ko 'month' kar diya taaki saare purane orders bhi dikhein
   const [historyOrders, setHistoryOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 

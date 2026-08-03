@@ -24,6 +24,13 @@ export default function AdminHeader({ toggleSidebar }) {
     }, [])
 
     const navigate = useNavigate()
+
+    const handleLogout = () =>{
+        localStorage.removeItem('user')
+        localStorage.removeItem('token')
+        navigate('/login')
+    }
+
     return (
         // px-4 aur py-2 se charo taraf margin/padding mil jayegi
         <header className=" flex items-center justify-between px-4 md:px-6 py-5 border-b border-slate-200 bg-white">
@@ -68,6 +75,7 @@ export default function AdminHeader({ toggleSidebar }) {
 
                 {/* 2. Logout Button (Desktop Only) */}
                 <button
+                    onClick={handleLogout}
                     className="hidden md:flex items-center gap-1 bg-white border border-slate-200 text-slate-600 font-bold text-[10px] px-4 py-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition-all"
                 >
                     <FiLogOut size={12} /> LOGOUT
