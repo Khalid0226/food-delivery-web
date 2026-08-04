@@ -9,6 +9,7 @@ import orderRouter from './routes/OrderRoute.js'
 import adminRouter from './routes/AdminRoutes.js'
 
 import deliveryRouter from './routes/DeliveryDashboardRoutes.js'
+import paymentRouter from './routes/paymentRoute.js'
 
 import 'dotenv/config';
 
@@ -33,6 +34,8 @@ app.use('/api',adminRouter)
 
 
 app.use('/api/delivery',deliveryRouter)
+
+app.use('/api/payment',paymentRouter)
 
 try {
     await mongoose.connect(process.env.MONGO_URI);
