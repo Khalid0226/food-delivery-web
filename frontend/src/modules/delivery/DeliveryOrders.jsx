@@ -35,10 +35,14 @@ export default function DeliveryOrders() {
     const handleUpdateStatus = async (orderId, newStatus) => {
         try {
             let endpoint = '';
-            let payload = { orderId };
+            // Yahan payload me deliveryBoyId bhi add kar di hai
+            let payload = { 
+                orderId, 
+                deliveryBoyId 
+            };
 
             if (newStatus === 'Preparing') {
-                endpoint = 'http://localhost:2500/api/delivery/accept-order'; // Yahan apne backend ka route likh dena
+                endpoint = 'http://localhost:2500/api/delivery/accept-order';
             } else if (newStatus === 'In Transit') {
                 endpoint = 'http://localhost:2500/api/delivery/in-transit';
             } else if (newStatus === 'Completed') {
@@ -50,7 +54,7 @@ export default function DeliveryOrders() {
             if (response.status === 200) {
                 setOrders(prevOrders =>
                     prevOrders.map(order =>
-                        order._id === orderId ? { ...order, status: newStatus } : order
+                        order._id === orderId ? { ...order, status: newStatus, isPaid: newStatus === 'Completed' ? true : order.isPaid } : order
                     )
                 );
                 alert(`Order status updated to: ${newStatus} 🚀`);

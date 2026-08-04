@@ -11,14 +11,22 @@ const orderSchema = new mongoose.Schema({
     paymentMethod: String,
     items: Array,
     totalAmount: Number,
+    paymentId: { 
+        type: String, 
+        default: null 
+    }, // Razorpay transaction ID store karne ke liye
+    isPaid: { 
+        type: Boolean, 
+        default: false 
+    }, // Track karne ke liye ki payment ho gayi ya nahi
     deliveryBoy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', // ya jo bhi tera User model ka naam ho
+        ref: 'User',
         default: null
     },
     deliveryEarnings: {
         type: Number,
-        default: 50 // Default delivery commission
+        default: 50
     },
     deliveredAt: {
         type: Date

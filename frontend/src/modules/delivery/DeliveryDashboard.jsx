@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FiPackage, FiCheckCircle, FiDollarSign, FiClock, FiMapPin, FiPhone, FiCheck,FiCreditCard } from 'react-icons/fi';
+import { FiPackage, FiCheckCircle, FiDollarSign, FiClock, FiMapPin, FiPhone, FiCheck, FiCreditCard } from 'react-icons/fi';
 
 
 export default function DeliveryDashboard() {
@@ -67,9 +67,9 @@ export default function DeliveryDashboard() {
     }
 
     // Order Accept karne ka function
-    const handleAcceptOrder = async(order) => {
+    const handleAcceptOrder = async (order) => {
         try {
-             const storedUser = JSON.parse(localStorage.getItem('user'))
+            const storedUser = JSON.parse(localStorage.getItem('user'))
             const deliveryBoyId = storedUser?._id
 
             if (!deliveryBoyId) {
@@ -77,14 +77,14 @@ export default function DeliveryDashboard() {
                 return
             }
 
-            const response = await axios.patch('http://localhost:2500/api/delivery/accept-order',{
-                orderId:order._id,
+            const response = await axios.patch('http://localhost:2500/api/delivery/accept-order', {
+                orderId: order._id,
                 deliveryBoyId
             })
 
             if (response.status === 200) {
                 setActiveOrder(response.data.order)
-                setAvailableOrders(availableOrders.filter((o)=>o._id !== order._id))
+                setAvailableOrders(availableOrders.filter((o) => o._id !== order._id))
                 alert('order accepted successfully!!')
             }
 
@@ -95,24 +95,28 @@ export default function DeliveryDashboard() {
     };
 
     // Order Deliver (Complete) karne ka function
+    // Order Deliver (Complete) karne ka updated function
     const handleCompleteOrder = async () => {
         try {
             if (!activeOrder || !activeOrder._id) {
                 return
             }
 
-            const response = await axios.patch("http://localhost:2500/api/delivery/complete-order",{
-                orderId:activeOrder._id
+            const storedUser = JSON.parse(localStorage.getItem('user'));
+            const deliveryBoyId = storedUser?._id;
+
+            const response = await axios.patch("http://localhost:2500/api/delivery/complete-order", {
+                orderId: activeOrder._id,
+                deliveryBoyId // Backend ko track karne ke liye ID bhej di
             })
 
             if (response.status === 200) {
                 alert('Order delivered successfully! 🎉');
                 setActiveOrder(null)
-                setStats((prev)=>({
+                setStats((prev) => ({
                     ...prev,
-                    totalDeliveries:prev.totalDeliveries + 1,
-                    todayEarnings:prev.todayEarnings + 50
-
+                    totalDeliveries: prev.totalDeliveries + 1,
+                    todayEarnings: prev.todayEarnings + 50
                 }))
             }
         } catch (error) {

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { FiMapPin, FiCreditCard, FiUser, FiSmartphone, FiCheckCircle, FiChevronRight } from 'react-icons/fi';
+import { useSelector, useDispatch } from 'react-redux';
+import { FiMapPin, FiCreditCard, FiUser, FiSmartphone, FiChevronRight } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { clearCart } from '../../../redux/store';
 import axios from 'axios';
 
@@ -36,14 +35,16 @@ export default function Checkout() {
             return;
         }
 
-        const userData = JSON.parse(localStorage.getItem('user'))
+        const userData = JSON.parse(localStorage.getItem('user'));
 
         if (!userData) {
-            alert('please login first')
-            navigate('/login')
+            alert('Please login first');
+            navigate('/login');
+            return;
         }
 
-        const orderData = {
+        // Base order data structure
+        const baseOrderData = {
             fullName: formData.fullName,
             email: userData.email,
             id: userData._id,
@@ -52,33 +53,96 @@ export default function Checkout() {
             pincode: formData.pincode,
             city: formData.city,
             paymentMethod: formData.paymentMethod,
-            items: items,               // Redux se aaye hue items
+            items: items,
             totalAmount: total
         };
 
-        try {
-            const response = await axios.post('http://localhost:2500/api/orders',orderData)
+        // 1. Agar payment method Cash on Delivery hai
+        if (formData.paymentMethod === 'Cash on Delivery') {
+            try {
+                const response = await axios.post('http://localhost:2500/api/orders', {
+                    ...baseOrderData,
+                    paymentId: null,
+                    isPaid: false
+                });
 
-            if (response.status === 201 || response.status === 200) {
-                alert("Order Successfully Placed!");
-
-                dispatch(clearCart())
-                navigate('/customer/dashboard')
+                if (response.status === 201 || response.status === 200) {
+                    alert("Order Successfully Placed! 🎉");
+                    dispatch(clearCart());
+                    navigate('/customer/dashboard');
+                }
+            } catch (error) {
+                console.error("Order error:", error);
+                alert('Failed to place order!!!');
             }
-        } catch (error) {
-            console.error("Order error:", error);
-            alert('failed to place order!!!')
+        } 
+        // 2. Agar Online Payment hai toh Razorpay gateway kholo
+        else {
+            try {
+                const { data } = await axios.post('http://localhost:2500/api/payment/create-order', {
+                    amount: total
+                });
+
+                if (!data.success) {
+                    alert("Razorpay order creation failed!");
+                    return;
+                }
+
+                const razorpayOrder = data.order;
+
+                const options = {
+                    key: "rzp_test_TLaEIqV55ylhh4",
+                    amount: razorpayOrder.amount,
+                    currency: "INR",
+                    name: "Diamond Fry Center",
+                    description: "Food Delivery Online Payment",
+                    order_id: razorpayOrder.id,
+                    handler: async function (response) {
+                        try {
+                            const verifyRes = await axios.post('http://localhost:2500/api/payment/verify-payment', {
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_signature: response.razorpay_signature
+                            });
+
+                            if (verifyRes.data.success) {
+                                const finalOrderRes = await axios.post('http://localhost:2500/api/orders', {
+                                    ...baseOrderData,
+                                    paymentId: response.razorpay_payment_id,
+                                    isPaid: true
+                                });
+
+                                if (finalOrderRes.status === 201 || finalOrderRes.status === 200) {
+                                    alert("Payment Successful & Order Placed! 🎉");
+                                    dispatch(clearCart());
+                                    navigate('/customer/dashboard');
+                                }
+                            } else {
+                                alert("Payment verification failed!");
+                            }
+                        } catch (err) {
+                            console.error("Verification error:", err);
+                            alert("Something went wrong during payment verification.");
+                        }
+                    },
+                    prefill: {
+                        name: formData.fullName,
+                        email: userData.email,
+                        contact: formData.mobile
+                    },
+                    theme: {
+                        color: "#FF1744"
+                    }
+                };
+
+                const rzp = new window.Razorpay(options);
+                rzp.open();
+
+            } catch (error) {
+                console.error("Payment Gateway Error:", error);
+                alert("Failed to initiate online payment.");
+            }
         }
-
-        // // Yahan aap apna backend API call (axios.post) perform kar sakte hain
-        // console.log("Order Data:", { items, total, ...formData });
-
-        // alert("Order Successfully Placed!");
-
-        // dispatch(clearCart())
-        // navigate('/customer/dashboard'); // Success ke baad dashboard pe redirect
-
-
     };
 
     const inputStyle = "w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all";
@@ -124,7 +188,7 @@ export default function Checkout() {
                             <div className="grid grid-cols-1 gap-3">
                                 {['Cash on Delivery', 'Credit/Debit Card', 'UPI / Net Banking'].map((method) => (
                                     <label key={method} className="flex items-center p-4 border border-slate-200 rounded-xl cursor-pointer hover:border-orange-500 transition-all group">
-                                        <input type="radio" name="paymentMethod" value={method} onChange={handleInputChange} className="w-4 h-4 accent-orange-500" />
+                                        <input type="radio" name="paymentMethod" value={method} checked={formData.paymentMethod === method} onChange={handleInputChange} className="w-4 h-4 accent-orange-500" />
                                         <span className="ml-3 text-sm font-bold text-slate-700 group-hover:text-slate-900">{method}</span>
                                     </label>
                                 ))}

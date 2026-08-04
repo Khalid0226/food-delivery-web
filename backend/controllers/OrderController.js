@@ -3,23 +3,28 @@ import orderModel from "../models/Order.js";
 export const order = async (req, res) => {
     try {
         // console.log("Request body:", req.body);
-        const newOrder = new orderModel(
-            req.body
-            // totalAmount: Number(req.body.totalAmount), // Yahan explicit convert karein
-            // items: req.body.items // Array jaise hai waise hi rehne dein
-        );
-        newOrder.save()
+        
+        const newOrder = new orderModel({
+            ...req.body,
+            // Agar frontend se 'id' aa raha hai user ka, to ensure karne ke liye:
+            // userId: req.body.id 
+        });
+
+        // Yahan 'await' lagana bohot zaroori hai!
+        await newOrder.save(); 
+
         res.status(201).json({
             message: 'order placed Successfully!!',
             order: newOrder
-        })
+        });
     } catch (error) {
+        console.error("Order save error:", error);
         res.status(500).json({
             message: 'failed to place order',
             error: error.message
-        })
+        });
     }
-}
+};
 
 export const getAllOrder = async(req,res) =>{
     try {

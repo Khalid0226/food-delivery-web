@@ -137,33 +137,36 @@ export const updateTOInTransit = async (req, res) => {
 
 export const completeOrder = async (req, res) => {
     try {
-        const { orderId, deliveryBoyId } = req.body
+        const { orderId, deliveryBoyId } = req.body;
+        
         const updateOrder = await orderModel.findByIdAndUpdate(
             orderId,
             {
                 deliveryEarnings: 50,
                 status: 'Completed',
-                deliveryBoy:deliveryBoyId,deliveredAt: new Date()
+                deliveryBoy: deliveryBoyId,
+                deliveredAt: new Date(),
+                isPaid: true  // <--- Ye add kar diya taaki COD complete hote hi payment true ho jaye!
             },
             { new: true }
-        )
+        );
 
         if (!updateOrder) {
-            res.status(404).json({
+            return res.status(404).json({
                 message: "order not found"
-            })
+            }); // <--- Yahan 'return' lagana zaroori hai!
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             message: 'order complete successfully!!',
             updateOrder
-        })
+        });
 
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             message: "failed to complete order",
             error: error.message
-        })
+        });
     }
 }
 
