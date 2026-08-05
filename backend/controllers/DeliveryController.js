@@ -171,19 +171,34 @@ export const completeOrder = async (req, res) => {
     }
 }
 
-
 export const getAssignedOrders = async (req, res) => {
     try {
         const { deliveryBoyId } = req.query;
 
-        // Yahan humne query change kar di hai:
-        // Wo orders aayenge jo ya toh is delivery boy ke hain YA phir 'pending' hain
-        const orders = await orderModel.find({
-            $or: [
-                { deliveryBoy: deliveryBoyId },
-                { status: 'pending' }
-            ]
-        }).sort({ createdAt: -1 });
+        // 1. Pehle delivery boy ka status check karo
+        let deliveryUser = null;
+        if (deliveryBoyId) {
+            deliveryUser = await userModel.findById(deliveryBoyId);
+        }
+
+        let query = {};
+
+        // 2. Agar delivery boy ONLINE hai, toh use apne assigned orders + unassigned pending orders dikhao
+        if (deliveryUser && deliveryUser.isOnline) {
+            query = {
+                $or: [
+                    { deliveryBoy: deliveryBoyId },
+                    { deliveryBoy: null, status: 'pending' }
+                ]
+            };
+        } else {
+            // 3. Agar OFFLINE hai, toh sirf wahi orders dikhao jo strictly isko assigned hain
+            query = {
+                deliveryBoy: deliveryBoyId
+            };
+        }
+
+        const orders = await orderModel.find(query).sort({ createdAt: -1 });
 
         res.status(200).json({
             message: "success",
@@ -195,8 +210,7 @@ export const getAssignedOrders = async (req, res) => {
             error: error.message
         });
     }
-}
-
+};
 
 export const getDeliveryHistory = async (req, res) => {
     try {
