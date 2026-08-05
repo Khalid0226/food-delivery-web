@@ -59,6 +59,7 @@ export default function DeliveryDashboard() {
             if (response.status === 200) {
                 setIsOnline(newStatus)
 
+                fetchDashboardData()
             }
         } catch (error) {
             console.error('failed to toggle', error);
