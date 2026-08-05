@@ -1,4 +1,6 @@
 import orderModel from "../models/Order.js";
+import userModel from "../models/User.js";
+import mongoose from "mongoose";
 
 export const order = async (req, res) => {
     try {
@@ -100,18 +102,53 @@ export const getUserOrderById = async (req,res) => {
 }
 
 
-export const getPendingCount = async (req,res) => {
+export const getPendingCount = async (req, res) => {
     try {
-        const count = await orderModel.countDocuments({status:'pending'})
+        const { deliveryBoyId } = req.query;
+
+        if (deliveryBoyId && deliveryBoyId !== 'undefined' && deliveryBoyId !== 'null' && mongoose.Types.ObjectId.isValid(deliveryBoyId)) {
+            try {
+                const deliveryUser = await userModel.findById(deliveryBoyId);
+                const isOnline = deliveryUser?.isOnline === true || deliveryUser?.isOnline === "true" || deliveryUser?.isOnline === 1;
+
+                if (!deliveryUser || !isOnline) {
+                    return res.status(200).json({
+                        message: 'success',
+                        count: 0
+                    });
+                }
+            } catch (err) {
+                return res.status(200).json({
+                    message: 'success',
+                    count: 0
+                });
+            }
+        } else if (deliveryBoyId) {
+            return res.status(200).json({
+                message: 'success',
+                count: 0
+            });
+        }
+
+        // Yahan se `{ deliveryBoy: "" }` hata diya hai taaki CastError na aaye
+        const count = await orderModel.countDocuments({
+            status: 'pending',
+            $or: [
+                { deliveryBoy: null },
+                { deliveryBoy: { $exists: false } }
+            ]
+        });
+
         res.status(200).json({
-            message:'success',
-            count:count
-        })
-        
+            message: 'success',
+            count: count
+        });
+
     } catch (error) {
+        console.error("--> MAIN CATCH ERROR:", error.message);
         res.status(500).json({
-            message:'failed to fetch new orders',
-            error:error.message
-        })
+            message: 'failed to fetch new orders',
+            error: error.message
+        });
     }
 }

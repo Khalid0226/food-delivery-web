@@ -6,26 +6,36 @@ import axios from 'axios';
 
 export default function DeliveryHeader({ toggleSidebar }) {
 
-    const [ notifCount, setNotifCount] = useState(0);
+    const [notifCount, setNotifCount] = useState(0);
 
-    const fetchPendingCount = async (params) => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    const deliveryBoyId = storedUser?._id;
+
+    const fetchPendingCount = async () => {
         try {
-            const response = await axios.get('http://localhost:2500/api/pending-orders')
-            setNotifCount(response.data.count)
+            // Agar deliveryBoyId hai, toh query me bhej do
+            const url = deliveryBoyId
+                ? `http://localhost:2500/api/pending-orders?deliveryBoyId=${deliveryBoyId}`
+                : 'http://localhost:2500/api/pending-orders';
+
+            const response = await axios.get(url);
+            setNotifCount(response.data.count);
         } catch (error) {
             console.error('failed to fetch new orders!!', error);
         }
     }
 
     useEffect(() => {
-        fetchPendingCount()
-        const interval = setInterval(fetchPendingCount, 5000);
-        return ()=> clearInterval(interval);
-    }, [])
+        if (deliveryBoyId) {
+            fetchPendingCount();
+            const interval = setInterval(fetchPendingCount, 1000);
+            return () => clearInterval(interval);
+        }
+    }, [deliveryBoyId]);
 
     const navigate = useNavigate()
 
-    const handleLogout = () =>{
+    const handleLogout = () => {
         localStorage.removeItem('token')
         localStorage.removeItem('user')
         navigate('/login')
