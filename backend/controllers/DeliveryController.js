@@ -5,25 +5,26 @@ export const deliveryDashboardData = async (req, res) => {
     try {
         const { userId } = req.query;
 
-        const availableOrder = await orderModel.find({
-            status: { $in: ['pending'] }
-        }).sort({ createdAt: -1 })
-
-
-        const activeOrder = await orderModel.findOne({
-            deliveryBoy: userId,
-            status: { $nin: ['pending', 'Pending', 'Completed', 'In Transit', 'Cancelled'] }
-        })
-
-
-
+        // 1. Sabse pehle delivery boy ka status check karo
         let deliveryUser = null;
         if (userId) {
             deliveryUser = await userModel.findById(userId);
         }
 
+        // 2. Agar delivery boy offline hai (ya user nahi mila), toh availableOrders empty rahenge
+        let availableOrder = [];
+        if (deliveryUser && deliveryUser.isOnline) {
+            availableOrder = await orderModel.find({
+                status: { $in: ['pending'] }
+            }).sort({ createdAt: -1 });
+        }
 
-        const totalDeliveries = await orderModel.countDocuments({deliveryBoy:userId, status: 'Completed' })
+        const activeOrder = await orderModel.findOne({
+            deliveryBoy: userId,
+            status: { $nin: ['pending', 'Pending', 'Completed', 'In Transit', 'Cancelled'] }
+        });
+
+        const totalDeliveries = await orderModel.countDocuments({ deliveryBoy: userId, status: 'Completed' });
 
         res.status(200).json({
             message: 'success',
@@ -35,12 +36,12 @@ export const deliveryDashboardData = async (req, res) => {
                 todayEarnings: totalDeliveries * 50,
                 isOnline: deliveryUser ? deliveryUser.isOnline : false
             }
-        })
+        });
     } catch (error) {
         res.status(500).json({
             message: 'failed',
             error: error.message
-        })
+        });
     }
 }
 
