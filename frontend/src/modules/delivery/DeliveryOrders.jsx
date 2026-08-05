@@ -67,8 +67,8 @@ export default function DeliveryOrders() {
 
 
     const filteredOrders = filter === 'All'
-        ? orders
-        : orders.filter(order => order.status === filter);
+    ? orders
+    : orders.filter(order => order.status?.toLowerCase() === filter.toLowerCase());
 
     const getStatusBadge = (status) => {
         switch (status) {
@@ -94,7 +94,7 @@ export default function DeliveryOrders() {
 
                 {/* Filter Buttons */}
                 <div className="flex flex-wrap gap-1.5 sm:gap-2 w-full md:w-auto">
-                    {['All', 'Preparing', 'In Transit', 'Completed'].map((tab) => (
+                    {['All','pending', 'Preparing', 'In Transit', 'Completed'].map((tab) => (
                         <button
                             key={tab}
                             onClick={() => setFilter(tab)}

@@ -173,19 +173,26 @@ export const completeOrder = async (req, res) => {
 
 export const getAssignedOrders = async (req, res) => {
     try {
-        const { deliveryBoyId } = req.query
+        const { deliveryBoyId } = req.query;
 
-        const orders = await orderModel.find({ deliveryBoy: deliveryBoyId }).sort({ createdAt: -1 })
+        // Yahan humne query change kar di hai:
+        // Wo orders aayenge jo ya toh is delivery boy ke hain YA phir 'pending' hain
+        const orders = await orderModel.find({
+            $or: [
+                { deliveryBoy: deliveryBoyId },
+                { status: 'pending' }
+            ]
+        }).sort({ createdAt: -1 });
 
         res.status(200).json({
             message: "success",
             orders
-        })
+        });
     } catch (error) {
         res.status(500).json({
             message: 'failed',
             error: error.message
-        })
+        });
     }
 }
 
