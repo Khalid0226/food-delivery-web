@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { FiX, FiCheck, FiUploadCloud, FiAlertCircle } from 'react-icons/fi';
 import axios from 'axios';
+import API from '../../services/axiosInstance';
+
 
 
 export default function EditItemModal({ isOpen, onClose, item, onSave }) {
@@ -58,7 +60,7 @@ export default function EditItemModal({ isOpen, onClose, item, onSave }) {
             data.append('image', image);
         }
         try {
-            await axios.put(`http://localhost:2500/api/menu/product/${item._id}`, data, {
+            await API.put(`/menu/product/${item._id}`, data, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             })
             await onSave()

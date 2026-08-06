@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FiPackage, FiMapPin, FiPhone, FiCheck, FiUser, FiCreditCard } from 'react-icons/fi';
+import API from '../../services/axiosInstance';
 
 export default function DeliveryOrders() {
     const [orders, setOrders] = useState([]);
@@ -14,7 +15,7 @@ export default function DeliveryOrders() {
 
     const fetchAssignedOrders = async () => {
         try {
-            const response = await axios.get(`http://localhost:2500/api/delivery/assigned-orders?deliveryBoyId=${deliveryBoyId}`)
+            const response = await API.get(`/delivery/assigned-orders?deliveryBoyId=${deliveryBoyId}`)
             if (response.data.message === 'success') {
                 setOrders(response.data.orders)
             }
@@ -42,14 +43,14 @@ export default function DeliveryOrders() {
             };
 
             if (newStatus === 'Preparing') {
-                endpoint = 'http://localhost:2500/api/delivery/accept-order';
+                endpoint = '/delivery/accept-order';
             } else if (newStatus === 'In Transit') {
-                endpoint = 'http://localhost:2500/api/delivery/in-transit';
+                endpoint = '/delivery/in-transit';
             } else if (newStatus === 'Completed') {
-                endpoint = 'http://localhost:2500/api/delivery/complete-order';
+                endpoint = '/delivery/complete-order';
             }
 
-            const response = await axios.patch(endpoint, payload);
+            const response = await API.patch(endpoint, payload);
 
             if (response.status === 200) {
                 setOrders(prevOrders =>

@@ -3,6 +3,7 @@ import { FiBell, FiMenu, FiLogOut } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import API from '../../services/axiosInstance';
 
 export default function DeliveryHeader({ toggleSidebar }) {
 
@@ -15,10 +16,10 @@ export default function DeliveryHeader({ toggleSidebar }) {
         try {
             // Agar deliveryBoyId hai, toh query me bhej do
             const url = deliveryBoyId
-                ? `http://localhost:2500/api/pending-orders?deliveryBoyId=${deliveryBoyId}`
-                : 'http://localhost:2500/api/pending-orders';
+                ? `/pending-orders?deliveryBoyId=${deliveryBoyId}`
+                : '/pending-orders';
 
-            const response = await axios.get(url);
+            const response = await API.get(url);
             setNotifCount(response.data.count);
         } catch (error) {
             console.error('failed to fetch new orders!!', error);

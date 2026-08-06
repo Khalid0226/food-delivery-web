@@ -6,6 +6,7 @@ import AdminHeader from "../../components/admin_layout/AdminHeader";
 import { useState } from 'react';
 import axios from 'axios'
 import { useEffect } from 'react';
+import API from '../../services/axiosInstance';
 
 export default function CustomerProfile() {
     const navigate = useNavigate();
@@ -16,7 +17,7 @@ export default function CustomerProfile() {
 
     const fetchProfile = async () => {
         try {
-            const response = await axios.get(`http://localhost:2500/api/auth/customer/${id}`)
+            const response = await API.get(`/auth/customer/${id}`)
             setData(response.data)
         } catch (error) {
             alert('profile not found!!')

@@ -5,6 +5,7 @@ import AdminLayout from "../../components/admin_layout/AdminLayout";
 import AdminHeader from "../../components/admin_layout/AdminHeader";
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
+import API from '../../services/axiosInstance';
 
 
 export default function AddItem() {
@@ -54,7 +55,7 @@ export default function AddItem() {
         // data.append('image',imageFile)
 
         try {
-            await axios.post('http://localhost:2500/api/menu/add-item', finalData, {
+            await API.post('/menu/add-item', finalData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             alert('Item added successfully!!');

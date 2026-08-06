@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { addToCart, decrementFromCart } from '../../../../redux/store';
 import axios from 'axios';
+import API from '../../../../services/axiosInstance';
 import { useEffect } from 'react';
 
 export default function ProductDetails() {
@@ -44,7 +45,7 @@ export default function ProductDetails() {
 
     const getProduct = async () => {
         try {
-            const response = await axios.get(`http://localhost:2500/api/menu/product/${id}`)
+            const response = await API.get(`/menu/product/${id}`);
             // console.log(response.data);
             console.log("API Response object:", response.data);
 

@@ -6,6 +6,7 @@ import AdminHeader from "../../components/admin_layout/AdminHeader";
 import { useState } from 'react';
 import axios from 'axios'
 import { useEffect } from 'react';
+import API from '../../services/axiosInstance';
 
 // // Pro Analytics Data
 // const chartData = [
@@ -54,7 +55,7 @@ export default function Dashboard() {
 
   const fetchDashboardStats = async () => {
     try {
-      const response = await axios.get('http://localhost:2500/api/dashboard-stats')
+      const response = await API.get('/dashboard-stats')
       console.log(response.data);
 
       if (response.data.data) {
@@ -72,7 +73,7 @@ export default function Dashboard() {
 
   const fetchGraphData = async (selectedFilter) => {
     try {
-      const response = await axios.get(`http://localhost:2500/api/graph?filter=${selectedFilter}`)
+      const response = await API.get(`/graph?filter=${selectedFilter}`)
 
       const formattedData = response.data.data.map((item) => ({
         name: item._id,

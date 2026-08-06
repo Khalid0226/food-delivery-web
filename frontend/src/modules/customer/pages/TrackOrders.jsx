@@ -3,6 +3,7 @@ import { FiPackage, FiClock, FiCheckCircle, FiTruck, FiBox, FiArrowRight, FiSear
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 import { useEffect } from 'react';
+import API from '../../../services/axiosInstance';
 
 export default function TrackOrders() {
     const [searchTerm, setSearchTerm] = useState('');
@@ -10,13 +11,6 @@ export default function TrackOrders() {
 
     const [orders, setOrders] = useState([]);
     const navigate = useNavigate()
-
-
-    // const orders = [
-    //     { id: 'ORD-12345', status: 'Delivered', date: 'June 22, 2026', total: 1780, items: ['Executive Chicken Platter', 'Spicy Fish Fry'] },
-    //     { id: 'ORD-12346', status: 'In Transit', date: 'June 22, 2026', total: 1454, items: ['Diamond Double Chicken Burger', 'Spicy Fish Fry'] },
-    //     { id: 'ORD-12347', status: 'Preparing', date: 'June 22, 2026', total: 999, items: ['Crispy Chicken Fry'] },
-    // ];
 
     // Filter logic
     const filteredOrders = useMemo(() => {
@@ -34,7 +28,7 @@ export default function TrackOrders() {
             const userData = JSON.parse(localStorage.getItem('user'))
 
             if (userData && userData.email) {
-                const response = await axios.post('http://localhost:2500/api/user-order', {
+                const response = await API.post('/user-order', {
                     email: userData.email
                 })
                 if (response.data.message == 'success') {

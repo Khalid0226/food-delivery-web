@@ -5,22 +5,7 @@ import { FiSearch } from 'react-icons/fi';
 import { addToCart, removeFromCart, decrementFromCart } from '../../../redux/store';
 import { useEffect } from 'react';
 import axios from 'axios';
-
-// Diamond Fry Center - Premium Catalogue
-// export const MENU_ITEMS = [
-//     { id: 1, name: 'Crispy Chicken Fry', category: 'Chicken', price: 249, rating: 4.8, image: '/b-1.jpg', tags: 'Best Seller', description: 'Deep fried tender chicken pieces seasoned with premium in-house diamond spices.' },
-//     { id: 2, name: 'Spicy Fish Fry', category: 'Fish', price: 299, rating: 4.7, image: '/b-2.jpg', tags: 'Chef Special', description: 'Freshwater catch coated with traditional coastal marination and golden fried.' },
-//     { id: 3, name: 'Diamond Double Chicken Burger', category: 'Burgers', price: 189, rating: 4.5, image: '/p-2.jpg', tags: 'Trending', description: 'Dual stacked crispy chicken patties layered with liquid cheese and premium relish.' },
-//     { id: 4, name: 'Peri Peri French Fries', category: 'Sides', price: 99, rating: 4.3, image: '/p-3.jpg', tags: 'Crispy', description: 'Fluffy potato fingers tossed in our signature smoky peri-peri blend.' },
-//     { id: 5, name: 'Garlic Butter Prawns Fry', category: 'Seafood', price: 349, rating: 4.9, image: '/p-4.jpg', tags: 'Premium', description: 'Jumbo prawns pan-seared with exquisite garlic clarified butter and fresh herbs.' },
-//     { id: 6, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-5.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
-//     { id: 7, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/b-1.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
-//     { id: 8, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/b-2.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
-//     { id: 9, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-2.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
-//     { id: 10, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-3.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
-//     { id: 11, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-4.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
-//     { id: 12, name: 'Executive Chicken Platter', category: 'Platters', price: 499, rating: 4.9, image: '/p-5.jpg', tags: 'Mega Meal', description: 'All-in-one curated feast featuring chicken fry, wings, strips, and premium dips.' },
-// ];
+import API from '../../../services/axiosInstance';
 
 export default function CustomerDashboard() {
 
@@ -52,7 +37,7 @@ export default function CustomerDashboard() {
 
     const fetchItems = async () => {
         try {
-            const response = await axios.get('http://localhost:2500/api/menu/view-item')
+            const response = await API.get('/menu/view-item');
             setMenuItems(response.data.item)
             console.log("Backend Data:", response.data.item);
         } catch (error) {

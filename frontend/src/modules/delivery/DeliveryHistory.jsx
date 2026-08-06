@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FiCheckCircle, FiCalendar, FiDollarSign, FiPackage, FiUser, FiMapPin } from 'react-icons/fi';
+import API from '../../services/axiosInstance';
 
 export default function DeliveryHistory() {
     // Static / Sample history data (Aap ise API se bhi fetch kar sakte hain)
@@ -13,7 +14,7 @@ export default function DeliveryHistory() {
 
     const getDeliveryHistory = async () => {
         try {
-            const response = await axios.get(`http://localhost:2500/api/delivery/delivery-history?deliveryBoyId=${deliveryBoyId}`)
+            const response = await API.get(`/delivery/delivery-history?deliveryBoyId=${deliveryBoyId}`)
             if (response.status === 200) {
                 setHistoryOrders(response.data.deliveryHistory)
                 console.log(response.data.deliveryHistory);

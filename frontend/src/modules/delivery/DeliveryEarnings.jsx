@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FiCheckCircle, FiTrendingUp } from 'react-icons/fi';
 import axios from 'axios';
+import API from '../../services/axiosInstance';
 
 const DeliveryEarnings = () => {
   const [timeRange, setTimeRange] = useState('today'); // Default ko 'month' kar diya taaki saare purane orders bhi dikhein
@@ -12,7 +13,7 @@ const DeliveryEarnings = () => {
 
   const getDeliveryHistory = async () => {
     try {
-      const response = await axios.get(`http://localhost:2500/api/delivery/delivery-history?deliveryBoyId=${deliveryBoyId}`);
+      const response = await API.get(`/delivery/delivery-history?deliveryBoyId=${deliveryBoyId}`);
       if (response.status === 200) {
         setHistoryOrders(response.data.deliveryHistory || []);
       }

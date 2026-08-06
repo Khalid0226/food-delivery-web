@@ -3,6 +3,7 @@ import { FiBell, FiMenu, FiLogOut } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import API from '../../services/axiosInstance';
 
 export default function AdminHeader({ toggleSidebar }) {
 
@@ -10,7 +11,7 @@ export default function AdminHeader({ toggleSidebar }) {
 
     const fetchPendingCount = async (params) => {
         try {
-            const response = await axios.get('http://localhost:2500/api/pending-orders')
+            const response = await API.get('/pending-orders')
             setNotifCount(response.data.count)
         } catch (error) {
             console.error('failed to fetch new orders!!', error);

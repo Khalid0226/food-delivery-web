@@ -6,6 +6,7 @@ import { Link, useParams } from 'react-router-dom';
 import EditItemModal from './EditItemModal';
 import axios from 'axios'
 import { useEffect } from 'react';
+import API from '../../services/axiosInstance';
 
 // const initialMenuItems = Array.from({ length: 12 }, (_, i) => ({
 //     id: i + 1,
@@ -66,7 +67,7 @@ export default function ManageItems() {
 
       const handleDelete = async (id) => {
         try {
-            const response = await axios.delete(`http://localhost:2500/api/menu/product/${id}`)
+            const response = await API.delete(`/menu/product/${id}`)
             // setFormData(formData.filter((item) => item._id !== id))
             alert('item delete successfully!!!')
             fetchItems()

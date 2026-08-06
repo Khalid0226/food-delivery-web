@@ -4,6 +4,8 @@ import AdminLayout from "../../components/admin_layout/AdminLayout";
 import AdminHeader from "../../components/admin_layout/AdminHeader";
 import axios from 'axios'
 import { useEffect } from 'react';
+import API from '../../services/axiosInstance';
+
 
 export default function Orders() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -62,7 +64,7 @@ export default function Orders() {
 
     const fetchOrders = async () => {
         try {
-            const response = await axios.get('http://localhost:2500/api/list')
+            const response = await API.get('/list')
             // console.log("API Response:", response.data);
             if (response.data.order) {
                 setOrders(response.data.order)
@@ -81,7 +83,7 @@ export default function Orders() {
 
     const updateStatus = async (orderId, newStatus) => {
         try {
-            const response = await axios.post('http://localhost:2500/api/update-status', {
+            const response = await API.post('/update-status', {
                 orderId: orderId,
                 status: newStatus
             })

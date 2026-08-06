@@ -4,6 +4,7 @@ import { FiMapPin, FiCreditCard, FiUser, FiSmartphone, FiChevronRight } from 're
 import { useNavigate } from 'react-router-dom';
 import { clearCart } from '../../../redux/store';
 import axios from 'axios';
+import API from '../../../services/axiosInstance';
 
 export default function Checkout() {
     const navigate = useNavigate();
@@ -60,7 +61,7 @@ export default function Checkout() {
         // 1. Agar payment method Cash on Delivery hai
         if (formData.paymentMethod === 'Cash on Delivery') {
             try {
-                const response = await axios.post('http://localhost:2500/api/orders', {
+                const response = await API.post('/orders', {
                     ...baseOrderData,
                     paymentId: null,
                     isPaid: false
@@ -79,7 +80,7 @@ export default function Checkout() {
         // 2. Agar Online Payment hai toh Razorpay gateway kholo
         else {
             try {
-                const { data } = await axios.post('http://localhost:2500/api/payment/create-order', {
+               const { data } = await API.post('/payment/create-order', {
                     amount: total
                 });
 
@@ -99,14 +100,14 @@ export default function Checkout() {
                     order_id: razorpayOrder.id,
                     handler: async function (response) {
                         try {
-                            const verifyRes = await axios.post('http://localhost:2500/api/payment/verify-payment', {
+                            const verifyRes = await API.post('/payment/verify-payment', {
                                 razorpay_order_id: response.razorpay_order_id,
                                 razorpay_payment_id: response.razorpay_payment_id,
                                 razorpay_signature: response.razorpay_signature
                             });
 
                             if (verifyRes.data.success) {
-                                const finalOrderRes = await axios.post('http://localhost:2500/api/orders', {
+                                const finalOrderRes = await API.post('/orders', {
                                     ...baseOrderData,
                                     paymentId: response.razorpay_payment_id,
                                     isPaid: true

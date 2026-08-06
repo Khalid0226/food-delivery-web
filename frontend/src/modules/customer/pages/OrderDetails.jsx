@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FiCheckCircle, FiPhone, FiArrowLeft, FiPackage } from 'react-icons/fi';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import API from '../../../services/axiosInstance';
 
 export default function OrderDetails() {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ export default function OrderDetails() {
 
   const fetchOrderDetail = async () => {
     try {
-      const response = await axios.get(`http://localhost:2500/api/user-order/${orderId}`);
+     const response = await API.get(`/user-order/${orderId}`);
       if (response.data.message === 'success!!') {
         setOrder(response.data.order);
       }

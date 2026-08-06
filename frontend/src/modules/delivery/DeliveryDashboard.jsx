@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FiPackage, FiCheckCircle, FiDollarSign, FiClock, FiMapPin, FiPhone, FiCheck, FiCreditCard } from 'react-icons/fi';
+import API from '../../services/axiosInstance';
 
 
 export default function DeliveryDashboard() {
@@ -21,7 +22,7 @@ export default function DeliveryDashboard() {
             const storedUser = JSON.parse(localStorage.getItem('user'));
             const userId = storedUser?._id;
 
-            const response = await axios.get(`http://localhost:2500/api/delivery/dashboard-data?userId=${userId}`)
+            const response = await API.get(`/delivery/dashboard-data?userId=${userId}`)
             if (response.data.message === 'success') {
                 setAvailableOrders(response.data.availableOrders)
                 setStats(response.data.states);
@@ -50,7 +51,7 @@ export default function DeliveryDashboard() {
             const storedUser = JSON.parse(localStorage.getItem('user'))
             const userId = storedUser?._id
 
-            const response = await axios.patch('http://localhost:2500/api/delivery/update-status', {
+            const response = await API.patch('/delivery/update-status', {
                 userId,
                 isOnline: newStatus
 
@@ -78,7 +79,7 @@ export default function DeliveryDashboard() {
                 return
             }
 
-            const response = await axios.patch('http://localhost:2500/api/delivery/accept-order', {
+            const response = await API.patch('/delivery/accept-order', {
                 orderId: order._id,
                 deliveryBoyId
             })
@@ -106,7 +107,7 @@ export default function DeliveryDashboard() {
             const storedUser = JSON.parse(localStorage.getItem('user'));
             const deliveryBoyId = storedUser?._id;
 
-            const response = await axios.patch("http://localhost:2500/api/delivery/complete-order", {
+            const response = await API.patch("/delivery/complete-order", {
                 orderId: activeOrder._id,
                 deliveryBoyId // Backend ko track karne ke liye ID bhej di
             })

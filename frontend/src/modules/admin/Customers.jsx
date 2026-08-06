@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import AdminLayout from "../../components/admin_layout/AdminLayout";
 import AdminHeader from "../../components/admin_layout/AdminHeader";
 import axios from 'axios';
+import API from '../../services/axiosInstance';
 
 export default function Customers() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -18,7 +19,7 @@ export default function Customers() {
     const fetchData = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:2500/api/customers');
+            const response = await API.get('/customers');
             // Backend se aane wale data ko set karein
             setCustomers(response.data.data || []);
             setLoading(false);
@@ -41,7 +42,7 @@ export default function Customers() {
                 const safeEmail = encodeURIComponent(email);
                 
                 // API call: Ye backend pe user aur orders dono delete karega
-                await axios.delete(`http://localhost:2500/api/auth/customer/${safeEmail}`);
+                await API.delete(`/auth/customer/${safeEmail}`);
 
                 // Local state update: us email wale saare records hata dein
                 setCustomers(prevCustomers => prevCustomers.filter(c => c.email !== email));
