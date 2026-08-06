@@ -8,24 +8,7 @@ import axios from 'axios'
 import { useEffect } from 'react';
 import API from '../../services/axiosInstance';
 
-// // Pro Analytics Data
-// const chartData = [
-//   { name: 'Mon', revenue: 40000 },
-//   { name: 'Tue', revenue: 30000 },
-//   { name: 'Wed', revenue: 60000 },
-//   { name: 'Thu', revenue: 20780 },
-//   { name: 'Fri', revenue: 80000 },
-//   { name: 'Sat', revenue: 50000 },
-//   { name: 'Sun', revenue: 90000 }
-// ];
-
-export default function Dashboard() {
-  // const stats = [
-  //   { title: "Total Revenue", value: "₹8.4L", icon: FiTrendingUp, change: "+12.5%", color: "text-emerald-600", bg: "bg-emerald-50" },
-  //   { title: "Total Orders", value: "1,284", icon: FiShoppingBag, change: "+5.2%", color: "text-blue-600", bg: "bg-blue-50" },
-  //   { title: "Pending", value: "42", icon: FiClock, change: "-2.1%", color: "text-amber-600", bg: "bg-amber-50" },
-  //   { title: "Customers", value: "890", icon: FiUsers, change: "+8.4%", color: "text-indigo-600", bg: "bg-indigo-50" },
-  // ];
+export default function AdminDashboard() {
 
   const [stats, setStats] = useState({
     totalRevenue: 0,
