@@ -29,6 +29,8 @@ import DeliveryHistory from './modules/delivery/DeliveryHistory'
 import DeliveryEarnings from './modules/delivery/DeliveryEarnings'
 import DeliverySettings from './modules/delivery/DeliverySettings';
 
+import ProtectedRoute from './components/ProtectedRoute';
+
 function App() {
   return (
     <BrowserRouter>
@@ -44,11 +46,11 @@ function App() {
         <Route path="/delivery/*" element={
           <DeliveryLayout>
             <Routes>
-              <Route path="dashboard" element={<DeliveryDashboard />} />
-              <Route path="orders" element={<DeliveryOrders />} />
-              <Route path='history' element={<DeliveryHistory />} />
-              <Route path='earnings' element={<DeliveryEarnings />} />
-              <Route path='settings' element={<DeliverySettings />} />
+              <Route path="dashboard" element={<ProtectedRoute><DeliveryDashboard /></ProtectedRoute>} />
+              <Route path="orders" element={<ProtectedRoute><DeliveryOrders /></ProtectedRoute>} />
+              <Route path='history' element={<ProtectedRoute><DeliveryHistory /></ProtectedRoute>} />
+              <Route path='earnings' element={<ProtectedRoute><DeliveryEarnings /></ProtectedRoute>} />
+              <Route path='settings' element={<ProtectedRoute><DeliverySettings /></ProtectedRoute>} />
             </Routes>
           </DeliveryLayout>
         } />
@@ -58,22 +60,22 @@ function App() {
           <Layout>
             <Routes>
               {/* Customer Routes */}
-              <Route path="/customer/dashboard" element={<CustomerDashboard />} />
-              <Route path="/product/:id" element={<ProductDetails />} />
-              <Route path='/cart' element={<Cart />} />
-              <Route path='/checkout' element={<Checkout />} />
-              <Route path="/customer/orders" element={<TrackOrders />} />
-              <Route path='/customer/account' element={<Account />} />
-              <Route path='/order/:orderId' element={<OrderDetails />} />
+              <Route path="/customer/dashboard" element={<ProtectedRoute><CustomerDashboard /></ProtectedRoute>} />
+              <Route path="/product/:id" element={<ProtectedRoute><ProductDetails /></ProtectedRoute>} />
+              <Route path='/cart' element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+              <Route path='/checkout' element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+              <Route path="/customer/orders" element={<ProtectedRoute><TrackOrders /></ProtectedRoute>} />
+              <Route path='/customer/account' element={<ProtectedRoute><Account /></ProtectedRoute>} />
+              <Route path='/order/:orderId' element={<ProtectedRoute><OrderDetails /></ProtectedRoute>} />
 
               {/* Admin Routes */}
-              <Route path="/admin/dashboard" element={<AdminDashboard />} />
-              <Route path='/admin/orders' element={<Orders />} />
-              <Route path='/admin/customers' element={<Customers />} />
-              <Route path='/admin/customer-profile/:id' element={<CustomerProfile />} />
-              <Route path='/admin/settings' element={<Settings />} />
-              <Route path='/admin/add-item' element={<AddItem />} />
-              <Route path='/admin/view-item' element={<ManageItems />} />
+              <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+              <Route path='/admin/orders' element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+              <Route path='/admin/customers' element={<ProtectedRoute><Customers /></ProtectedRoute>} />
+              <Route path='/admin/customer-profile/:id' element={<ProtectedRoute><CustomerProfile /></ProtectedRoute>} />
+              <Route path='/admin/settings' element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+              <Route path='/admin/add-item' element={<ProtectedRoute><AddItem /></ProtectedRoute>} />
+              <Route path='/admin/view-item' element={<ProtectedRoute><ManageItems /></ProtectedRoute>} />
             </Routes>
           </Layout>
         } />
