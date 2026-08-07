@@ -51,7 +51,7 @@ export default function ManageItems() {
 
     const fetchItems = async () => {
         try {
-            const response = await axios.get('http://localhost:2500/api/menu/view-item')
+            const response = await API.get('/menu/view-item')
             setMenuItems(response.data.item)
         } catch (error) {
             console.error(error);
