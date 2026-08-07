@@ -46,11 +46,11 @@ function App() {
         <Route path="/delivery/*" element={
           <DeliveryLayout>
             <Routes>
-              <Route path="dashboard" element={<ProtectedRoute><DeliveryDashboard /></ProtectedRoute>} />
-              <Route path="orders" element={<ProtectedRoute><DeliveryOrders /></ProtectedRoute>} />
-              <Route path='history' element={<ProtectedRoute><DeliveryHistory /></ProtectedRoute>} />
-              <Route path='earnings' element={<ProtectedRoute><DeliveryEarnings /></ProtectedRoute>} />
-              <Route path='settings' element={<ProtectedRoute><DeliverySettings /></ProtectedRoute>} />
+              <Route path="dashboard" element={<ProtectedRoute allowedRoles={['delivery']}><DeliveryDashboard /></ProtectedRoute>} />
+              <Route path="orders" element={<ProtectedRoute allowedRoles={['delivery']}><DeliveryOrders /></ProtectedRoute>} />
+              <Route path='history' element={<ProtectedRoute allowedRoles={['delivery']}><DeliveryHistory /></ProtectedRoute>} />
+              <Route path='earnings' element={<ProtectedRoute allowedRoles={['delivery']}><DeliveryEarnings /></ProtectedRoute>} />
+              <Route path='settings' element={<ProtectedRoute allowedRoles={['delivery']}><DeliverySettings /></ProtectedRoute>} />
             </Routes>
           </DeliveryLayout>
         } />
@@ -60,22 +60,22 @@ function App() {
           <Layout>
             <Routes>
               {/* Customer Routes */}
-              <Route path="/customer/dashboard" element={<ProtectedRoute><CustomerDashboard /></ProtectedRoute>} />
-              <Route path="/product/:id" element={<ProtectedRoute><ProductDetails /></ProtectedRoute>} />
-              <Route path='/cart' element={<ProtectedRoute><Cart /></ProtectedRoute>} />
-              <Route path='/checkout' element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
-              <Route path="/customer/orders" element={<ProtectedRoute><TrackOrders /></ProtectedRoute>} />
-              <Route path='/customer/account' element={<ProtectedRoute><Account /></ProtectedRoute>} />
-              <Route path='/order/:orderId' element={<ProtectedRoute><OrderDetails /></ProtectedRoute>} />
+              <Route path="/customer/dashboard" element={<ProtectedRoute allowedRoles={['customer']}><CustomerDashboard /></ProtectedRoute>} />
+              <Route path="/product/:id" element={<ProtectedRoute allowedRoles={['customer']}><ProductDetails /></ProtectedRoute>} />
+              <Route path='/cart' element={<ProtectedRoute allowedRoles={['customer']}><Cart /></ProtectedRoute>} />
+              <Route path='/checkout' element={<ProtectedRoute allowedRoles={['customer']}><Checkout /></ProtectedRoute>} />
+              <Route path="/customer/orders" element={<ProtectedRoute allowedRoles={['customer']}><TrackOrders /></ProtectedRoute>} />
+              <Route path='/customer/account' element={<ProtectedRoute allowedRoles={['customer']}><Account /></ProtectedRoute>} />
+              <Route path='/order/:orderId' element={<ProtectedRoute allowedRoles={['customer']}><OrderDetails /></ProtectedRoute>} />
 
               {/* Admin Routes */}
-              <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-              <Route path='/admin/orders' element={<ProtectedRoute><Orders /></ProtectedRoute>} />
-              <Route path='/admin/customers' element={<ProtectedRoute><Customers /></ProtectedRoute>} />
-              <Route path='/admin/customer-profile/:id' element={<ProtectedRoute><CustomerProfile /></ProtectedRoute>} />
-              <Route path='/admin/settings' element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-              <Route path='/admin/add-item' element={<ProtectedRoute><AddItem /></ProtectedRoute>} />
-              <Route path='/admin/view-item' element={<ProtectedRoute><ManageItems /></ProtectedRoute>} />
+              <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
+              <Route path='/admin/orders' element={<ProtectedRoute allowedRoles={['admin']}><Orders /></ProtectedRoute>} />
+              <Route path='/admin/customers' element={<ProtectedRoute allowedRoles={['admin']}><Customers /></ProtectedRoute>} />
+              <Route path='/admin/customer-profile/:id' element={<ProtectedRoute allowedRoles={['admin']}><CustomerProfile /></ProtectedRoute>} />
+              <Route path='/admin/settings' element={<ProtectedRoute allowedRoles={['admin']}><Settings /></ProtectedRoute>} />
+              <Route path='/admin/add-item' element={<ProtectedRoute allowedRoles={['admin']}><AddItem /></ProtectedRoute>} />
+              <Route path='/admin/view-item' element={<ProtectedRoute allowedRoles={['admin']}><ManageItems /></ProtectedRoute>} />
             </Routes>
           </Layout>
         } />

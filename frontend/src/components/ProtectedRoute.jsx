@@ -1,7 +1,7 @@
 import React from 'react'
 import { Navigate } from 'react-router-dom'
 
-function ProtectedRoute({children}) {
+function ProtectedRoute({children,allowedRoles}) {
 
     const token = localStorage.getItem('token')
 
@@ -11,9 +11,9 @@ function ProtectedRoute({children}) {
         return <Navigate to='/login' replace/>
     }
 
-    // if (allowedRoles && !allowedRoles.includes(storedUser.role)) {
-    //     return <Navigate to="/" replace />; // Ya apne hisab se koi unauthorized page
-    // }
+    if (allowedRoles && !allowedRoles.includes(storedUser.role)) {
+        return <Navigate to="/login" replace />; // Ya apne hisab se koi unauthorized page
+    }
 
   return children
 }
