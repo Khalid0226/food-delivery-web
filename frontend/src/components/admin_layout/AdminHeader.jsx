@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import API from '../../services/axiosInstance';
+import { useSidebar } from './SidebarContext';
 
-export default function AdminHeader({ toggleSidebar }) {
+export default function AdminHeader() {
 
+    const { toggleSidebar } = useSidebar();
     const [ notifCount, setNotifCount] = useState(0);
 
     const fetchPendingCount = async (params) => {

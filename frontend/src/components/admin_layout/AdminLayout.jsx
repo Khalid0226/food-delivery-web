@@ -36,33 +36,39 @@
 //   );
 // }
 
-import React, { useState } from 'react';
+import React from 'react';
 import AdminSidebar from './AdminSidebar';
 import { FiX } from 'react-icons/fi';
+import { SidebarProvider,useSidebar } from './SidebarContext'; // Apna path check kar lein
 
-export default function AdminLayout({ children }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+function AdminLayoutContent({ children }) {
+  const { isSidebarOpen, closeSidebar } = useSidebar();
 
   return (
     <div className="flex min-h-screen bg-slate-50 relative">
       
       {/* Sidebar */}
       <div className={`fixed inset-0 z-50 w-full md:w-64 bg-white transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
-        <button onClick={() => setIsSidebarOpen(false)} className="absolute top-6 right-6 md:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-lg">
+        <button onClick={closeSidebar} className="absolute top-6 right-6 md:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-lg">
           <FiX size={28} />
         </button>
-        <div onClick={() => setIsSidebarOpen(false)}>
+        <div onClick={closeSidebar}>
            <AdminSidebar />
         </div>
       </div>
 
       {/* Main Content Area */}
       <main className="flex-1 w-full md:ml-64 transition-all duration-300">
-        
-        {/* React.cloneElement ko hata diya gaya hai taaki unnecessary props DOM par na jayein */}
         {children}
-
       </main>
     </div>
+  );
+}
+
+export default function AdminLayout({ children }) {
+  return (
+    <SidebarProvider>
+      <AdminLayoutContent>{children}</AdminLayoutContent>
+    </SidebarProvider>
   );
 }

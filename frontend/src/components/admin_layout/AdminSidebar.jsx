@@ -1,16 +1,17 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { FiPackage, FiUsers, FiTrendingUp, FiSettings, FiLogOut,FiPlusSquare,FiList } from 'react-icons/fi';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { FiPackage, FiUsers, FiTrendingUp, FiSettings, FiLogOut, FiPlusSquare, FiList } from 'react-icons/fi';
+import { useSidebar } from './SidebarContext'; // Context import karein
 
 export default function AdminSidebar() {
+  const navigate = useNavigate();
+  const { closeSidebar } = useSidebar(); // closeSidebar nikaalein
 
-  const navigate = useNavigate()
-      const handleLogout = () =>{
-        localStorage.removeItem('user')
-        localStorage.removeItem('token')
-        navigate('/login')
-    }
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
 
   return (
     <aside className="w-64 bg-white border-r border-slate-200 p-6 flex flex-col h-screen fixed top-0 left-0 z-40">
@@ -23,19 +24,19 @@ export default function AdminSidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 space-y-1">
+      {/* Har NavItem click par closeSidebar call hoga taaki mobile par menu auto-close ho jaye */}
+      <nav className="flex-1 space-y-1" onClick={closeSidebar}>
         <NavItem to="/admin/dashboard" icon={<FiTrendingUp />} label="Overview" />
         <NavItem to="/admin/add-item" icon={<FiPlusSquare />} label="add-items"/>
         <NavItem to="/admin/view-item" icon={<FiList />} label="view-item" />
         <NavItem to="/admin/orders" icon={<FiPackage />} label="Orders" />
         <NavItem to="/admin/customers" icon={<FiUsers />} label="Customers" />
         <NavItem to="/admin/settings" icon={<FiSettings />} label="Settings" />
-        
       </nav>
 
       {/* Logout Footer */}
       <div className="pt-6 border-t border-slate-100">
-        <button onClick={handleLogout}  className="flex items-center gap-3 text-slate-500 font-bold p-4 hover:bg-amber-50 rounded-2xl transition-all md:hidden">
+        <button onClick={handleLogout} className="flex items-center gap-3 text-slate-500 font-bold p-4 hover:bg-amber-50 rounded-2xl transition-all md:hidden w-full">
           <FiLogOut />
           Logout
         </button>
