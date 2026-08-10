@@ -17,7 +17,8 @@ export default function ForgotPassword() {
   const [errors, setErrors] = useState({});
 
   // Step 1: Handle Email Submission & OTP Generation
-  const handleEmailSubmit = (e) => {
+  // Step 1: Handle Email Submission & Call Backend Forgot-Password API
+  const handleEmailSubmit = async (e) => {
     e.preventDefault();
     let currentErrors = {};
 
@@ -31,17 +32,21 @@ export default function ForgotPassword() {
       setErrors(currentErrors);
     } else {
       setErrors({});
-      // Dummy OTP System (MERN backend logic lagne par actual email par jayega)
-      const generatedOtp = Math.floor(100000 + Math.random() * 900000); 
-      console.log(`Generated OTP for ${email}:`, generatedOtp);
-      
-      alert(`🚀 Verification OTP dispatched to ${email}\n\n[DEMO OTP]: ${generatedOtp}`);
-      setStep(2); // Move to OTP verification step
+      try {
+        // Backend API Call to send OTP
+        const response = await axios.post('http://localhost:2500/api/auth/forgot-password', { email });
+        
+        alert(`🚀 Success: ${response.data.message}`);
+        setStep(2); // Move to OTP & Reset step
+      } catch (err) {
+        const errorMsg = err.response?.data?.message || 'Failed to send OTP. Please check email.';
+        setErrors({ email: errorMsg });
+      }
     }
   };
 
-  // Step 2: Handle OTP & Password Reset Verification
-  const handleResetSubmit = (e) => {
+  // Step 2: Handle OTP & Password Reset via Backend APIs
+  const handleResetSubmit = async (e) => {
     e.preventDefault();
     let currentErrors = {};
 
@@ -65,10 +70,20 @@ export default function ForgotPassword() {
       setErrors(currentErrors);
     } else {
       setErrors({});
-      // Yahan baad mein Node/Express API call handler integrate hoga
-      console.log("Password updated successfully for:", email);
-      alert("🎉 Password Reset Successful! Redirecting to login page...");
-      navigate('/Login');
+      try {
+        // Backend API Call to Reset Password (using combined reset-password endpoint)
+        const response = await axios.post('http://localhost:2500/api/auth/reset-password', {
+          email,
+          otp,
+          newPassword
+        });
+
+        alert(`🎉 ${response.data.message}`);
+        navigate('/Login');
+      } catch (err) {
+        const errorMsg = err.response?.data?.message || 'Invalid OTP or expired. Try again.';
+        alert(`❌ Error: ${errorMsg}`);
+      }
     }
   };
 

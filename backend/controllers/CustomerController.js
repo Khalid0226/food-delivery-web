@@ -149,6 +149,8 @@ export const getCustomerById = async (req, res) => {
 export const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body
+        // console.log(email);
+        
         const user = await userModel.findOne({ email })
 
         if (!user) {
@@ -228,7 +230,7 @@ export const resetPassword = async (req,res) => {
 
         user.resetPasswordOtp = undefined
         user.resetPasswordExpire = undefined
-        user.save()
+        await user.save()
 
         res.status(200).json({ message: "Password updated successfully" });
     } catch (error) {
