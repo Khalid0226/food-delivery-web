@@ -26,6 +26,12 @@ const userSchema = new mongoose.Schema({
     isOnline:{
         type:Boolean,
         default:false
+    },
+    resetPasswordOtp:{
+        type:String
+    },
+    resetPasswordExpire:{
+        type:String
     }
 },{timestamps:true})
 

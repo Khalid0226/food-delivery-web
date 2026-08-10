@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose'; // import zaroor karein
 import orderModel from "../models/Order.js";
-
+import nodemailer from 'nodemailer'
 
 export const register = async (req, res) => {
     try {
@@ -79,32 +79,6 @@ export const login = async (req, res) => {
     }
 }
 
-// export const deleteCustomer = async (req,res) => {
-//     try {
-//         // console.log(req.params.id);
-//         // const {id} = req.params
-
-//         const {email} = req.params
-
-//         const customerDelete = await userModel.findOneAndDelete({email:email})
-//         if (!customerDelete) {
-//             return res.status(404).json({
-//                 message:'no user found!!'
-//             })
-//         }
-//         return res.status(200).json({
-//             message:'success',
-//             data:customerDelete
-//         })
-
-//     } catch (error) {
-//         res.status(500).json({
-//             message:'failed to Delete Customer',
-//             error:error.message
-//         })
-//     }
-// }
-
 export const deleteCustomer = async (req, res) => {
     try {
         const { email } = req.params;
@@ -167,5 +141,97 @@ export const getCustomerById = async (req, res) => {
             message: 'failed to fetch customer!!',
             error: error.message
         })
+    }
+}
+
+
+
+export const forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body
+        const user = await userModel.findOne({ email })
+
+        if (!user) {
+            return res.status(404).json({
+                message: 'user Not Found!!'
+            })
+        }
+
+        const otp = Math.floor(100000 + Math.random() * 900000).toString()
+
+        user.resetPasswordOtp = otp
+        user.resetPasswordExpire = Date.now() + 10 * 60 * 1000
+        await user.save()
+
+        const transporter = await nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        })
+
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: user.email,
+            subject: 'Password Reset OTP',
+            text: `Your OTP for password reset is: ${otp}. It is valid for 10 minutes.`
+        })
+
+        res.status(200).json({
+            message: "OTP sent to your email successfully"
+        });
+    } catch (error) {
+        res.status(500).json({
+            message:'failed to send otp',
+            error:error.message
+        })
+    }
+}   
+
+
+export const verifyOtp = async (req,res) => {
+    try {
+        const{email,otp} = req.body
+
+        const user = await userModel.findOne({email})
+
+        if (!user || user.resetPasswordOtp !== otp || user.resetPasswordExpire < Date.now()) {
+            return res.status(404).json({
+                message:'Invalid or Expired OTP'
+            })
+        }
+
+        res.status(200).json({ message: "OTP verified successfully" });
+    } catch (error) {
+        res.status(500).json({
+            message:'Server error',
+            error:error.message
+        })   
+    }
+} 
+
+export const resetPassword = async (req,res) => {
+    try {
+        const{email,otp,newPassword}  = req.body
+
+        const user = await userModel.findOne({email})
+
+        if (!user || user.resetPasswordOtp !== otp || user.resetPasswordExpire < Date.now()) {
+            return res.status(404).json({
+                message:'Invalid or Expired OTP'
+            })
+        }
+
+        const salt = await bcrypt.genSalt(10)
+        user.password = await bcrypt.hash(newPassword,salt)
+
+        user.resetPasswordOtp = undefined
+        user.resetPasswordExpire = undefined
+        user.save()
+
+        res.status(200).json({ message: "Password updated successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });   
     }
 }
