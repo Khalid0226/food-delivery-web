@@ -1,5 +1,6 @@
 import { deliveryDashboardData,toggleOnlineStatus,acceptOrder, completeOrder,getAssignedOrders, updateTOInTransit, getDeliveryHistory } from "../controllers/DeliveryController.js";
 import { authMiddleware, authorizeRoles } from "../middleware/authMiddleware.js";
+import { sendDeliveryOtp,verifyDeliveryOtp } from "../controllers/DeliveryController.js";
 import express from 'express'
 
 const router = express.Router()
@@ -17,5 +18,9 @@ router.patch('/complete-order',authMiddleware,authorizeRoles('delivery'),complet
 router.get('/assigned-orders',authMiddleware,authorizeRoles('delivery'),getAssignedOrders)
 
 router.get('/delivery-history',authMiddleware,authorizeRoles('delivery'),getDeliveryHistory)
+
+router.post('/send-delivery-otp/:orderId', authMiddleware, authorizeRoles('delivery'), sendDeliveryOtp)
+
+router.post('/verify-delivery-otp', authMiddleware, authorizeRoles('delivery'), verifyDeliveryOtp)
 
 export default router
