@@ -28,16 +28,13 @@ export const authMiddleware = async (req, res, next) => {
 }
 
 export const authorizeRoles = (...roles) => {
-
     return (req, res, next) => {
-
-        if(!roles.includes(req.user.role)){
+        // 👇 Check karein ki req.user ya req.user.role exist karta hai ya nahi
+        if (!req.user || !req.user.role || !roles.includes(req.user.role)) {
             return res.status(403).json({
-                message:"Access denied"
+                message: "Access denied: Unauthorized role"
             });
         }
-
         next();
     };
-
 };

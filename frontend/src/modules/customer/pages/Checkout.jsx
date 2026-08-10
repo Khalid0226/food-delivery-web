@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { FiMapPin, FiCreditCard, FiUser, FiSmartphone, FiChevronRight } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { clearCart } from '../../../redux/store';
-import axios from 'axios';
 import API from '../../../services/axiosInstance';
 
 export default function Checkout() {
@@ -44,11 +43,10 @@ export default function Checkout() {
             return;
         }
 
-        // Base order data structure
+        // Base order data structure (Backend ke sath fully matched)
         const baseOrderData = {
             fullName: formData.fullName,
             email: userData.email,
-            id: userData._id,
             mobile: formData.mobile,
             address: formData.address,
             pincode: formData.pincode,
@@ -68,19 +66,19 @@ export default function Checkout() {
                 });
 
                 if (response.status === 201 || response.status === 200) {
-                    alert("Order Successfully Placed! 🎉");
+                    alert("Order Successfully Placed! Invoice sent to your email 🚀");
                     dispatch(clearCart());
                     navigate('/customer/dashboard');
                 }
             } catch (error) {
                 console.error("Order error:", error);
-                alert('Failed to place order!!!');
+                alert(error.response?.data?.message || 'Failed to place order!!!');
             }
         } 
         // 2. Agar Online Payment hai toh Razorpay gateway kholo
         else {
             try {
-               const { data } = await API.post('/payment/create-order', {
+                const { data } = await API.post('/payment/create-order', {
                     amount: total
                 });
 
@@ -114,7 +112,7 @@ export default function Checkout() {
                                 });
 
                                 if (finalOrderRes.status === 201 || finalOrderRes.status === 200) {
-                                    alert("Payment Successful & Order Placed! 🎉");
+                                    alert("Payment Successful & Order Placed! Invoice sent to your email 🎉");
                                     dispatch(clearCart());
                                     navigate('/customer/dashboard');
                                 }
@@ -162,11 +160,11 @@ export default function Checkout() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="relative">
                                     <FiUser className="absolute left-4 top-3.5 text-slate-400" />
-                                    <input name="fullName" onChange={handleInputChange} placeholder="Full Name" className={inputStyle} />
+                                    <input name="fullName" value={formData.fullName} onChange={handleInputChange} placeholder="Full Name" className={inputStyle} />
                                 </div>
                                 <div className="relative">
                                     <FiSmartphone className="absolute left-4 top-3.5 text-slate-400" />
-                                    <input name="mobile" onChange={handleInputChange} placeholder="Mobile Number" className={inputStyle} />
+                                    <input name="mobile" value={formData.mobile} onChange={handleInputChange} placeholder="Mobile Number" className={inputStyle} />
                                 </div>
                             </div>
                         </div>
@@ -175,10 +173,10 @@ export default function Checkout() {
                         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                             <h2 className={sectionTitle}><FiMapPin className="text-orange-500" /> Delivery Address</h2>
                             <div className="space-y-4">
-                                <textarea name="address" onChange={handleInputChange} placeholder="Complete Delivery Address (Area, Street, Flat)" className={`${inputStyle} h-24 pt-3`}></textarea>
+                                <textarea name="address" value={formData.address} onChange={handleInputChange} placeholder="Complete Delivery Address (Area, Street, Flat)" className={`${inputStyle} h-24 pt-3`}></textarea>
                                 <div className="grid grid-cols-2 gap-4">
-                                    <input name="pincode" onChange={handleInputChange} placeholder="Pincode" className={inputStyle.replace('pl-11', 'pl-4')} />
-                                    <input name="city" onChange={handleInputChange} placeholder="City" className={inputStyle.replace('pl-11', 'pl-4')} />
+                                    <input name="pincode" value={formData.pincode} onChange={handleInputChange} placeholder="Pincode" className={inputStyle.replace('pl-11', 'pl-4')} />
+                                    <input name="city" value={formData.city} onChange={handleInputChange} placeholder="City" className={inputStyle.replace('pl-11', 'pl-4')} />
                                 </div>
                             </div>
                         </div>
@@ -219,7 +217,7 @@ export default function Checkout() {
                                 </div>
                             </div>
 
-                            <button onClick={handlePlaceOrder} className="w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white font-black py-4 rounded-xl text-sm uppercase tracking-wider transition-all active:scale-95 shadow-sm flex items-center justify-center gap-2">
+                            <button onClick={handlePlaceOrder} className="w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white font-black py-4 rounded-xl text-sm uppercase tracking-wider transition-all active:scale-95 shadow-sm flex items-center justify-center gap-2 cursor-pointer">
                                 Place Order <FiChevronRight />
                             </button>
                         </div>
