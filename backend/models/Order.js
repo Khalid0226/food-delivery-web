@@ -31,6 +31,8 @@ const orderSchema = new mongoose.Schema({
     deliveredAt: {
         type: Date
     },
+    deliveryOtp: { type: String, default: null },
+    deliveryOtpExpire: { type: Date, default: null },
     createdAt: { type: Date, default: Date.now }
 })
 

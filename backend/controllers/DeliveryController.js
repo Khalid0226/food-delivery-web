@@ -243,13 +243,21 @@ export const getDeliveryHistory = async (req, res) => {
     }
 }
 
-
 export const sendDeliveryOtp = async (req, res) => {
     try {
         const { orderId } = req.params;
-        const order = await orderModel.findById(orderId).populate('userId'); // ya jahan customer ki details ho
+        
+        // 👇 Yahan se .populate('userId') hata diya hai kyunki schema mein email direct field hai
+        const order = await orderModel.findById(orderId);
 
         if (!order) return res.status(404).json({ message: "Order not found" });
+
+        // 👇 Direct schema ka email field use kar rahe hain
+        const customerEmail = order.email;
+
+        if (!customerEmail) {
+            return res.status(400).json({ message: "Customer email not found for this order" });
+        }
 
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         
@@ -257,24 +265,24 @@ export const sendDeliveryOtp = async (req, res) => {
         order.deliveryOtpExpire = Date.now() + 10 * 60 * 1000; // 10 mins expiry
         await order.save();
 
-        // Nodemailer se customer ko OTP bhejein
-       const transporter = nodemailer.createTransport({
+        const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: process.env.EMAIL_USER, // Aapka apna Gmail address
-                pass: process.env.EMAIL_PASS  // Gmail ka 16-digit App Password (regular password nahi!)
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS  
             }
         });
 
         await transporter.sendMail({
             from: process.env.EMAIL_USER,
-            to: order.customerEmail, // Customer ki email yahan aayegi
+            to: customerEmail,
             subject: 'Delivery Verification OTP',
-            text: `Your delivery OTP for Order ID ${order._id} is: ${otp}. Provide this to the delivery boy to complete the order.`
+            text: `Your delivery OTP for Order ID ${order._id.toString().slice(-6)} is: ${otp}. Provide this to the delivery boy to complete the order.`
         });
 
         res.status(200).json({ message: "Delivery OTP sent to customer email successfully" });
     } catch (error) {
+        console.error("Error sending delivery OTP:", error);
         res.status(500).json({ message: "Failed to send delivery OTP", error: error.message });
     }
 };

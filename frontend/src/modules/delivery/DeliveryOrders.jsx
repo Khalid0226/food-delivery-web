@@ -5,10 +5,13 @@ import API from '../../services/axiosInstance';
 
 export default function DeliveryOrders() {
     const [orders, setOrders] = useState([]);
-
     const [filter, setFilter] = useState('All');
+    const [loading, setLoading] = useState(true);
 
-    const [loading, setLoading] = useState(true)
+    // 👇 Naye States OTP aur Modal ke liye
+    const [selectedOrderForOtp, setSelectedOrderForOtp] = useState(null);
+    const [deliveryOtp, setDeliveryOtp] = useState('');
+    const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
 
     const storedUser = JSON.parse(localStorage.getItem('user'));
     const deliveryBoyId = storedUser?._id;
@@ -32,11 +35,56 @@ export default function DeliveryOrders() {
         }
     }, [deliveryBoyId])
 
+    // 👇 Naya Function: "Mark Delivered" click hone par OTP send karega aur modal kholega
+    const handleOpenOtpModal = async (orderId) => {
+        try {
+            const response = await API.post(`/delivery/send-delivery-otp/${orderId}`, {});
+            alert(`🚀 ${response.data.message || 'OTP sent successfully to customer'}`);
+            setSelectedOrderForOtp(orderId);
+            setIsOtpModalOpen(true);
+        } catch (error) {
+            console.error('Failed to send delivery OTP', error);
+            alert(error.response?.data?.message || 'Could not send delivery OTP');
+        }
+    };
+
+    // 👇 Naya Function: Modal ke andar OTP verify karke order complete karega
+    const handleVerifyAndComplete = async (e) => {
+        e.preventDefault();
+        if (!deliveryOtp || deliveryOtp.length !== 6) {
+            alert('Please enter a valid 6-digit OTP');
+            return;
+        }
+
+        try {
+            const response = await API.post('/delivery/verify-delivery-otp', {
+                orderId: selectedOrderForOtp,
+                otp: deliveryOtp
+            });
+
+            if (response.status === 200) {
+                setOrders(prevOrders =>
+                    prevOrders.map(order =>
+                        order._id === selectedOrderForOtp 
+                            ? { ...order, status: 'Completed', isPaid: true } 
+                            : order
+                    )
+                );
+                alert(`🎉 ${response.data.message}`);
+                setIsOtpModalOpen(false);
+                setDeliveryOtp('');
+                setSelectedOrderForOtp(null);
+                fetchAssignedOrders();
+            }
+        } catch (error) {
+            console.error('Failed to verify OTP', error);
+            alert(error.response?.data?.message || 'Invalid or Expired Delivery OTP');
+        }
+    };
 
     const handleUpdateStatus = async (orderId, newStatus) => {
         try {
             let endpoint = '';
-            // Yahan payload me deliveryBoyId bhi add kar di hai
             let payload = { 
                 orderId, 
                 deliveryBoyId 
@@ -46,8 +94,6 @@ export default function DeliveryOrders() {
                 endpoint = '/delivery/accept-order';
             } else if (newStatus === 'In Transit') {
                 endpoint = '/delivery/in-transit';
-            } else if (newStatus === 'Completed') {
-                endpoint = '/delivery/complete-order';
             }
 
             const response = await API.patch(endpoint, payload);
@@ -55,7 +101,7 @@ export default function DeliveryOrders() {
             if (response.status === 200) {
                 setOrders(prevOrders =>
                     prevOrders.map(order =>
-                        order._id === orderId ? { ...order, status: newStatus, isPaid: newStatus === 'Completed' ? true : order.isPaid } : order
+                        order._id === orderId ? { ...order, status: newStatus } : order
                     )
                 );
                 alert(`Order status updated to: ${newStatus} 🚀`);
@@ -65,7 +111,6 @@ export default function DeliveryOrders() {
             alert(error.response?.data?.message || 'Could not update order status');
         }
     };
-
 
     const filteredOrders = filter === 'All'
     ? orders
@@ -166,8 +211,6 @@ export default function DeliveryOrders() {
                                         <FiPhone className="flex-shrink-0" size={15} />
                                         <span className="font-black truncate">{order.mobile}</span>
                                     </a>
-
-
                                 </div>
 
                                 <div className="bg-slate-50 p-3 sm:p-4 rounded-xl border border-slate-100">
@@ -208,7 +251,7 @@ export default function DeliveryOrders() {
 
                                     {order.status === 'In Transit' && (
                                         <button
-                                            onClick={() => handleUpdateStatus(order._id, 'Completed')}
+                                            onClick={() => handleOpenOtpModal(order._id)} // 👈 Updated to trigger OTP Modal
                                             className="w-full xs:w-auto bg-green-600 hover:bg-green-700 text-white font-black text-xs px-4 py-2.5 rounded-xl transition-all uppercase tracking-wider cursor-pointer shadow-sm flex items-center justify-center gap-1.5"
                                         >
                                             <FiCheck size={14} /> Mark Delivered
@@ -227,6 +270,46 @@ export default function DeliveryOrders() {
                     ))
                 )}
             </div>
+
+            {/* 👇 OTP Verification Modal Popup */}
+            {isOtpModalOpen && (
+                <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex justify-center items-center z-50 px-4">
+                    <div className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-sm border border-slate-100">
+                        <h3 className="text-lg font-black text-slate-900 mb-2">Verify Delivery OTP</h3>
+                        <p className="text-xs text-slate-500 mb-4">
+                            Enter the 6-digit OTP sent to the customer's email to complete this order.
+                        </p>
+
+                        <form onSubmit={handleVerifyAndComplete} className="space-y-4">
+                            <input
+                                type="text"
+                                maxLength="6"
+                                value={deliveryOtp}
+                                onChange={(e) => setDeliveryOtp(e.target.value.replace(/\D/g, ''))}
+                                placeholder="••••••"
+                                className="w-full text-center tracking-[0.5em] text-lg font-bold px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:border-emerald-500 focus:bg-white outline-none"
+                            />
+
+                            <div className="flex space-x-2">
+                                <button
+                                    type="button"
+                                    onClick={() => { setIsOtpModalOpen(false); setDeliveryOtp(''); }}
+                                    className="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs py-3 rounded-xl transition-all cursor-pointer"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="w-1/2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-3 rounded-xl transition-all cursor-pointer"
+                                >
+                                    Verify & Complete
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 }
