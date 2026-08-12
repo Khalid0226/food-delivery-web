@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FiPackage, FiCheckCircle, FiDollarSign, FiClock, FiMapPin, FiPhone, FiCheck, FiCreditCard } from 'react-icons/fi';
+import { FiPackage, FiCheckCircle, FiDollarSign, FiClock, FiMapPin, FiPhone, FiCheck, FiCreditCard, FiX, FiShield, FiMail } from 'react-icons/fi';
 import API from '../../services/axiosInstance';
-
 
 export default function DeliveryDashboard() {
     const [stats, setStats] = useState({
@@ -13,12 +12,15 @@ export default function DeliveryDashboard() {
 
     const [isOnline, setIsOnline] = useState(false);
     const [availableOrders, setAvailableOrders] = useState([]);
-
     const [activeOrder, setActiveOrder] = useState(null);
+
+    // --- OTP States ---
+    const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
+    const [deliveryOtp, setDeliveryOtp] = useState('');
+    const [selectedOrderForOtp, setSelectedOrderForOtp] = useState(null);
 
     const fetchDashboardData = async () => {
         try {
-
             const storedUser = JSON.parse(localStorage.getItem('user'));
             const userId = storedUser?._id;
 
@@ -54,12 +56,10 @@ export default function DeliveryDashboard() {
             const response = await API.patch('/delivery/update-status', {
                 userId,
                 isOnline: newStatus
-
             })
 
             if (response.status === 200) {
                 setIsOnline(newStatus)
-
                 fetchDashboardData()
             }
         } catch (error) {
@@ -96,36 +96,56 @@ export default function DeliveryDashboard() {
         }
     };
 
-    // Order Deliver (Complete) karne ka function
-    // Order Deliver (Complete) karne ka updated function
-    const handleCompleteOrder = async () => {
+    // --- 1. Step 1: Send OTP API Call (Mark as Delivered button click par chalega) ---
+    const handleOpenOtpModal = async (orderId) => {
         try {
-            if (!activeOrder || !activeOrder._id) {
-                return
+            const response = await API.post(`/delivery/send-delivery-otp/${orderId}`);
+            if (response.status === 200) {
+                setSelectedOrderForOtp(orderId);
+                setDeliveryOtp('');
+                setIsOtpModalOpen(true);
+                alert("6-digit OTP sent to customer's email address! 📧");
+            }
+        } catch (error) {
+            console.error('Failed to send OTP', error);
+            alert(error.response?.data?.message || 'Could not send OTP');
+        }
+    };
+
+    // --- 2. Step 2: Verify OTP & Complete Order API Call ---
+    const handleVerifyAndComplete = async () => {
+        try {
+            if (!deliveryOtp || deliveryOtp.length < 6) {
+                alert('Please enter a valid 6-digit OTP');
+                return;
             }
 
             const storedUser = JSON.parse(localStorage.getItem('user'));
             const deliveryBoyId = storedUser?._id;
 
-            const response = await API.patch("/delivery/complete-order", {
-                orderId: activeOrder._id,
-                deliveryBoyId // Backend ko track karne ke liye ID bhej di
-            })
+            const response = await API.post("/delivery/verify-delivery-otp", {
+                orderId: selectedOrderForOtp,
+                otp: deliveryOtp,
+                deliveryBoyId
+            });
 
             if (response.status === 200) {
-                alert('Order delivered successfully! 🎉');
-                setActiveOrder(null)
+                alert('Order verified & delivered successfully! 🎉');
+                setIsOtpModalOpen(false);
+                setActiveOrder(null);
+                setSelectedOrderForOtp(null);
+                setDeliveryOtp('');
                 setStats((prev) => ({
                     ...prev,
                     totalDeliveries: prev.totalDeliveries + 1,
                     todayEarnings: prev.todayEarnings + 50
-                }))
+                }));
             }
         } catch (error) {
-            console.error('Failed to complete order', error);
-            alert(error.response?.data?.message || 'Could not complete order on server');
+            console.error('Failed to verify OTP', error);
+            alert(error.response?.data?.message || 'Invalid OTP or failed to complete order');
         }
-    }
+    };
 
     return (
         <div className="space-y-6">
@@ -149,8 +169,7 @@ export default function DeliveryDashboard() {
                     </span>
                     <button
                         onClick={handleToggleOnline}
-                        className={`ml-2 px-3 py-1 text-[11px] font-black rounded-lg transition-all ${isOnline ? 'bg-red-100 text-red-600 hover:bg-red-200' : 'bg-green-100 text-green-700 hover:bg-green-200'
-                            }`}
+                        className={`ml-2 px-3 py-1 text-[11px] font-black rounded-lg transition-all ${isOnline ? 'bg-red-100 text-red-600 hover:bg-red-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}
                     >
                         {isOnline ? 'Go Offline' : 'Go Online'}
                     </button>
@@ -214,7 +233,7 @@ export default function DeliveryDashboard() {
                     </div>
 
                     <button
-                        onClick={handleCompleteOrder}
+                        onClick={() => handleOpenOtpModal(activeOrder._id)}
                         className="w-full bg-white text-slate-900 font-black text-sm py-3 rounded-xl shadow hover:bg-slate-100 transition-all uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer"
                     >
                         <FiCheck size={16} /> Mark as Delivered
@@ -269,6 +288,45 @@ export default function DeliveryDashboard() {
                     </div>
                 )}
             </div>
+
+            {/* --- Email OTP Verification Modal Popup (6-Digit) --- */}
+            {isOtpModalOpen && (
+                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 animate-in fade-in zoom-in duration-200">
+                        <div className="flex justify-between items-center mb-4">
+                            <div className="flex items-center gap-2 text-amber-600">
+                                <FiMail size={20} />
+                                <h3 className="text-base font-black text-slate-900">Email OTP Verification</h3>
+                            </div>
+                            <button 
+                                onClick={() => setIsOtpModalOpen(false)}
+                                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-all cursor-pointer"
+                            >
+                                <FiX size={18} />
+                            </button>
+                        </div>
+                        <p className="text-xs text-slate-500 font-medium mb-4">
+                            Please ask the customer for the <span className="font-bold text-slate-700">6-digit verification OTP</span> sent to their email address.
+                        </p>
+                        <div className="space-y-4">
+                            <input
+                                type="text"
+                                maxLength="6"
+                                placeholder="Enter 6-digit OTP"
+                                value={deliveryOtp}
+                                onChange={(e) => setDeliveryOtp(e.target.value)}
+                                className="w-full text-center text-2xl font-black tracking-widest py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 bg-slate-50"
+                            />
+                            <button
+                                onClick={handleVerifyAndComplete}
+                                className="w-full bg-amber-500 hover:bg-amber-600 text-white font-black text-xs py-3 rounded-xl uppercase tracking-wider transition-all shadow-md shadow-amber-500/25 cursor-pointer"
+                            >
+                                Verify & Complete Delivery 🚀
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
         </div>
     );
