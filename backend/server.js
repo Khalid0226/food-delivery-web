@@ -1,6 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-import mongoose from 'mongoose'
+import mongoose, { mongo } from 'mongoose'
 import customerRouter from './routes/CustomerRoute.js'
 
 import menuRouter from './routes/MenuRoute.js'
@@ -11,6 +11,7 @@ import adminRouter from './routes/AdminRoutes.js'
 import deliveryRouter from './routes/DeliveryDashboardRoutes.js'
 import paymentRouter from './routes/paymentRoute.js'
 
+import connectDB from './config/db.js'
 import 'dotenv/config';
 
 
@@ -37,15 +38,10 @@ app.use('/api/delivery',deliveryRouter)
 
 app.use('/api/payment',paymentRouter)
 
-try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log("DB connected Successfully!!");
-}
-catch (err){
-    console.log(err);
-}
+connectDB()
 
-app.listen(2500, () => {
+const PORT = process.env.PORT
+app.listen(PORT , () => {
     console.log("server running");
 
 })
