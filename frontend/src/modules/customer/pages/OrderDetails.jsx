@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FiCheckCircle, FiPhone, FiArrowLeft, FiPackage } from 'react-icons/fi';
+import { FiCheckCircle, FiPhone, FiArrowLeft, FiPackage, FiUser } from 'react-icons/fi';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import API from '../../../services/axiosInstance';
@@ -12,7 +12,7 @@ export default function OrderDetails() {
 
   const fetchOrderDetail = async () => {
     try {
-     const response = await API.get(`/user-order/${orderId}`);
+      const response = await API.get(`/user-order/${orderId}`);
       if (response.data.message === 'success!!') {
         setOrder(response.data.order);
       }
@@ -30,10 +30,24 @@ export default function OrderDetails() {
   if (loading) return <div className="text-center py-20">Loading Order Details...</div>;
   if (!order) return <div className="text-center py-20">Order not found!</div>;
 
-  // Improved Progress logic (Case insensitive and handles 'Completed')
+  // Check if deliveryBoy is an object (populated) or just an ID string
+  const deliveryBoy = order.deliveryBoy;
+  const isDeliveryBoyPopulated = deliveryBoy && typeof deliveryBoy === 'object';
+
+  // Helper function to get initials
+  const getInitials = (name) => {
+    if (!name) return 'DP';
+    const parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+  };
+
+  // Improved Progress logic
   const getStepIndex = (status) => {
     const s = status ? status.toLowerCase() : "";
-    if (s.includes('placed')) return 0;
+    if (s.includes('placed') || s.includes('pending')) return 0;
     if (s.includes('preparing')) return 1;
     if (s.includes('transit')) return 2;
     if (s.includes('delivered') || s.includes('completed')) return 3;
@@ -46,7 +60,7 @@ export default function OrderDetails() {
   return (
     <div className="min-h-screen bg-slate-50/50 py-8 px-4 md:px-8">
       <div className="max-w-5xl mx-auto">
-        
+
         {/* Back Navigation */}
         <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-slate-500 font-bold hover:text-orange-600 transition mb-6">
           <FiArrowLeft /> Back to Orders
@@ -67,7 +81,7 @@ export default function OrderDetails() {
           <div className="relative flex justify-between items-center px-2">
             <div className="absolute top-1/2 left-0 w-full h-1 bg-slate-100 -z-0"></div>
             <div className="absolute top-1/2 left-0 h-1 bg-emerald-500 z-0 transition-all duration-700" style={{ width: `${(currentStepIndex / (steps.length - 1)) * 100}%` }}></div>
-            
+
             {steps.map((step, i) => (
               <div key={step} className="flex flex-col items-center gap-4 relative z-10">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center border-4 border-white transition-all duration-300 ${i <= currentStepIndex ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200' : 'bg-slate-200 text-slate-400'}`}>
@@ -83,7 +97,7 @@ export default function OrderDetails() {
 
         {/* 2. Main Layout */}
         <div className="grid md:grid-cols-3 gap-6">
-          
+
           {/* Left: Order Items */}
           <div className="md:col-span-2 bg-white p-8 rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
             <h4 className="font-black text-slate-900 mb-6 flex items-center justify-between">
@@ -108,7 +122,7 @@ export default function OrderDetails() {
             </div>
             {/* Total Amount Added */}
             <div className="mt-6 pt-6 border-t border-slate-100 text-right">
-                <p className="text-lg font-black text-slate-900">Total: ₹{order.totalAmount}</p>
+              <p className="text-lg font-black text-slate-900">Total: ₹{order.totalAmount}</p>
             </div>
           </div>
 
@@ -116,16 +130,39 @@ export default function OrderDetails() {
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
               <h4 className="font-black text-slate-900 mb-6 text-sm">Delivery Partner</h4>
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600 font-black text-xl">RK</div>
-                <div>
-                  <p className="font-black text-sm text-slate-900">Rahul Kumar</p>
-                  <p className="text-[10px] text-emerald-600 font-black uppercase tracking-widest bg-emerald-50 px-2 py-0.5 rounded inline-block">Verified</p>
+
+              {isDeliveryBoyPopulated ? (
+                <>
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600 font-black text-xl">
+                      {getInitials(deliveryBoy.fullName || deliveryBoy.name)}
+                    </div>
+                    <div>
+                      <p className="font-black text-sm text-slate-900">{deliveryBoy.fullName || deliveryBoy.name || 'Delivery Partner'}</p>
+                      <p className="text-[10px] text-emerald-600 font-black uppercase tracking-widest bg-emerald-50 px-2 py-0.5 rounded inline-block">Assigned</p>
+                    </div>
+                  </div>
+                  {(deliveryBoy.phone || deliveryBoy.mobile) && (
+                    <a
+                      href={`tel:${deliveryBoy.phone || deliveryBoy.mobile}`}
+                      className="w-full py-3.5 bg-slate-900 text-white font-black rounded-2xl text-sm hover:bg-black transition-all flex items-center justify-center gap-2"
+                    >
+                      <FiPhone size={16} /> Call Partner ({deliveryBoy.phone || deliveryBoy.mobile})
+                    </a>
+                  )}
+                </>
+              ) : deliveryBoy ? (
+                // Agar sirf ID string aayi hai aur backend populate nahi hai
+                <div className="text-center py-4 bg-slate-50 rounded-2xl">
+                  <p className="font-black text-xs text-slate-700 mb-1">Partner Assigned</p>
+                  <p className="text-[10px] text-slate-400">ID: {deliveryBoy.slice(-6)}</p>
                 </div>
-              </div>
-              <button className="w-full py-3.5 bg-slate-900 text-white font-black rounded-2xl text-sm hover:bg-black transition-all flex items-center justify-center gap-2">
-                <FiPhone size={16} /> Call Partner
-              </button>
+              ) : (
+                <div className="text-center py-6 text-slate-400 font-bold text-xs bg-slate-50 rounded-2xl">
+                  <FiUser size={24} className="mx-auto mb-2 opacity-50" />
+                  Delivery partner will be assigned soon.
+                </div>
+              )}
             </div>
 
             <button className="w-full py-4 text-xs font-black text-red-500 border-2 border-red-100 rounded-3xl hover:bg-red-50 transition-all uppercase tracking-widest">

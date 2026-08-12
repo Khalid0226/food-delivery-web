@@ -84,7 +84,9 @@ export const userOrder = async (req,res) => {
 
 export const getUserOrderById = async (req,res) => {
     try {
-        const order = await orderModel.findById(req.params.orderId)
+        const order = await orderModel.findById(req.params.orderId).populate('deliveryBoy')
+        // console.log(order);
+        
         if (!order) {
             res.status(404).json({
                 message:'order not found!!'
