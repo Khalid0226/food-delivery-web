@@ -1,6 +1,7 @@
 import orderModel from "../models/Order.js";
 import userModel from "../models/User.js";
 import nodemailer from 'nodemailer'
+import axios from 'axios'
 
 export const deliveryDashboardData = async (req, res) => {
     try {
@@ -140,7 +141,7 @@ export const updateTOInTransit = async (req, res) => {
 export const completeOrder = async (req, res) => {
     try {
         const { orderId, deliveryBoyId } = req.body;
-
+        
         const updateOrder = await orderModel.findByIdAndUpdate(
             orderId,
             {
@@ -261,31 +262,27 @@ export const sendDeliveryOtp = async (req, res) => {
         order.deliveryOtpExpire = Date.now() + 10 * 60 * 1000;
         await order.save();
 
-        const transporter = nodemailer.createTransport({
-            host: 'smtp-relay.brevo.com',
-            port: 587,
-            secure: false,
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
-            },
-            tls: {
-                rejectUnauthorized: false
-            }
-        });
-
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: customerEmail,
+        // Send Delivery OTP Email via Brevo HTTP API (Fast & Non-blocking)
+        axios.post('https://api.brevo.com/v3/smtp/email', {
+            sender: { email: process.env.EMAIL_USER, name: "Food Delivery App" },
+            to: [{ email: customerEmail }],
             subject: 'Delivery Verification OTP',
-            text: `Your delivery OTP for Order ID ${order._id.toString().slice(-6)} is: ${otp}. Provide this to the delivery boy to complete the order.`
+            textContent: `Your delivery OTP for Order ID ${order._id.toString().slice(-6)} is: ${otp}. Provide this to the delivery boy to complete the order.`
+        }, {
+            headers: {
+                'api-key': process.env.EMAIL_PASS,
+                'content-type': 'application/json'
+            },
+            timeout: 10000
+        }).catch(emailError => {
+            console.error("Email sending failed in background:", emailError.response?.data || emailError.message);
         });
 
-        res.status(200).json({ message: "Delivery OTP sent to customer email successfully" });
+        return res.status(200).json({ message: "Delivery OTP sent to customer email successfully" });
+
     } catch (error) {
         console.error("Error sending delivery OTP:", error);
-        // Agar Render par SMTP block ho, toh kam se kam server crash na ho aur testing ke liye OTP response mein bhej dein (Optional)
-        res.status(500).json({ message: "Failed to send delivery OTP via email", error: error.message });
+        return res.status(500).json({ message: "Failed to send delivery OTP via email", error: error.message });
     }
 };
 

@@ -2,6 +2,7 @@ import orderModel from "../models/Order.js";
 import userModel from "../models/User.js";
 import mongoose from "mongoose";
 import nodemailer from 'nodemailer'
+import axios from 'axios';
 
 export const order = async (req, res) => {
     try {
@@ -184,7 +185,7 @@ export const createOrder = async (req, res) => {
 
         const savedOrder = await newOrder.save();
 
-        // 3. Generate Items HTML for Invoice (Fallback add kiya hai 'name' ya 'title' ke liye)
+        // 3. Generate Items HTML for Invoice
         let itemsHTML = '';
         if (items && items.length > 0) {
             itemsHTML = items.map(item => `
@@ -196,59 +197,51 @@ export const createOrder = async (req, res) => {
             `).join('');
         }
 
-        // 4. Send Invoice Email via Nodemailer (Updated with secure host/port for Render)
-        try {
-            const transporter = nodemailer.createTransport({
-                host: 'smtp-relay.brevo.com',
-                port: 587,
-                secure: false,
-                auth: {
-                    user: process.env.EMAIL_USER,
-                    pass: process.env.EMAIL_PASS
-                },
-                tls: {
-                    rejectUnauthorized: false
-                }
-            });
-
-            const invoiceHTML = `
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 8px; background-color: #f9f9f9;">
-                    <h2 style="color: #16a34a; text-align: center;">Order Placed Successfully! 🎉</h2>
-                    <p>Hello <b>${fullName}</b>,</p>
-                    <p>Thank you for your order. Here are your invoice details:</p>
-                    
-                    <div style="background: #fff; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #e0e0e0;">
-                        <p><b>Order ID:</b> ${savedOrder._id}</p>
-                        <p><b>Delivery Address:</b> ${address}, ${city} - ${pincode}</p>
-                        <p><b>Payment Method:</b> ${paymentMethod || 'COD'}</p>
-                    </div>
-
-                    <table style="width: 100%; border-collapse: collapse; background: #fff; border-radius: 6px; overflow: hidden; border: 1px solid #e0e0e0;">
-                        <thead>
-                            <tr style="background-color: #f2f2f2;">
-                                <th style="padding: 10px; text-align: left;">Item</th>
-                                <th style="padding: 10px; text-align: center;">Qty</th>
-                                <th style="padding: 10px; text-align: right;">Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${itemsHTML}
-                        </tbody>
-                    </table>
-
-                    <h3 style="text-align: right; color: #111; margin-top: 15px;">Total Amount: ₹${totalAmount}</h3>
+        // 4. Send Invoice Email via Brevo HTTP API (Fast & Non-blocking)
+        const invoiceHTML = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 8px; background-color: #f9f9f9;">
+                <h2 style="color: #16a34a; text-align: center;">Order Placed Successfully! 🎉</h2>
+                <p>Hello <b>${fullName}</b>,</p>
+                <p>Thank you for your order. Here are your invoice details:</p>
+                
+                <div style="background: #fff; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #e0e0e0;">
+                    <p><b>Order ID:</b> ${savedOrder._id}</p>
+                    <p><b>Delivery Address:</b> ${address}, ${city} - ${pincode}</p>
+                    <p><b>Payment Method:</b> ${paymentMethod || 'COD'}</p>
                 </div>
-            `;
 
-            await transporter.sendMail({
-                from: process.env.EMAIL_USER,
-                to: email,
-                subject: `Invoice: Order #${savedOrder._id.toString().slice(-6)} Placed Successfully`,
-                html: invoiceHTML
-            });
-        } catch (emailError) {
-            console.error("Email sending failed, but order was saved:", emailError.message);
-        }
+                <table style="width: 100%; border-collapse: collapse; background: #fff; border-radius: 6px; overflow: hidden; border: 1px solid #e0e0e0;">
+                    <thead>
+                        <tr style="background-color: #f2f2f2;">
+                            <th style="padding: 10px; text-align: left;">Item</th>
+                            <th style="padding: 10px; text-align: center;">Qty</th>
+                            <th style="padding: 10px; text-align: right;">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${itemsHTML}
+                    </tbody>
+                </table>
+
+                <h3 style="text-align: right; color: #111; margin-top: 15px;">Total Amount: ₹${totalAmount}</h3>
+            </div>
+        `;
+
+        // Background mein API call trigger kar rahe hain taaki user ko wait na karna pade
+        axios.post('https://api.brevo.com/v3/smtp/email', {
+            sender: { email: process.env.EMAIL_USER, name: "Food Delivery App" },
+            to: [{ email: email }],
+            subject: `Invoice: Order #${savedOrder._id.toString().slice(-6)} Placed Successfully`,
+            htmlContent: invoiceHTML
+        }, {
+            headers: {
+                'api-key': process.env.EMAIL_PASS,
+                'content-type': 'application/json'
+            },
+            timeout: 10000
+        }).catch(emailError => {
+            console.error("Email sending failed in background:", emailError.response?.data || emailError.message);
+        });
 
         return res.status(201).json({
             success: true,

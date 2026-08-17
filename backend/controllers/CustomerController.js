@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose'; // import zaroor karein
 import orderModel from "../models/Order.js";
 import nodemailer from 'nodemailer'
+import axios from 'axios'
 
 export const register = async (req, res) => {
     try {
@@ -148,53 +149,50 @@ export const getCustomerById = async (req, res) => {
 
 export const forgotPassword = async (req, res) => {
     try {
-        const { email } = req.body
+        const { email } = req.body;
 
-        const user = await userModel.findOne({ email })
+        const user = await userModel.findOne({ email });
 
         if (!user) {
             return res.status(404).json({
                 message: 'user Not Found!!'
-            })
+            });
         }
 
-        const otp = Math.floor(100000 + Math.random() * 900000).toString()
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-        user.resetPasswordOtp = otp
-        user.resetPasswordExpire = Date.now() + 10 * 60 * 1000
-        await user.save()
+        user.resetPasswordOtp = otp;
+        user.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+        await user.save();
 
-        const transporter = nodemailer.createTransport({
-            host: 'smtp-relay.brevo.com',
-            port: 587,
-            secure: false,
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
-            },
-            tls: {
-                rejectUnauthorized: false
-            }
-        })
-
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: user.email,
+        // Send OTP Email via Brevo HTTP API (Fast & Non-blocking)
+        axios.post('https://api.brevo.com/v3/smtp/email', {
+            sender: { email: process.env.EMAIL_USER, name: "Food Delivery App" },
+            to: [{ email: user.email }],
             subject: 'Password Reset OTP',
-            text: `Your OTP for password reset is: ${otp}. It is valid for 10 minutes.`
-        })
+            textContent: `Your OTP for password reset is: ${otp}. It is valid for 10 minutes.`
+        }, {
+            headers: {
+                'api-key': process.env.EMAIL_PASS,
+                'content-type': 'application/json'
+            },
+            timeout: 10000
+        }).catch(emailError => {
+            console.error("Email sending failed in background:", emailError.response?.data || emailError.message);
+        });
 
-        res.status(200).json({
+        return res.status(200).json({
             message: "OTP sent to your email successfully"
         });
+
     } catch (error) {
         console.error("Error in forgotPassword:", error);
-        res.status(500).json({
+        return res.status(500).json({
             message: 'failed to send otp',
             error: error.message
-        })
+        });
     }
-}
+};
 
 
 export const verifyOtp = async (req, res) => {
