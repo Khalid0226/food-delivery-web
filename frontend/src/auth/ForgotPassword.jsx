@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
+import API from '../services/axiosInstance';
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ export default function ForgotPassword() {
       setErrors({});
       try {
         // Backend API Call to send OTP
-        const response = await axios.post('http://localhost:2500/api/auth/forgot-password', { email });
+        const response = await API.post('/auth/forgot-password', { email });
         
         alert(`🚀 Success: ${response.data.message}`);
         setStep(2); // Move to OTP & Reset step
@@ -73,7 +74,7 @@ export default function ForgotPassword() {
       setErrors({});
       try {
         // Backend API Call to Reset Password (using combined reset-password endpoint)
-        const response = await axios.post('http://localhost:2500/api/auth/reset-password', {
+        const response = await API.post('/auth/reset-password', {
           email,
           otp,
           newPassword

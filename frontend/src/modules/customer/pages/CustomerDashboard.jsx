@@ -89,7 +89,7 @@ export default function CustomerDashboard() {
                                                 <div key={item._id} onClick={() => navigate(`/product/${item._id}`)} className="bg-white border border-slate-200/80 rounded-2xl p-3 md:p-4 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group relative cursor-pointer">
                                                     <div>
                                                         <div className="w-full aspect-square bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-center group-hover:scale-105 transition-transform overflow-hidden relative select-none mb-3">
-                                                            <img src={`http://localhost:2500/uploads/${item.image}`} alt={item.name} className="w-full h-full object-cover" />
+                                                            <img src={`https://food-delivery-web-wsx1.onrender.com/uploads/${item.image}`} alt={item.name} className="w-full h-full object-cover" />
                                                         </div>
                                                         <div className="space-y-1">
                                                             <div className="flex items-center justify-between gap-1">

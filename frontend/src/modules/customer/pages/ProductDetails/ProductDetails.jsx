@@ -72,7 +72,7 @@ export default function ProductDetails() {
                         <div className="relative group">
                             <div className="aspect-square bg-slate-100 rounded-2xl overflow-hidden flex items-center justify-center p-4">
                                 <img
-                                    src={`http://localhost:2500/uploads/${product.image}`}
+                                    src={`https://food-delivery-web-wsx1.onrender.com/uploads/${product.image}`}
                                     alt={product.name}
                                     className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700"
                                 />

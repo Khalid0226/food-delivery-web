@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
+import API from '../services/axiosInstance';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -76,7 +77,7 @@ export default function Register() {
       const dataToSend = {...formData, role:'customer'};
 
       try{
-        const response = await axios.post('http://localhost:2500/api/auth/register',
+        const response = await API.post('/auth/register',
           dataToSend
         )
 

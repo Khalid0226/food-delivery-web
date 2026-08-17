@@ -27,19 +27,6 @@ export default function AddItem() {
         setImageFile(file);
     };
 
-    // const handleSubmit = async(e) =>{
-    //     e.preventDefault()
-    //     setLoading(true)
-    //     try {
-    //         const response = await axios.post('http://localhost:2500/api/menu/add-item',formData)
-    //         alert('item added successfully!!')
-    //         navigate('/admin/view-item')
-    //     } catch (error) {
-    //         console.error(error);
-    //         alert('failed to add items')
-    //     }
-    //     setLoading(false)
-    // }
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);

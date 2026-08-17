@@ -110,7 +110,7 @@ export default function ManageItems() {
                                     <tr key={item._id} className="group hover:bg-slate-50/80 transition-colors">
                                         <td className="px-8 py-5">
                                             <div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden shadow-inner">
-                                                <img src={`http://localhost:2500/uploads/${item.image}`} alt={item.name} className="w-full h-full object-cover" />
+                                                <img src={`http://food-delivery-web-wsx1.onrender.com/uploads/${item.image}`} alt={item.name} className="w-full h-full object-cover" />
                                             </div>
                                         </td>
                                         <td className="px-4 py-5">
