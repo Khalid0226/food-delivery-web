@@ -26,7 +26,8 @@ export const createRazorpayOrder = async (req, res) => {
         
         res.status(200).json({
             success: true,
-            order
+            order,
+            keyId: process.env.RAZORPAY_KEY_ID // <--- Yeh line zaroor add karein
         });
     } catch (error) {
         console.error("Razorpay Order Error:", error);

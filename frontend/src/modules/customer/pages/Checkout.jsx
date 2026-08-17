@@ -90,7 +90,7 @@ export default function Checkout() {
                 const razorpayOrder = data.order;
 
                 const options = {
-                    key: "rzp_test_TLaEIqV55ylhh4",
+                    key: data.keyId, // <--- Backend se aane wali active key yahan dynamic set ho gayi hai
                     amount: razorpayOrder.amount,
                     currency: "INR",
                     name: "Diamond Fry Center",
