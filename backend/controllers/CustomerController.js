@@ -149,7 +149,6 @@ export const getCustomerById = async (req, res) => {
 export const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body
-        // console.log(email);
         
         const user = await userModel.findOne({ email })
 
@@ -165,11 +164,16 @@ export const forgotPassword = async (req, res) => {
         user.resetPasswordExpire = Date.now() + 10 * 60 * 1000
         await user.save()
 
-        const transporter = await nodemailer.createTransport({
-            service: 'gmail',
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true, // true for port 465
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS
+            },
+            tls: {
+                rejectUnauthorized: false
             }
         })
 
@@ -184,12 +188,13 @@ export const forgotPassword = async (req, res) => {
             message: "OTP sent to your email successfully"
         });
     } catch (error) {
+        console.error("Error in forgotPassword:", error);
         res.status(500).json({
-            message:'failed to send otp',
-            error:error.message
+            message: 'failed to send otp',
+            error: error.message
         })
     }
-}   
+}  
 
 
 export const verifyOtp = async (req,res) => {

@@ -196,13 +196,18 @@ export const createOrder = async (req, res) => {
             `).join('');
         }
 
-        // 4. Send Invoice Email via Nodemailer
+        // 4. Send Invoice Email via Nodemailer (Updated with secure host/port for Render)
         try {
             const transporter = nodemailer.createTransport({
-                service: 'gmail',
+                host: 'smtp.gmail.com',
+                port: 465,
+                secure: true,
                 auth: {
                     user: process.env.EMAIL_USER,
                     pass: process.env.EMAIL_PASS
+                },
+                tls: {
+                    rejectUnauthorized: false
                 }
             });
 

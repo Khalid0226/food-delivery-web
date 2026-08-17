@@ -246,15 +246,11 @@ export const getDeliveryHistory = async (req, res) => {
 export const sendDeliveryOtp = async (req, res) => {
     try {
         const { orderId } = req.params;
-        
-        // 👇 Yahan se .populate('userId') hata diya hai kyunki schema mein email direct field hai
         const order = await orderModel.findById(orderId);
 
         if (!order) return res.status(404).json({ message: "Order not found" });
 
-        // 👇 Direct schema ka email field use kar rahe hain
         const customerEmail = order.email;
-
         if (!customerEmail) {
             return res.status(400).json({ message: "Customer email not found for this order" });
         }
@@ -262,14 +258,19 @@ export const sendDeliveryOtp = async (req, res) => {
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         
         order.deliveryOtp = otp;
-        order.deliveryOtpExpire = Date.now() + 10 * 60 * 1000; // 10 mins expiry
+        order.deliveryOtpExpire = Date.now() + 10 * 60 * 1000; 
         await order.save();
 
         const transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true, // true for 465, false for other ports
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS  
+            },
+            tls: {
+                rejectUnauthorized: false
             }
         });
 
@@ -283,7 +284,8 @@ export const sendDeliveryOtp = async (req, res) => {
         res.status(200).json({ message: "Delivery OTP sent to customer email successfully" });
     } catch (error) {
         console.error("Error sending delivery OTP:", error);
-        res.status(500).json({ message: "Failed to send delivery OTP", error: error.message });
+        // Agar Render par SMTP block ho, toh kam se kam server crash na ho aur testing ke liye OTP response mein bhej dein (Optional)
+        res.status(500).json({ message: "Failed to send delivery OTP via email", error: error.message });
     }
 };
 
