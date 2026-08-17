@@ -149,7 +149,7 @@ export const getCustomerById = async (req, res) => {
 export const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body
-        
+
         const user = await userModel.findOne({ email })
 
         if (!user) {
@@ -165,9 +165,9 @@ export const forgotPassword = async (req, res) => {
         await user.save()
 
         const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 465,
-            secure: true, // true for port 465
+            host: 'smtp-relay.brevo.com',
+            port: 587,
+            secure: false,
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS
@@ -194,44 +194,44 @@ export const forgotPassword = async (req, res) => {
             error: error.message
         })
     }
-}  
+}
 
 
-export const verifyOtp = async (req,res) => {
+export const verifyOtp = async (req, res) => {
     try {
-        const{email,otp} = req.body
+        const { email, otp } = req.body
 
-        const user = await userModel.findOne({email})
+        const user = await userModel.findOne({ email })
 
         if (!user || user.resetPasswordOtp !== otp || user.resetPasswordExpire < Date.now()) {
             return res.status(404).json({
-                message:'Invalid or Expired OTP'
+                message: 'Invalid or Expired OTP'
             })
         }
 
         res.status(200).json({ message: "OTP verified successfully" });
     } catch (error) {
         res.status(500).json({
-            message:'Server error',
-            error:error.message
-        })   
+            message: 'Server error',
+            error: error.message
+        })
     }
-} 
+}
 
-export const resetPassword = async (req,res) => {
+export const resetPassword = async (req, res) => {
     try {
-        const{email,otp,newPassword}  = req.body
+        const { email, otp, newPassword } = req.body
 
-        const user = await userModel.findOne({email})
+        const user = await userModel.findOne({ email })
 
         if (!user || user.resetPasswordOtp !== otp || user.resetPasswordExpire < Date.now()) {
             return res.status(404).json({
-                message:'Invalid or Expired OTP'
+                message: 'Invalid or Expired OTP'
             })
         }
 
         const salt = await bcrypt.genSalt(10)
-        user.password = await bcrypt.hash(newPassword,salt)
+        user.password = await bcrypt.hash(newPassword, salt)
 
         user.resetPasswordOtp = undefined
         user.resetPasswordExpire = undefined
@@ -239,6 +239,6 @@ export const resetPassword = async (req,res) => {
 
         res.status(200).json({ message: "Password updated successfully" });
     } catch (error) {
-        res.status(500).json({ message: "Server error", error: error.message });   
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 }

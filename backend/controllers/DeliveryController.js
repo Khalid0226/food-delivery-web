@@ -140,7 +140,7 @@ export const updateTOInTransit = async (req, res) => {
 export const completeOrder = async (req, res) => {
     try {
         const { orderId, deliveryBoyId } = req.body;
-        
+
         const updateOrder = await orderModel.findByIdAndUpdate(
             orderId,
             {
@@ -256,18 +256,18 @@ export const sendDeliveryOtp = async (req, res) => {
         }
 
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         order.deliveryOtp = otp;
-        order.deliveryOtpExpire = Date.now() + 10 * 60 * 1000; 
+        order.deliveryOtpExpire = Date.now() + 10 * 60 * 1000;
         await order.save();
 
         const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 465,
-            secure: true, // true for 465, false for other ports
+            host: 'smtp-relay.brevo.com',
+            port: 587,
+            secure: false,
             auth: {
                 user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS  
+                pass: process.env.EMAIL_PASS
             },
             tls: {
                 rejectUnauthorized: false

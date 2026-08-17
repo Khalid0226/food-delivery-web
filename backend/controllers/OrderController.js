@@ -6,7 +6,7 @@ import nodemailer from 'nodemailer'
 export const order = async (req, res) => {
     try {
         // console.log("Request body:", req.body);
-        
+
         const newOrder = new orderModel({
             ...req.body,
             // Agar frontend se 'id' aa raha hai user ka, to ensure karne ke liye:
@@ -14,7 +14,7 @@ export const order = async (req, res) => {
         });
 
         // Yahan 'await' lagana bohot zaroori hai!
-        await newOrder.save(); 
+        await newOrder.save();
 
         res.status(201).json({
             message: 'order placed Successfully!!',
@@ -29,77 +29,77 @@ export const order = async (req, res) => {
     }
 };
 
-export const getAllOrder = async(req,res) =>{
+export const getAllOrder = async (req, res) => {
     try {
-        const allOrder = await orderModel.find().sort({createdAt:-1})
+        const allOrder = await orderModel.find().sort({ createdAt: -1 })
         res.status(200).json({
-            message:'successfully fetch orders',
-            order:allOrder
+            message: 'successfully fetch orders',
+            order: allOrder
         })
     } catch (error) {
         res.status(500).json({
-            message:'failed to fetch orders!!',
-            error:error.message
+            message: 'failed to fetch orders!!',
+            error: error.message
         })
     }
 }
 
-export const updateOrder = async (req,res) => {
+export const updateOrder = async (req, res) => {
     try {
-        const {orderId,status} = req.body
+        const { orderId, status } = req.body
         // console.log("Updating:", orderId, status);
-        await orderModel.findByIdAndUpdate(orderId,{status:status},{ new: true })
+        await orderModel.findByIdAndUpdate(orderId, { status: status }, { new: true })
         res.status(201).json({
-            success:true,
-            message:'success',
+            success: true,
+            message: 'success',
 
         })
     } catch (error) {
         res.status(500).json({
-            success:false,
-            message:'failed'
+            success: false,
+            message: 'failed'
         })
     }
 }
 
 
-export const userOrder = async (req,res) => {
+export const userOrder = async (req, res) => {
     try {
-        const {email}  = req.body
+        const { email } = req.body
 
-        const order = await orderModel.find({email:email})
+        const order = await orderModel.find({ email: email })
 
         res.status(200).json({
-            message:'success',
-            order:order
+            message: 'success',
+            order: order
         })
-        
+
     } catch (error) {
         res.status(500).json({
-            message:'failed to fetch order',
-            error:error.message
+            message: 'failed to fetch order',
+            error: error.message
         })
     }
 }
 
-export const getUserOrderById = async (req,res) => {
+export const getUserOrderById = async (req, res) => {
     try {
         const order = await orderModel.findById(req.params.orderId).populate('deliveryBoy')
         // console.log(order);
-        
+
         if (!order) {
             res.status(404).json({
-                message:'order not found!!'
+                message: 'order not found!!'
             })
         }
         res.status(200).json({
-            message:'success!!',
-            order:order
+            message: 'success!!',
+            order: order
         })
     } catch (error) {
         res.status(500).json({
-            message:'failed to fetch order',
-            error:error.message
+            message: 'failed to fetch order',
+            error: error.message
         })
     }
 }
@@ -199,9 +199,9 @@ export const createOrder = async (req, res) => {
         // 4. Send Invoice Email via Nodemailer (Updated with secure host/port for Render)
         try {
             const transporter = nodemailer.createTransport({
-                host: 'smtp.gmail.com',
-                port: 465,
-                secure: true,
+                host: 'smtp-relay.brevo.com',
+                port: 587,
+                secure: false,
                 auth: {
                     user: process.env.EMAIL_USER,
                     pass: process.env.EMAIL_PASS
@@ -250,10 +250,10 @@ export const createOrder = async (req, res) => {
             console.error("Email sending failed, but order was saved:", emailError.message);
         }
 
-        return res.status(201).json({ 
-            success: true, 
-            message: "Order placed successfully!", 
-            orderId: savedOrder._id 
+        return res.status(201).json({
+            success: true,
+            message: "Order placed successfully!",
+            orderId: savedOrder._id
         });
 
     } catch (error) {
